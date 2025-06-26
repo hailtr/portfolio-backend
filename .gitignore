@@ -28,3 +28,7 @@ admin/.vite/
 # Archivos del sistema
 .DS_Store
 Thumbs.db
+
+# Archivos de utils
+import_from_gallery.py
+gallery.json

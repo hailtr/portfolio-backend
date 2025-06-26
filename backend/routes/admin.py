@@ -3,12 +3,27 @@ from backend import db
 from backend.models.entity import Entity
 import json
 
-admin_bp = Blueprint('admin', __name__, template_folder='../templates')
+admin_bp = Blueprint('admin', __name__, template_folder='../../templates')
 
 @admin_bp.route('/admin')
 def admin_home():
-    projects = Entity.query.filter_by(type="project").all()
-    return render_template('admin.html', projects=projects)
+    slug = request.args.get("slug", "portfolio")
+    entity = Entity.query.filter_by(slug=slug).first_or_404()
+
+    # Load translations for the entity
+    translations = {t.lang: t for t in entity.translations}
+
+    # Load available languages
+    languages = [t.lang for t in entity.translations]
+
+
+    return render_template(
+        'admin.html',
+        entity=entity,
+        translations=translations,
+        languages=languages
+    )
+
 
 @admin_bp.route('/admin/create', methods=['POST'])
 def admin_create():

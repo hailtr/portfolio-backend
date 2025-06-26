@@ -1,55 +1,65 @@
-<!-- backend/templates/admin.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Admin Panel - Projects</title>
-  <style>
-    body { font-family: sans-serif; padding: 2rem; background: #f4f4f4; }
-    h1 { margin-bottom: 1rem; }
-    table { width: 100%; border-collapse: collapse; }
-    th, td { padding: 0.5rem; border: 1px solid #ccc; }
-    form { margin-top: 2rem; }
-    input, textarea { width: 100%; margin-bottom: 1rem; padding: 0.5rem; }
-  </style>
+  <meta charset="UTF-8">
+  <title>Admin Panel — {{ entity.slug }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/admin.css') }}">
 </head>
 <body>
-  <h1>Projects</h1>
 
-  <table>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Slug</th>
-        <th>Type</th>
-        <th>Category</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for project in projects %}
-      <tr>
-        <td>{{ project.id }}</td>
-        <td>{{ project.slug }}</td>
-        <td>{{ project.type }}</td>
-        <td>{{ project.meta.category }}</td>
-        <td>
-          <form method="post" action="/admin/delete/{{ project.id }}">
-            <button type="submit">Delete</button>
-          </form>
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <h1>Edit Entity: {{ entity.slug }}</h1>
 
-  <h2>Add Project</h2>
-  <form method="post" action="/admin/create">
-    <input type="text" name="slug" placeholder="slug" required />
-    <input type="text" name="type" value="project" readonly />
-    <input type="text" name="category" placeholder="category" />
-    <textarea name="tags" placeholder="tags (comma separated)"></textarea>
-    <button type="submit">Add</button>
+  <form method="post" action="/admin/save/{{ entity.id }}">
+    <label>Slug
+      <input type="text" name="slug" value="{{ entity.slug }}" required>
+    </label>
+
+    <label>Type
+      <input type="text" name="type" value="{{ entity.type }}">
+    </label>
+
+    <label>Category
+      <input type="text" name="category" value="{{ entity.meta.category }}">
+    </label>
+
+    <label>Tags (comma-separated)
+      <input type="text" name="tags" value="{{ entity.meta.tags | join(', ') }}">
+    </label>
+
+    {% for lang, t in translations.items() %}
+    <div class="translation-block">
+      <h2>Translation: {{ lang.upper() }}</h2>
+
+      <input type="hidden" name="lang_{{ lang }}" value="{{ lang }}">
+
+      <label>Title
+        <input type="text" name="title_{{ lang }}" value="{{ t.title if t else '' }}">
+      </label>
+
+      <label>Subtitle
+        <input type="text" name="subtitle_{{ lang }}" value="{{ t.subtitle if t else '' }}">
+      </label>
+
+      <label>Description
+        <textarea name="description_{{ lang }}">{{ t.description if t else '' }}</textarea>
+      </label>
+
+      <label>Summary
+        <textarea name="summary_{{ lang }}">{{ t.summary if t else '' }}</textarea>
+      </label>
+
+      <label>Extra Content (JSON)
+        <textarea name="content_{{ lang }}">{{ t.content if t else '{}' }}</textarea>
+      </label>
+    </div>
+    {% endfor %}
+
+    <div class="actions">
+      <button type="submit" name="action" value="draft" class="secondary">Save as Draft</button>
+      <button type="submit" name="action" value="publish" class="primary">Publish</button>
+      <button type="submit" name="action" value="delete" class="danger" onclick="return confirm('Are you sure?')">Delete</button>
+    </div>
   </form>
+
 </body>
 </html>
