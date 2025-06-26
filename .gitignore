@@ -1,0 +1,30 @@
+# Entorno virtual
+venv/
+.env
+
+# Archivos de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Flask cache
+instance/
+*.db
+
+# VSCode
+.vscode/
+
+# Logs
+*.log
+
+# React build
+admin/dist/
+admin/node_modules/
+
+# Dependencias frontend
+admin/.vite/
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
