@@ -96,3 +96,6 @@ if __name__ == '__main__':
         logger.info("Database tables ready")
     logger.info("Starting server in debug mode")
     app.run(debug=True)
+
+from backend.routes.admin import admin_bp
+app.register_blueprint(admin_bp)
