@@ -1,0 +1,55 @@
+<!-- backend/templates/admin.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Panel - Projects</title>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; background: #f4f4f4; }
+    h1 { margin-bottom: 1rem; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 0.5rem; border: 1px solid #ccc; }
+    form { margin-top: 2rem; }
+    input, textarea { width: 100%; margin-bottom: 1rem; padding: 0.5rem; }
+  </style>
+</head>
+<body>
+  <h1>Projects</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Slug</th>
+        <th>Type</th>
+        <th>Category</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for project in projects %}
+      <tr>
+        <td>{{ project.id }}</td>
+        <td>{{ project.slug }}</td>
+        <td>{{ project.type }}</td>
+        <td>{{ project.meta.category }}</td>
+        <td>
+          <form method="post" action="/admin/delete/{{ project.id }}">
+            <button type="submit">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h2>Add Project</h2>
+  <form method="post" action="/admin/create">
+    <input type="text" name="slug" placeholder="slug" required />
+    <input type="text" name="type" value="project" readonly />
+    <input type="text" name="category" placeholder="category" />
+    <textarea name="tags" placeholder="tags (comma separated)"></textarea>
+    <button type="submit">Add</button>
+  </form>
+</body>
+</html>
