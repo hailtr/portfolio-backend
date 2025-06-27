@@ -43,3 +43,15 @@ function addCustomLanguage() {
 
   container.appendChild(block);
 }
+
+document.getElementById('delete-form').addEventListener('submit', function (e) {
+  const select = document.getElementById('project-select');
+  const id = select.value;
+  if (!id) {
+    alert('Selecciona un proyecto para eliminar.');
+    e.preventDefault();
+    return;
+  }
+
+  this.action = `/admin/delete/${id}`;
+});

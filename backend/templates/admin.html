@@ -29,7 +29,7 @@
   <section class="bg-white shadow rounded-md p-6">
     <h2 class="text-xl font-semibold mb-4">{% if entity %}Editar{% else %}Crear nuevo{% endif %} proyecto</h2>
 
-    <form method="post" action="{{ url_for('admin.admin_save') }}" class="space-y-6">
+    <form id="main-form" method="post" action="{{ url_for('admin.admin_save') }}" class="space-y-6">
       {% if entity %}
         <input type="hidden" name="id" value="{{ entity.id }}">
       {% endif %}
@@ -110,27 +110,31 @@
           + Añadir idioma
         </button>
       </div>
+    </form>
+    {% if entity %}
+  <form id="delete-form" method="post" onsubmit="return confirm('¿Eliminar este proyecto?')" class="hidden">
+    <input type="hidden" name="delete_id" id="delete-id" value="{{ entity.id }}">
+  </form>
+    {% endif %}
 
-      <div class="flex gap-4 mt-6">
-        <button type="submit" name="action" value="draft"
-          class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300">
-          Guardar como borrador
-        </button>
+    <div class="flex gap-4 mt-6">
+      <button type="submit" form="main-form" name="action" value="draft"
+        class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300">
+        Guardar como borrador
+      </button>
 
-        <button type="submit" name="action" value="publish"
-          class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-          Publicar
-        </button>
+      <button type="submit" form="main-form" name="action" value="publish"
+        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+        Publicar
+      </button>
 
-        {% if entity %}
-        <button type="submit" name="action" value="delete"
-          class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-          onclick="return confirm('¿Eliminar este proyecto?')">
+      {% if entity %}
+        <button type="submit" form="delete-form"
+          class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
           Eliminar
         </button>
-        {% endif %}
-      </div>
-    </form>
+      {% endif %}
+    </div>
   </section>
 
   <script src="{{ url_for('static', filename='scripts/admin.js') }}"></script>
