@@ -1,0 +1,29 @@
+<body>
+  <h1>Panel de Administración</h1>
+  <p>Conectando con la base de datos…</p>
+
+  <script>
+  async function checkReady(retries = 8, delay = 1500) {
+    for (let i = 0; i < retries; i++) {
+      try {
+        const res = await fetch('/admin/check');
+        const data = await res.json();
+        console.log("check:", data, "typeof ready:", typeof data.ready);
+        if (data.ready === true) {
+          console.log("✅ Redirigiendo...");
+          window.location.href = '/admin?ready=true';
+          return;
+        }
+      } catch (err) {
+        console.error("Fallo inesperado:", err);
+      }
+      await new Promise(r => setTimeout(r, delay));
+    }
+    console.log("❌ Timeout. Redirigiendo a fallback.");
+    window.location.href = '/admin?ready=false';
+  }
+
+  checkReady();
+</script>
+</body>
+

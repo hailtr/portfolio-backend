@@ -1,65 +1,138 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Admin Panel — {{ entity.slug }}</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles/admin.css') }}">
+  <title>Admin Panel{% if entity %} — {{ entity.slug }}{% endif %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gray-100 text-gray-800 px-6 py-8">
 
-  <h1>Edit Entity: {{ entity.slug }}</h1>
+  <h1 class="text-3xl font-bold mb-6">Panel de Administración</h1>
 
-  <form method="post" action="/admin/save/{{ entity.id }}">
-    <label>Slug
-      <input type="text" name="slug" value="{{ entity.slug }}" required>
-    </label>
+  {% if entities %}
+    <section class="mb-10">
+      <label for="project-select" class="block text-sm font-medium text-gray-700 mb-2">Seleccionar proyecto</label>
+      <div class="flex items-center gap-4">
+        <select id="project-select" class="border rounded-md px-3 py-2" onchange="location.href='/admin?ready=true&edit=' + this.value">
+          <option value="">-- Selecciona --</option>
+          {% for e in entities %}
+            <option value="{{ e.id }}" {% if entity and entity.id == e.id %}selected{% endif %}>
+              {{ e.slug }} — {{ e.type or 'Sin tipo' }}
+            </option>
+          {% endfor %}
+        </select>
+        <a href="{{ url_for('admin.admin_home', ready='true') }}" class="text-sm px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">+ Nuevo proyecto</a>
+      </div>
+    </section>
+  {% endif %}
 
-    <label>Type
-      <input type="text" name="type" value="{{ entity.type }}">
-    </label>
+  <section class="bg-white shadow rounded-md p-6">
+    <h2 class="text-xl font-semibold mb-4">{% if entity %}Editar{% else %}Crear nuevo{% endif %} proyecto</h2>
 
-    <label>Category
-      <input type="text" name="category" value="{{ entity.meta.category }}">
-    </label>
+    <form method="post" action="{{ url_for('admin.admin_save') }}" class="space-y-6">
+      {% if entity %}
+        <input type="hidden" name="id" value="{{ entity.id }}">
+      {% endif %}
 
-    <label>Tags (comma-separated)
-      <input type="text" name="tags" value="{{ entity.meta.tags | join(', ') }}">
-    </label>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <label>
+          <span class="block text-sm font-medium">Slug</span>
+          <input type="text" name="slug" required value="{{ entity.slug if entity else '' }}"
+            class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+        </label>
 
-    {% for lang, t in translations.items() %}
-    <div class="translation-block">
-      <h2>Translation: {{ lang.upper() }}</h2>
+        <label>
+          <span class="block text-sm font-medium">Type</span>
+          <input type="text" name="type" value="{{ entity.type if entity else '' }}"
+            class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+        </label>
 
-      <input type="hidden" name="lang_{{ lang }}" value="{{ lang }}">
+        <label>
+          <span class="block text-sm font-medium">Category</span>
+          <input type="text" name="category" value="{{ entity.meta.category if entity else '' }}"
+            class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+        </label>
 
-      <label>Title
-        <input type="text" name="title_{{ lang }}" value="{{ t.title if t else '' }}">
-      </label>
+        <label>
+          <span class="block text-sm font-medium">Tags (comma-separated)</span>
+          <input type="text" name="tags" value="{{ entity.meta.tags | join(', ') if entity else '' }}"
+            class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+        </label>
+      </div>
 
-      <label>Subtitle
-        <input type="text" name="subtitle_{{ lang }}" value="{{ t.subtitle if t else '' }}">
-      </label>
+      <div id="translation-pairs" class="grid md:grid-cols-2 gap-6">
+        {% for lang in available_languages %}
+          {% set t = translations.get(lang) %}
+          <div class="p-4 border rounded-md bg-gray-50">
+            <h3 class="font-semibold text-gray-700 mb-2">Traducción: {{ lang.upper() }}</h3>
+            <input type="hidden" name="lang_{{ lang }}" value="{{ lang }}">
 
-      <label>Description
-        <textarea name="description_{{ lang }}">{{ t.description if t else '' }}</textarea>
-      </label>
+            <div class="grid gap-4">
+              <label>
+                <span class="block text-sm font-medium">Título</span>
+                <input type="text" name="title_{{ lang }}" value="{{ t.title if t else '' }}"
+                  class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+              </label>
 
-      <label>Summary
-        <textarea name="summary_{{ lang }}">{{ t.summary if t else '' }}</textarea>
-      </label>
+              <label>
+                <span class="block text-sm font-medium">Subtítulo</span>
+                <input type="text" name="subtitle_{{ lang }}" value="{{ t.subtitle if t else '' }}"
+                  class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+              </label>
 
-      <label>Extra Content (JSON)
-        <textarea name="content_{{ lang }}">{{ t.content if t else '{}' }}</textarea>
-      </label>
-    </div>
-    {% endfor %}
+              <label>
+                <span class="block text-sm font-medium">Descripción</span>
+                <textarea name="description_{{ lang }}" rows="3"
+                  class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">{{ t.description if t else '' }}</textarea>
+              </label>
 
-    <div class="actions">
-      <button type="submit" name="action" value="draft" class="secondary">Save as Draft</button>
-      <button type="submit" name="action" value="publish" class="primary">Publish</button>
-      <button type="submit" name="action" value="delete" class="danger" onclick="return confirm('Are you sure?')">Delete</button>
-    </div>
-  </form>
+              <label>
+                <span class="block text-sm font-medium">Resumen</span>
+                <textarea name="summary_{{ lang }}" rows="2"
+                  class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">{{ t.summary if t else '' }}</textarea>
+              </label>
 
+              <label>
+                <span class="block text-sm font-medium">Contenido extra (JSON)</span>
+                <textarea name="content_{{ lang }}" rows="4"
+                  class="mt-1 w-full font-mono border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">{{ t.content | tojson if t and t.content else '{}' }}</textarea>
+              </label>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <div id="extra-translations" class="grid md:grid-cols-2 gap-6 mt-6"></div>
+
+      <div class="mt-6">
+        <button type="button" onclick="addCustomLanguage()"
+          class="px-3 py-2 text-sm bg-yellow-100 text-yellow-800 rounded hover:bg-yellow-200">
+          + Añadir idioma
+        </button>
+      </div>
+
+      <div class="flex gap-4 mt-6">
+        <button type="submit" name="action" value="draft"
+          class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300">
+          Guardar como borrador
+        </button>
+
+        <button type="submit" name="action" value="publish"
+          class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+          Publicar
+        </button>
+
+        {% if entity %}
+        <button type="submit" name="action" value="delete"
+          class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+          onclick="return confirm('¿Eliminar este proyecto?')">
+          Eliminar
+        </button>
+        {% endif %}
+      </div>
+    </form>
+  </section>
+
+  <script src="{{ url_for('static', filename='scripts/admin.js') }}"></script>
 </body>
 </html>

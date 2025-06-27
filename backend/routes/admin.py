@@ -1,52 +1,107 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, jsonify, current_app
+from sqlalchemy import text
 from backend import db
 from backend.models.entity import Entity
+from backend.models.translation import EntityTranslation
 import json
 
 admin_bp = Blueprint('admin', __name__, template_folder='../../templates')
 
+
 @admin_bp.route('/admin')
 def admin_home():
-    slug = request.args.get("slug", "portfolio")
-    entity = Entity.query.filter_by(slug=slug).first_or_404()
+    ready = request.args.get("ready")
+    edit_id = request.args.get("edit")
 
-    # Load translations for the entity
-    translations = {t.lang: t for t in entity.translations}
+    if ready == "true":
+        try:
+            entities = Entity.query.all()
+            entity = None
+            translations = {}
+            available_languages = []
 
-    # Load available languages
-    languages = [t.lang for t in entity.translations]
+            
+
+            if edit_id:
+                entity = Entity.query.get_or_404(edit_id)
+                translations = {t.lang: t for t in entity.translations}
+                available_languages = list(translations.keys())
+            
+            if not available_languages:
+                available_languages = ['es', 'en']
+
+            return render_template(
+                    'admin.html',
+                    entities=entities,
+                    entity=entity,
+                    translations=translations,
+                    available_languages=available_languages
+                )
+        
+        except Exception as e:
+            current_app.logger.warning(f"Error cargando entidades: {e}")
+            return redirect(url_for('admin.admin_home', ready='false'))
+
+    elif ready == "false":
+        return render_template("admin_error.html", error="No se pudo conectar a la base de datos.")
+
+    return render_template("admin_base.html")
 
 
-    return render_template(
-        'admin.html',
-        entity=entity,
-        translations=translations,
-        languages=languages
-    )
+@admin_bp.route('/admin/check')
+def admin_check():
+    try:
+        db.session.execute(text("SELECT 1"))
+        return jsonify({"ready": True})
+    except Exception as e:
+        current_app.logger.warning(f"DB check falló: {e}")
+        return jsonify({"ready": False})
 
 
-@admin_bp.route('/admin/create', methods=['POST'])
-def admin_create():
-    slug = request.form['slug']
-    type_ = request.form['type']
-    category = request.form['category']
-    tags = request.form.get('tags', '').split(',')
+@admin_bp.route('/admin/save', methods=['POST'])
+def admin_save():
+    form = request.form
+    entity_id = form.get("id")
 
-    meta = {
-        "category": category,
-        "tags": [t.strip() for t in tags if t.strip()],
-        "images": {}
+    if entity_id:
+        entity = Entity.query.get_or_404(entity_id)
+    else:
+        entity = Entity()
+        db.session.add(entity)
+
+    entity.slug = form.get("slug")
+    entity.type = form.get("type")
+    entity.meta = {
+        "category": form.get("category"),
+        "tags": [t.strip() for t in form.get("tags", "").split(",") if t.strip()]
     }
 
-    entity = Entity(slug=slug, type=type_, meta=meta)
-    db.session.add(entity)
+    entity.translations.clear()
+
+    langs = [k.split("_")[1] for k in form if k.startswith("lang_")]
+    for lang in langs:
+        try:
+            content = json.loads(form.get(f"content_{lang}", '{}'))
+        except json.JSONDecodeError:
+            content = {}
+
+        t = EntityTranslation(
+            lang=lang,
+            title=form.get(f"title_{lang}"),
+            subtitle=form.get(f"subtitle_{lang}"),
+            description=form.get(f"description_{lang}"),
+            summary=form.get(f"summary_{lang}"),
+            content=content
+        )
+        entity.translations.append(t)
+
     db.session.commit()
-    return redirect(url_for('admin.admin_home'))
+    return redirect(url_for('admin.admin_home', ready='true'))
+
 
 @admin_bp.route('/admin/delete/<int:id>', methods=['POST'])
 def admin_delete(id):
-    entity = Entity.query.get(id)
-    if entity:
-        db.session.delete(entity)
-        db.session.commit()
-    return redirect(url_for('admin.admin_home'))
+    entity = Entity.query.get_or_404(id)
+    db.session.delete(entity)
+    db.session.commit()
+    return redirect(url_for('admin.admin_home', ready='true'))
