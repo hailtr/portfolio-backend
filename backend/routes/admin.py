@@ -4,14 +4,19 @@ from backend import db
 from backend.models.entity import Entity
 from backend.models.translation import EntityTranslation
 import json
+from auth.decorators import requires_login, requires_role
 
 admin_bp = Blueprint('admin', __name__, template_folder='../../templates')
 
 
 @admin_bp.route('/admin')
+@requires_login
+@requires_role("admin")
 def admin_home():
     ready = request.args.get("ready")
     edit_id = request.args.get("edit")
+    from flask import session
+    print("DEBUG SESSION:", dict(session))
 
     if ready == "true":
         try:
