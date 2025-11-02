@@ -60,55 +60,124 @@
         </label>
       </div>
 
-      <div id="translation-pairs" class="grid md:grid-cols-2 gap-6">
-        {% for lang in available_languages %}
-          {% set t = translations.get(lang) %}
-          <div class="p-4 border rounded-md bg-gray-50">
-            <h3 class="font-semibold text-gray-700 mb-2">Traducción: {{ lang.upper() }}</h3>
-            <input type="hidden" name="lang_{{ lang }}" value="{{ lang }}">
-
-            <div class="grid gap-4">
-              <label>
-                <span class="block text-sm font-medium">Título</span>
-                <input type="text" name="title_{{ lang }}" value="{{ t.title if t else '' }}"
-                  class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
-              </label>
-
-              <label>
-                <span class="block text-sm font-medium">Subtítulo</span>
-                <input type="text" name="subtitle_{{ lang }}" value="{{ t.subtitle if t else '' }}"
-                  class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
-              </label>
-
-              <label>
-                <span class="block text-sm font-medium">Descripción</span>
-                <textarea name="description_{{ lang }}" rows="3"
-                  class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">{{ t.description if t else '' }}</textarea>
-              </label>
-
-              <label>
-                <span class="block text-sm font-medium">Resumen</span>
-                <textarea name="summary_{{ lang }}" rows="2"
-                  class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">{{ t.summary if t else '' }}</textarea>
-              </label>
-
-              <label>
-                <span class="block text-sm font-medium">Contenido extra (JSON)</span>
-                <textarea name="content_{{ lang }}" rows="4"
-                  class="mt-1 w-full font-mono border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">{{ t.content | tojson if t and t.content else '{}' }}</textarea>
-              </label>
+      <!-- Image Uploads -->
+      <div class="col-span-full mt-6">
+        <h3 class="text-lg font-semibold mb-4">Project Images</h3>
+        <div class="grid md:grid-cols-2 gap-6">
+          <!-- Desktop Image -->
+          <div>
+            <label class="block text-sm font-medium mb-2">Desktop Image</label>
+            <input type="file" id="desktop-image-input" accept="image/*" 
+              class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+            <input type="hidden" id="desktop-image-url" name="desktop_image" value="{{ entity.meta.images.desktop if entity and entity.meta and entity.meta.images else '' }}">
+            <div id="desktop-image-preview" class="mt-4 min-h-[100px] border-2 border-dashed border-gray-300 rounded-lg p-4 flex items-center justify-center">
+              {% if entity and entity.meta and entity.meta.images and entity.meta.images.desktop %}
+                <img src="{{ entity.meta.images.desktop }}" class="max-w-full h-auto rounded" alt="Desktop preview">
+              {% else %}
+                <p class="text-gray-400">No image uploaded</p>
+              {% endif %}
             </div>
           </div>
-        {% endfor %}
+
+          <!-- Mobile Image -->
+          <div>
+            <label class="block text-sm font-medium mb-2">Mobile Image</label>
+            <input type="file" id="mobile-image-input" accept="image/*"
+              class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+            <input type="hidden" id="mobile-image-url" name="mobile_image" value="{{ entity.meta.images.mobile if entity and entity.meta and entity.meta.images else '' }}">
+            <div id="mobile-image-preview" class="mt-4 min-h-[100px] border-2 border-dashed border-gray-300 rounded-lg p-4 flex items-center justify-center">
+              {% if entity and entity.meta and entity.meta.images and entity.meta.images.mobile %}
+                <img src="{{ entity.meta.images.mobile }}" class="max-w-full h-auto rounded" alt="Mobile preview">
+              {% else %}
+                <p class="text-gray-400">No image uploaded</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div id="extra-translations" class="grid md:grid-cols-2 gap-6 mt-6"></div>
+      <div class="col-span-full">
+        <hr class="my-6">
+      </div>
 
-      <div class="mt-6">
-        <button type="button" onclick="addCustomLanguage()"
-          class="px-3 py-2 text-sm bg-yellow-100 text-yellow-800 rounded hover:bg-yellow-200">
-          + Añadir idioma
-        </button>
+      <div class="grid md:grid-cols-2 gap-6">
+        <!-- Spanish Translation -->
+        {% set t_es = translations.get('es') %}
+        <div class="p-4 border rounded-md bg-gray-50">
+          <h3 class="font-semibold text-gray-700 mb-2">Español (ES)</h3>
+          <input type="hidden" name="lang_es" value="es">
+
+          <div class="grid gap-4">
+            <label>
+              <span class="block text-sm font-medium">Título</span>
+              <input type="text" name="title_es" value="{{ t_es.title if t_es else '' }}"
+                class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+            </label>
+
+            <label>
+              <span class="block text-sm font-medium">Subtítulo</span>
+              <input type="text" name="subtitle_es" value="{{ t_es.subtitle if t_es else '' }}"
+                class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+            </label>
+
+            <label>
+              <span class="block text-sm font-medium">Descripción</span>
+              <textarea name="description_es" rows="3"
+                class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">{{ t_es.description if t_es else '' }}</textarea>
+            </label>
+
+            <label>
+              <span class="block text-sm font-medium">Resumen</span>
+              <textarea name="summary_es" rows="2"
+                class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">{{ t_es.summary if t_es else '' }}</textarea>
+            </label>
+
+            <label>
+              <span class="block text-sm font-medium">Contenido extra (JSON)</span>
+              <textarea name="content_es" rows="4"
+                class="mt-1 w-full font-mono border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">{{ t_es.content | tojson if t_es and t_es.content else '{}' }}</textarea>
+            </label>
+          </div>
+        </div>
+
+        <!-- English Translation -->
+        {% set t_en = translations.get('en') %}
+        <div class="p-4 border rounded-md bg-gray-50">
+          <h3 class="font-semibold text-gray-700 mb-2">English (EN)</h3>
+          <input type="hidden" name="lang_en" value="en">
+
+          <div class="grid gap-4">
+            <label>
+              <span class="block text-sm font-medium">Title</span>
+              <input type="text" name="title_en" value="{{ t_en.title if t_en else '' }}"
+                class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+            </label>
+
+            <label>
+              <span class="block text-sm font-medium">Subtitle</span>
+              <input type="text" name="subtitle_en" value="{{ t_en.subtitle if t_en else '' }}"
+                class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+            </label>
+
+            <label>
+              <span class="block text-sm font-medium">Description</span>
+              <textarea name="description_en" rows="3"
+                class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">{{ t_en.description if t_en else '' }}</textarea>
+            </label>
+
+            <label>
+              <span class="block text-sm font-medium">Summary</span>
+              <textarea name="summary_en" rows="2"
+                class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">{{ t_en.summary if t_en else '' }}</textarea>
+            </label>
+
+            <label>
+              <span class="block text-sm font-medium">Extra content (JSON)</span>
+              <textarea name="content_en" rows="4"
+                class="mt-1 w-full font-mono border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">{{ t_en.content | tojson if t_en and t_en.content else '{}' }}</textarea>
+            </label>
+          </div>
+        </div>
       </div>
     </form>
     {% if entity %}

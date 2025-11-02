@@ -11,7 +11,9 @@ from backend.models.entity import Entity
 from backend.models.translation import EntityTranslation
 from sqlalchemy import text
 from backend.routes.admin import admin_bp
+from backend.routes.api import api_bp
 from auth.google_auth import auth_bp, oauth
+from backend.routes.index import index_bp
 
 # Logging configuration
 logging.basicConfig(
@@ -28,17 +30,43 @@ logger.info("Starting Flask application")
 
 # Initialize Flask app
 app = Flask(__name__)
-CORS(app)
+
+# Configure CORS for frontend access
+# In production, restrict origins to your Vercel domain
+cors_origins = os.getenv('CORS_ORIGINS', 'http://localhost:3000,http://localhost:5173').split(',')
+CORS(app, resources={
+    r"/api/*": {
+        "origins": cors_origins,
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"],
+        "expose_headers": ["Content-Type"],
+        "supports_credentials": False
+    }
+})
 
 # App configuration
 app.secret_key = os.getenv("FLASK_SECRET_KEY", "fallback_super_secret_key")
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL", "sqlite:///portfolio.db")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['ADMIN_TOKEN'] = os.getenv("ADMIN_TOKEN", "changeme")
+
+# Session configuration
+from datetime import timedelta
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)  # Session lasts 7 days
+app.config['SESSION_COOKIE_SECURE'] = False  # Set to True in production with HTTPS
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     "pool_pre_ping": True,
+    "pool_recycle": 280,  # Recycle connections before Railway's 5min timeout
+    "pool_size": 10,
+    "max_overflow": 20,
     "connect_args": {
-        "connect_timeout": 5  # seconds
+        "connect_timeout": 10,  # Increased timeout
+        "keepalives": 1,
+        "keepalives_idle": 30,
+        "keepalives_interval": 10,
+        "keepalives_count": 5
     }
 }
 
@@ -49,8 +77,10 @@ db.init_app(app)
 logger.info("Database connection initialized")
 
 logger.info("Registering blueprints")
+app.register_blueprint(api_bp)
 app.register_blueprint(admin_bp)
 app.register_blueprint(auth_bp)
+app.register_blueprint(index_bp)
 
 
 # Run the app

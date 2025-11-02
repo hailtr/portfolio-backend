@@ -18,20 +18,21 @@ instance/
 # Logs
 *.log
 
-# React build
+# React/Node builds
 admin/dist/
 admin/node_modules/
-
-# Dependencias frontend
 admin/.vite/
+frontend/dist/
+frontend/node_modules/
+frontend/.vite/
+node_modules/
 
 # Archivos del sistema
 .DS_Store
 Thumbs.db
 
-# Archivos de utils
-import_from_gallery.py
-gallery.json
+# Archivos de utils temporales
+# Note: gallery.json and migrate_gallery.py are kept for data migration
 
 # Otros archivos de configuración
 *.code-workspace
