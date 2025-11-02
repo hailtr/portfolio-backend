@@ -1,7 +1,8 @@
-from flask import Blueprint, render_template, request, redirect, url_for, jsonify, current_app
+from flask import Blueprint, redirect
 
-index_bp = Blueprint('public',__name__, template_folder='../../templates')
+index_bp = Blueprint('public', __name__)
 
 @index_bp.route('/')
 def index():
-    return render_template('base.html')
+    # Redirect root to API health check or remove this if not needed
+    return redirect('/api/health')

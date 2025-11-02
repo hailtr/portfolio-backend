@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import API_BASE_URL from './config'
 import './App.css'
 
 function App() {
@@ -8,7 +9,7 @@ function App() {
 
   useEffect(() => {
     // Fetch projects from API
-    fetch(`/api/entities?lang=${language}`)
+    fetch(`${API_BASE_URL}/entities?lang=${language}`)
       .then(res => res.json())
       .then(data => {
         setProjects(data)
