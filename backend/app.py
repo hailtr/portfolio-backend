@@ -33,7 +33,7 @@ app = Flask(__name__)
 
 # Configure CORS for frontend access
 # In production, restrict origins to your Vercel domain
-default_origins = 'http://localhost:3000,http://localhost:5173,https://portfolio-backend-six-gamma.vercel.app'
+default_origins = 'http://localhost:3000,http://localhost:5173,https://rfo-portfolio.vercel.app'
 cors_origins = os.getenv('CORS_ORIGINS', default_origins).split(',')
 CORS(app, resources={
     r"/api/*": {
