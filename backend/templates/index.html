@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles/styles.css?v=1.1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" rel="stylesheet" />
+    <title data-i18n="DOM.title"></title>
+    <link rel="icon" href="images/icons/favicon/favicon-32x32.png" type="image/x-icon">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  </head>
+  <body>
+    <div id="loader">
+    <div class="spinner"></div>
+    <p data-i18n="loader.title"></p>
+    <p data-i18n="loader.subtitle"></p>
+    <p id="loader-delay-msg" class="loader-hint" style="display:none;" data-i18n="loader.delay"></p>
+    </div>
+    <main>
+      <div class="banner-top glass animated-glass"> <!-- Banner superior -->
+        <p><span style="color:cyan">RAFAEL</span>ORTIZ</p>
+        <button class="menu-toggle" aria-label="Abrir menú">
+          &#9776; <!-- Símbolo de menú hamburguesa -->
+        </button>
+        <nav id="nav-banner">
+          <ul class="nav-list">
+            <li class="nav-link"><a class="nlink" href="#home" data-i18n="menu.home"></a></li>
+            <li class="nav-link"><a class="nlink" href="#job" data-i18n="menu.projects"></a></li>
+            <li class="nav-link"><a class="nlink" href="#about" data-i18n="menu.about"></a></li>
+            <li class="nav-link"><a class="nlink" id="contact-link" href="#contact" data-i18n="menu.contact"></a></li>
+          </ul>
+        </nav>
+        <div class="banner-actions">
+          <button id="lang-toggle" class="lang-switcher">EN/ES</button>
+          <a href="cv.html" target="_blank" rel="noopener" id="view-cv-btn">
+            <button type="button" class="download-curriculum" data-i18n="menu.view-cv"></button>
+          </a>
+        </div>
+      </div>
+      
+      <section id="home" class="section"> <!-- Sección de inicio -->
+        <div class="bg-shape shape1"></div>
+        <div class="bg-shape shape2"></div>
+        <div class="home-section">
+          <div class="profile">
+            <img src="images/profilepicture.jpg" alt="Foto personal" class="profile-picture animated-glass" data-aos="fade-up">
+            <div class="profile-greating">
+              <h2><span class="name">Rafael</span> Ortiz</h2>
+              <h1 data-i18n="profile.role"></h1>
+              <p class="tagline" data-i18n="profile.tagline"></p>
+              <p><span class="country-before">Santiago de Chile, Chile</span><span class="country-after"> Caracas, Venezuela</span></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Galería de proyectos -->
+      <section id="job" class="section" data-aos="fade-up" data-aos-duration="750"> <!-- Sección de proyectos -->
+        <div class="bg-shape shape3"></div>
+        <div class="bg-shape shape4"></div>
+        <div class="job-section">
+          <div class="content-container">
+            <h2 data-i18n="menu.projects"></h2>
+            <div class="experience-gallery-wrapper glass round-border">
+              <div class="experience-fade left"></div>
+              <div class="experience-fade right"></div>
+              <div class="job-header">
+                <div class="experience-filters">
+                  <button data-filter="all" class="glass animated-glass round-border" data-i18n="gallery-filters.all"></button>
+                  <button data-filter="proyectos" class="glass animated-glass round-border" data-i18n="menu.projects"></button>
+                  <button data-filter="trabajo" class="glass animated-glass round-border" data-i18n="gallery-filters.jobs"></button>
+                  <button data-filter="aprendizaje" class="glass animated-glass round-border" data-i18n="gallery-filters.learning"></button>
+                
+                </div>
+                <div class="experience-nav">
+                    <button id="prev-exp" class="glass round-border"><span class="material-symbols-rounded">navigate_before</span></button>
+                    <button id="next-exp" class="glass round-border"><span class="material-symbols-rounded">navigate_next</span></button>
+                </div>
+              </div>
+              <!-- Aquí empieza la galería scroll -->
+                <div class="experience-gallery">
+                  <!-- Tarjetas individuales con data-category para filtrar -->
+                
+                  
+                  <!-- ... más tarjetas -->
+                </div>
+                  <!-- Aquí termina la galería (scroll) -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="about" class="section"> <!-- Sección de acerca de mí -->
+        <div class="bg-shape shape5"></div>
+        <div class="bg-shape shape6"></div>
+        <div class="aboutme-section">
+          <div class="paragraph presentation-section reveal-section"> 
+            <p style="font-size: 5rem" data-i18n="about.description"></p>
+
+          </div>
+            <div class="content-container" data-aos="zoom-in" data-aos-duration="750"> <!-- Contenedor de habilidades -->
+              <h2 data-i18n="sections.skills"></h2>
+              <div class="skills-tree glass round-border">
+                <div class="skill-tree-column on animated-glass">
+                  <div class="skill-tree-title">
+                  <h3 data-i18n="skills.programming"></h3>
+                  </div>
+                  <div class="skill-tree-content">
+                    
+                    <div class="skill-tree-skill">
+                      <img class="skill-logo" src="./svg/python.svg" alt="Logo Python" height="25" width="25" style="color: transparent" loading="lazy">
+                      <p>Python</p>
+                    </div>
+                    <div class="skill-tree-skill">
+                      <img class="skill-logo" src="./svg/java.svg" alt="Logo Java" height="25" width="25" style="color: transparent" loading="lazy">
+                      <p>Java</p>
+                    </div>
+                    <div class="skill-tree-skill">
+                      <img class="skill-logo" src="./svg/powerbi.svg" alt="Logo DAX" height="25" width="25" style="color: transparent" loading="lazy">
+                      <p>DAX</p>
+                    </div>
+                    <div class="skill-tree-skill">
+                      <img class="skill-logo filter-white" src="./svg/r.svg" alt="Logo R" height="25" width="25" style="color: transparent" loading="lazy">
+                      <p>R</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="skill-tree-column animated-glass ">
+                  <div class="skill-tree-title">
+                  <h3 data-i18n="skills.databases"></h3>
+                  </div>
+                  <div class="skill-tree-content">
+                    <div class="skill-tree-skill">
+                      <img class="skill-logo" src="./svg/sql.svg" alt="Logo SQL" height="25" width="25" style="color: transparent" loading="lazy">
+                      <p>SQL Server</p>
+                    </div>
+                    <div class="skill-tree-skill">
+                      <img class="skill-logo" src="./svg/postgresql.svg" alt="Logo PostgreSQL" height="25" width="25" style="color: transparent" loading="lazy">
+                      <p>PostgreSQL</p>
+                    </div>
+                    <div class="skill-tree-skill">
+                      <img class="skill-logo filter-white" src="./svg/mongodb.svg" alt="Logo MongoDB" height="25" width="25" style="color: transparent" loading="lazy">
+                      <p>MongoDB</p>
+                    </div>
+                    <div class="skill-tree-skill">
+                      <img class="skill-logo filter-white" src="./svg/supabase.svg" alt="Logo Supabase" height="25" width="25" style="color: transparent" loading="lazy">
+                      <p>Supabase</p>
+                    </div>
+                    <div class="skill-tree-skill">
+                      <img class="skill-logo" src="./svg/sqllite.svg" alt="Logo SQL Lite" height="25" width="25" style="color: transparent" loading="lazy">
+                      <p>SQL Lite</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="skill-tree-column on animated-glass">
+                  <div class="skill-tree-title">
+                  <h3 data-i18n="skills.data-visualization"></h3>
+                  </div>
+                  <div class="skill-tree-content">
+                    <div class="skill-tree-skill">
+                      <img class="skill-logo" src="./svg/powerbi.svg" alt="Logo PowerBI" height="25" width="25" style="color: transparent" loading="lazy">
+                      <p>PowerBI</p>
+                    </div>
+                    <div class="skill-tree-skill">
+                      <img class="skill-logo" src="./svg/tableau.svg" alt="Logo Tableau" height="25" width="25" style="color: transparent" loading="lazy">
+                      <p>Tableau</p>
+                    </div>
+                    <div class="skill-tree-skill">
+                      <img class="skill-logo" src="./svg/excel.svg" alt="Logo Excel" height="25" width="25" style="color: transparent" loading="lazy">
+                      <p>Excel</p>
+                    </div>
+                    <div class="skill-tree-skill">
+                      <img class="skill-logo" src="./svg/google-analytics.svg" alt="Logo Google Analytics" height="25" width="25" style="color: transparent" loading="lazy">
+                      <p>Google Analytics</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="skill-tree-column animated-glass">
+                  <div class="skill-tree-title">
+                  <h3 data-i18n="skills.web-development"></h3>
+                  </div>
+                  <div class="skill-tree-content">
+                    <div class="skill-tree-skill"> 
+                      <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="m3 2 1.578 17.824L12 22l7.467-2.175L21 2H3Zm14.049 6.048H9.075l.172 2.016h7.697l-.626 6.565-4.246 1.381-4.281-1.455-.288-2.932h2.024l.16 1.411 2.4.815 2.346-.763.297-3.005H7.416l-.562-6.05h10.412l-.217 2.017Z"/>
+                      </svg>
+                    <p>HTML</p>
+                    </div>
+                    <div class="skill-tree-skill">
+                      <img class="skill-logo " src="./svg/css.svg" alt="Logo CSS" height="25" width="25" style="color: transparent" loading="lazy">
+                      <p>CSS</p>
+                    </div>
+                    <div class="skill-tree-skill">
+                      <img class="skill-logo" src="./svg/javascript.svg" alt="Logo JavaScript" height="25" width="25" style="color: transparent" loading="lazy">
+                      <p>JavaScript</p>
+                    </div>
+                    <div class="skill-tree-skill">
+                      <img class="skill-logo" src="./svg/django-logo-negative.svg" alt="Logo Django" height="25" width="25" style="color: transparent" loading="lazy">
+                      <p>Django</p>
+                    </div>
+                  </div>
+                  
+                </div>
+                <div class="skill-tree-column on animated-glass">
+                  <div class="skill-tree-title">
+                  <h3 data-i18n="skills.mobile-development"></h3>
+                  </div>
+                  <div class="skill-tree-content">
+                    <div class="skill-tree-skill">
+                      <img class="skill-logo" src="./svg/java.svg" alt="Logo Java" height="25" width="25" style="color: transparent" loading="lazy">
+                      <p>Java</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="skill-tree-column animated-glass">
+                  <div class="skill-tree-title">
+                  <h3 data-i18n="skills.infrastructure"></h3>
+                  </div>
+                  <div class="skill-tree-content">
+                    <div class="skill-tree-skill">
+                      <img class="skill-logo " src="./svg/azure.svg" alt="Logo Azure" height="25" width="25" style="color: transparent" loading="lazy">
+                      <p>Azure AppService</p>
+                    </div>
+                    <div class="skill-tree-skill">
+                      <img class="skill-logo" src="./svg/azure-aks.svg" alt="Logo Azure Kubernetes" height="25" width="25" style="color: transparent" loading="lazy">
+                      <p>Azure Kubernetes</p>
+                    </div>
+                    <div class="skill-tree-skill">
+                      <img class="skill-logo" src="./svg/docker.svg" alt="Logo Docker" height="25" width="25" style="color: transparent" loading="lazy">
+                      <p>Docker</p>
+                    </div>
+                    <div class="skill-tree-skill">
+                      <img class="skill-logo" src="./svg/google-drive.svg" alt="Logo Google Drive" height="25" width="25" style="color: transparent" loading="lazy">
+                      <p>Google Drive</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+                
+                
+            </div>
+
+            <div class="content-container presentation-section reveal-section"> <!-- Contenedor de educación -->
+              <h2 data-i18n="sections.education"></h2>
+              <div class="educationitems">
+                <div class="education-card glass round-border animated-glass">
+                  <div class="experience-header">
+                    <h1>IUGT</h1>
+                    <h3 data-i18n="cards.card1-title"></h3>
+                  </div>
+                  <p><i class="fa-solid fa-calendar" data-i18n="cards.card1-date"></i></p>
+                  <div class="skill-logo-name">
+                    <span class="relative-skill">Visual Basic</span>
+                    <span class="relative-skill">C</span>
+                    <span class="relative-skill">Java</span>
+                    <span class="relative-skill" data-i18n="cards.card1-skill4"></span>
+                  </div>
+                </div>
+
+                <div class="education-card glass round-border animated-glass">
+                  <div class="experience-header">
+                    <h1>DuocUC</h1>
+                    <h3 data-i18n="cards.card2-title"></h3>
+                  </div>
+                  <p><i class="fa-solid fa-calendar"></i> 2023</p>
+                  <div class="skill-logo-name">
+                    <span class="relative-skill">Python</span>
+                    <span class="relative-skill">SQL</span>
+                    <span class="relative-skill">Java</span>
+                    <span class="relative-skill">Agile</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="content-container" data-aos="fade-up" data-aos-delay="100">
+              <h2 data-i18n="sections.experience"></h2>
+                <div class="experienceitems">
+                  <div class="experience-card glass round-border animated-glass">
+                    <div class="experience-header">
+                      <h1>ThermoGroup C.A</h1>
+                      <h3  data-i18n="profile.role"></h3>
+                    </div>
+                    <p><i class="fa-solid fa-location-dot"></i> Venezuela</p>
+                    <div class="skill-logo-name">
+                      <span class="relative-skill">Python</span>
+                      <span class="relative-skill">DAX</span>
+                      <span class="relative-skill">PowerBI</span>
+                      <span class="relative-skill">ProfitPlus</span>
+                      <span class="relative-skill">PostgreSQL</span>
+                      <span class="relative-skill">Django</span>
+                    </div>
+                  </div>
+
+                  <div class="experience-card glass round-border animated-glass">
+                    <div class="experience-header">
+                      <h1>Austranet</h1>
+                      <h3  data-i18n="cards.card4-title"></h3>
+                    </div>
+                    <p><i class="fa-solid fa-location-dot"></i> Chile</p>
+                    <div class="skill-logo-name">
+                      <span class="relative-skill">Python</span>
+                      <span class="relative-skill">SQL Server</span>
+                      <span class="relative-skill">Windows Server</span>
+                      <span class="relative-skill">PRTG</span>
+                      <span class="relative-skill">Azure AppService</span>
+                      <span class="relative-skill">Azure Functions</span>
+                      <span class="relative-skill">PowerQuery</span>
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+          
+      </section>
+      <footer class="site-footer">
+          <p data-i18n="footer.credit">–<span id="year"></span><em></em></p>
+          <p data-i18n="footer.disclaimer"></p>
+      </footer>
+    </main>
+    <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "d9bfb9255e254339878eb820a952b874"}'></script><!-- End Cloudflare Web Analytics -->
+    <script src="./scripts/scripts.js" defer></script>
+    <script type="module" src="./scripts/main.js"></script>
+    <div class="contact-overlay" id="contactOverlay">
+    <div class="contact-card">
+      <h3 data-i18n="contact.message"></h3>
+      <p>
+        📧 <a href="mailto:lustigrfortiz@gmail.com" data-i18n="contact.email"></a>
+      </p>
+      <p>
+        🔗 <a href="https://www.linkedin.com/in/rafaelortizaguilar/" target="_blank">LinkedIn</a>
+      </p>
+    </div>
+  </div>
+  </body>
+</html>

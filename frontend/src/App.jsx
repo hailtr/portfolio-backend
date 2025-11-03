@@ -1,14 +1,24 @@
 import { useState, useEffect } from 'react'
+import Navbar from './components/Navbar'
+import ProfileSection from './components/ProfileSection'
+import ProjectsSection from './components/ProjectsSection'
+import AboutSection from './components/AboutSection'
+import Footer from './components/Footer'
+import Loader from './components/Loader'
+import ContactOverlay from './components/ContactOverlay'
+import BackgroundShapes from './components/BackgroundShapes'
 import API_BASE_URL from './config'
 import './App.css'
 
 function App() {
-  const [projects, setProjects] = useState([])
   const [language, setLanguage] = useState('es')
   const [loading, setLoading] = useState(true)
+  const [projects, setProjects] = useState([])
+  const [showContact, setShowContact] = useState(false)
 
   useEffect(() => {
-    // Fetch projects from API
+    // Fetch projects from API and wait for them
+    setLoading(true)
     fetch(`${API_BASE_URL}/entities?lang=${language}`)
       .then(res => res.json())
       .then(data => {
@@ -21,60 +31,63 @@ function App() {
       })
   }, [language])
 
+  // Add scroll reveal animation
+  useEffect(() => {
+    if (loading) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible')
+          }
+        })
+      },
+      { threshold: 0.1 }
+    )
+
+    document.querySelectorAll('.reveal-section').forEach((el) => {
+      observer.observe(el)
+    })
+
+    return () => observer.disconnect()
+  }, [loading])
+
   const toggleLanguage = () => {
     setLanguage(lang => lang === 'es' ? 'en' : 'es')
   }
 
+  const toggleContact = () => {
+    setShowContact(!showContact)
+  }
+
   if (loading) {
-    return <div className="loading">Loading...</div>
+    return <Loader language={language} />
   }
 
   return (
     <div className="App">
-      <header>
-        <h1>Rafael Ortiz</h1>
-        <button onClick={toggleLanguage} className="lang-toggle">
-          {language === 'es' ? 'EN' : 'ES'}
-        </button>
-      </header>
-
-      <main>
-        <section className="hero">
-          <h2>{language === 'es' ? 'Portafolio' : 'Portfolio'}</h2>
-          <p>{language === 'es' ? 'Proyectos y experiencia' : 'Projects and experience'}</p>
-        </section>
-
-        <section className="projects">
-          {projects.map(project => (
-            <article key={project.id} className="project-card">
-              {project.category && (
-                <span className="category">{project.category}</span>
-              )}
-              <h3>{project.title}</h3>
-              <p className="subtitle">{project.subtitle}</p>
-              <div 
-                className="description" 
-                dangerouslySetInnerHTML={{ __html: project.description }}
-              />
-              
-              {project.tags && project.tags.length > 0 && (
-                <div className="tags">
-                  {project.tags.map((tag, idx) => (
-                    <span key={idx} className="tag">{tag}</span>
-                  ))}
-                </div>
-              )}
-            </article>
-          ))}
-        </section>
+      <BackgroundShapes />
+      <Navbar 
+        language={language} 
+        toggleLanguage={toggleLanguage}
+        toggleContact={toggleContact}
+      />
+      
+      <main className="visible">
+        <ProfileSection language={language} />
+        <ProjectsSection language={language} projects={projects} />
+        <AboutSection language={language} />
       </main>
 
-      <footer>
-        <p>© 2025 Rafael Ortiz</p>
-      </footer>
+      <Footer language={language} />
+      <ContactOverlay 
+        show={showContact} 
+        onClose={() => setShowContact(false)}
+        language={language}
+      />
     </div>
   )
 }
 
 export default App
-
