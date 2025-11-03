@@ -81,12 +81,18 @@ def get_entities():
             translation = entity.translations[0]
         
         if translation:
+            # Extract images from meta
+            images = entity.meta.get('images', {}) if entity.meta else {}
+            
             entity_data = {
                 "id": entity.id,
                 "slug": entity.slug,
                 "type": entity.type,
                 "category": entity.meta.get('category') if entity.meta else None,
                 "tags": entity.meta.get('tags', []) if entity.meta else [],
+                "desktop_image": images.get('desktop'),
+                "mobile_image": images.get('mobile'),
+                "preview_video": images.get('preview_video'),
                 "title": translation.title,
                 "subtitle": translation.subtitle,
                 "description": translation.description,
@@ -139,12 +145,18 @@ def get_entity_by_slug(slug):
     if not primary_translation and translations_data:
         primary_translation = next(iter(translations_data.values()))
     
+    # Extract images from meta
+    images = entity.meta.get('images', {}) if entity.meta else {}
+    
     result = {
         "id": entity.id,
         "slug": entity.slug,
         "type": entity.type,
         "category": entity.meta.get('category') if entity.meta else None,
         "tags": entity.meta.get('tags', []) if entity.meta else [],
+        "desktop_image": images.get('desktop'),
+        "mobile_image": images.get('mobile'),
+        "preview_video": images.get('preview_video'),
         "created_at": entity.created_at.isoformat() if entity.created_at else None,
         "updated_at": entity.updated_at.isoformat() if entity.updated_at else None,
         "translations": translations_data,

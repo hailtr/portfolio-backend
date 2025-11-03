@@ -88,7 +88,8 @@ def admin_save():
         "tags": [t.strip() for t in form.get("tags", "").split(",") if t.strip()],
         "images": {
             "desktop": form.get("desktop_image", ""),
-            "mobile": form.get("mobile_image", "")
+            "mobile": form.get("mobile_image", ""),
+            "preview_video": form.get("preview_video", "")
         }
     }
 

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import ProfileSection from './components/ProfileSection'
 import ProjectsSection from './components/ProjectsSection'
@@ -7,6 +8,7 @@ import Footer from './components/Footer'
 import Loader from './components/Loader'
 import ContactOverlay from './components/ContactOverlay'
 import BackgroundShapes from './components/BackgroundShapes'
+import ProjectDetail from './pages/ProjectDetail'
 import API_BASE_URL from './config'
 import './App.css'
 
@@ -15,6 +17,7 @@ function App() {
   const [loading, setLoading] = useState(true)
   const [projects, setProjects] = useState([])
   const [showContact, setShowContact] = useState(false)
+  const location = useLocation()
 
   useEffect(() => {
     // Fetch projects from API and wait for them
@@ -51,7 +54,7 @@ function App() {
     })
 
     return () => observer.disconnect()
-  }, [loading])
+  }, [loading, location])
 
   const toggleLanguage = () => {
     setLanguage(lang => lang === 'es' ? 'en' : 'es')
@@ -61,7 +64,7 @@ function App() {
     setShowContact(!showContact)
   }
 
-  if (loading) {
+  if (loading && location.pathname === '/') {
     return <Loader language={language} />
   }
 
@@ -74,11 +77,18 @@ function App() {
         toggleContact={toggleContact}
       />
       
-      <main className="visible">
-        <ProfileSection language={language} />
-        <ProjectsSection language={language} projects={projects} />
-        <AboutSection language={language} />
-      </main>
+      <Routes>
+        <Route path="/" element={
+          <main className="visible">
+            <ProfileSection language={language} />
+            <ProjectsSection language={language} projects={projects} />
+            <AboutSection language={language} />
+          </main>
+        } />
+        <Route path="/project/:slug" element={
+          <ProjectDetail language={language} />
+        } />
+      </Routes>
 
       <Footer language={language} />
       <ContactOverlay 

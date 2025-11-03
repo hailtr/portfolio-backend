@@ -55,11 +55,11 @@ const AboutSection = ({ language }) => {
   ]
 
   return (
-    <section id="about" className="section reveal-section">
+    <section className="section reveal-section">
       <div className="aboutme-section">
         <div className="content-container">
           <div className="about-intro">
-            <p className="about-intro-text">{t.description}</p>
+            <p className="about-intro-text" id="about">{t.description}</p>
           </div>
         </div>
 

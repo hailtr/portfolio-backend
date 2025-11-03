@@ -1,62 +1,71 @@
-const ProjectCard = ({ project, isExpanded, onToggle, language }) => {
+import { useNavigate } from 'react-router-dom'
+import { useState } from 'react'
+
+const ProjectCard = ({ project, language }) => {
+  const navigate = useNavigate()
+  const [isHovered, setIsHovered] = useState(false)
+
+  const handleClick = () => {
+    navigate(`/project/${project.slug}`)
+  }
+
+  // Strip HTML tags for plain text description
+  const stripHtml = (html) => {
+    const tmp = document.createElement('div')
+    tmp.innerHTML = html
+    return tmp.textContent || tmp.innerText || ''
+  }
+
   return (
     <div 
-      className={`job-card glass round-border ${isExpanded ? 'expanded' : ''}`}
-      onClick={!isExpanded ? onToggle : undefined}
+      className="job-card"
+      onClick={handleClick}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      {isExpanded && (
-        <button className="job-close" onClick={onToggle}>
-          ✕
-        </button>
-      )}
-
-      <div className="job-card-image-container">
-        {project.desktop_image && (
-          <img 
-            src={project.desktop_image} 
-            alt={`${project.title} desktop`}
-            className="job-image-desktop"
-          />
-        )}
-        {project.mobile_image && (
-          <img 
-            src={project.mobile_image} 
-            alt={`${project.title} mobile`}
-            className="job-image-mobile"
-          />
-        )}
-      </div>
-
-      <div className="job-card-content">
-        <h3>{project.title}</h3>
-        {project.subtitle && <h4>{project.subtitle}</h4>}
-        
-        <div className="job-description">
-          <div dangerouslySetInnerHTML={{ __html: project.description }} />
+      <div className="job-card-inner">
+        <div className="job-card-media-container">
+          {isHovered && project.preview_video ? (
+            <video 
+              src={project.preview_video}
+              className="job-media-preview"
+              autoPlay
+              loop
+              muted
+              playsInline
+            />
+          ) : (
+            <img 
+              src={project.desktop_image || '/placeholder.jpg'} 
+              alt={project.title}
+              className="job-media-preview"
+              onError={(e) => { 
+                e.target.src = '/placeholder.jpg'
+              }}
+            />
+          )}
         </div>
 
-        {isExpanded && project.tags && project.tags.length > 0 && (
-          <div className="job-tags">
-            {project.tags.map((tag, idx) => (
-              <span key={idx} className="relative-skill">
-                {tag}
-              </span>
-            ))}
-          </div>
-        )}
-
-        {isExpanded && project.url && (
-          <div className="job-tags">
-            <a 
-              href={project.url} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="relative-skill"
-            >
-              {language === 'es' ? 'Ver proyecto' : 'View project'} →
-            </a>
-          </div>
-        )}
+        <div className="job-card-hover-info">
+          <h3>{project.title}</h3>
+          {project.subtitle && <h4>{project.subtitle}</h4>}
+          
+          {project.description && (
+            <div className="job-card-hover-description">
+              {stripHtml(project.description)}
+            </div>
+          )}
+          
+          {project.tags && project.tags.length > 0 && (
+            <div className="job-tags-preview">
+              {project.tags.slice(0, 5).map((tag, idx) => (
+                <span key={idx} className="relative-skill-small">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )

@@ -1,7 +1,10 @@
 import { useState } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
 
 const Navbar = ({ language, toggleLanguage, toggleContact }) => {
   const [menuOpen, setMenuOpen] = useState(false)
+  const navigate = useNavigate()
+  const location = useLocation()
 
   const translations = {
     es: {
@@ -32,10 +35,24 @@ const Navbar = ({ language, toggleLanguage, toggleContact }) => {
     
     if (targetId === '#contact') {
       toggleContact()
+      setMenuOpen(false)
+      return
+    }
+    
+    // If we're not on the homepage, navigate there first
+    if (location.pathname !== '/') {
+      navigate('/')
+      // Wait for navigation, then scroll
+      setTimeout(() => {
+        const element = document.querySelector(targetId)
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }
+      }, 300)
     } else {
       const element = document.querySelector(targetId)
       if (element) {
-        element.scrollIntoView({ behavior: 'smooth' })
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' })
       }
     }
     

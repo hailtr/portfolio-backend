@@ -13,8 +13,8 @@ const ProfileSection = ({ language }) => {
   const t = translations[language] || translations.es
 
   return (
-    <section id="home" className="section">
-      <div className="home-section">
+    <section className="section">
+      <div className="home-section" id="home">
         <div className="profile">
           <div className="profile-picture-wrapper">
             <img 

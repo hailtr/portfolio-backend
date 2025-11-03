@@ -94,6 +94,15 @@
             </div>
           </div>
         </div>
+
+        <!-- Preview Video/GIF (for hover effect) -->
+        <div class="mt-6">
+          <label class="block text-sm font-medium mb-2">Preview Video/GIF URL (optional - for hover effect)</label>
+          <input type="text" name="preview_video" value="{{ entity.meta.images.preview_video if entity and entity.meta and entity.meta.images and entity.meta.images.preview_video else '' }}"
+            placeholder="https://res.cloudinary.com/your-cloud-name/video/upload/..."
+            class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+          <p class="text-sm text-gray-500 mt-2">Enter a Cloudinary video URL (MP4, WebM) or animated GIF. This will play when users hover over the project card.</p>
+        </div>
       </div>
 
       <div class="col-span-full">

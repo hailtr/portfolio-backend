@@ -3,7 +3,6 @@ import ProjectCard from './ProjectCard'
 
 const ProjectsSection = ({ language, projects }) => {
   const [filter, setFilter] = useState('all')
-  const [expandedCard, setExpandedCard] = useState(null)
   const galleryRef = useRef(null)
 
   const translations = {
@@ -49,7 +48,6 @@ const ProjectsSection = ({ language, projects }) => {
 
   const handleFilterChange = (newFilter) => {
     setFilter(filterMap[newFilter] || newFilter)
-    setExpandedCard(null)
   }
 
   useEffect(() => {
@@ -75,11 +73,11 @@ const ProjectsSection = ({ language, projects }) => {
   }, [filteredProjects])
 
   return (
-    <section id="job" className="section reveal-section">
+    <section className="section reveal-section">
       <div className="job-section">
         <div className="content-container">
-          <h2>{t.title}</h2>
-          <div className="experience-gallery-wrapper glass round-border">
+          <h2 id="job">{t.title}</h2>
+          <div className="experience-gallery-wrapper">
             <div className="experience-fade left"></div>
             <div className="experience-fade right"></div>
             
@@ -115,22 +113,6 @@ const ProjectsSection = ({ language, projects }) => {
                 </button>
               </div>
 
-              <div className="experience-nav">
-                <button 
-                  id="prev-exp" 
-                  className="glass round-border"
-                  onClick={() => handleScroll('prev')}
-                >
-                  <span className="material-symbols-rounded">navigate_before</span>
-                </button>
-                <button 
-                  id="next-exp" 
-                  className="glass round-border"
-                  onClick={() => handleScroll('next')}
-                >
-                  <span className="material-symbols-rounded">navigate_next</span>
-                </button>
-              </div>
             </div>
 
             <div className="experience-gallery" ref={galleryRef}>
@@ -138,8 +120,6 @@ const ProjectsSection = ({ language, projects }) => {
                 <ProjectCard
                   key={project.id}
                   project={project}
-                  isExpanded={expandedCard === project.id}
-                  onToggle={() => setExpandedCard(expandedCard === project.id ? null : project.id)}
                   language={language}
                 />
               ))}
