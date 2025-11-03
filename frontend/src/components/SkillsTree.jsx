@@ -22,38 +22,38 @@ const SkillsTree = ({ language }) => {
 
   const skills = {
     programming: [
-      { name: 'Python', logo: './svg/python.svg' },
-      { name: 'Java', logo: './svg/java.svg' },
-      { name: 'DAX', logo: './svg/powerbi.svg' },
-      { name: 'R', logo: './svg/r.svg', filter: 'filter-white' }
+      { name: 'Python', logo: '/svg/python.svg' },
+      { name: 'Java', logo: '/svg/java.svg' },
+      { name: 'DAX', logo: '/svg/powerbi.svg' },
+      { name: 'R', logo: '/svg/r.svg', filter: 'filter-white' }
     ],
     databases: [
-      { name: 'SQL Server', logo: './svg/sql.svg' },
-      { name: 'PostgreSQL', logo: './svg/postgresql.svg' },
-      { name: 'MongoDB', logo: './svg/mongodb.svg', filter: 'filter-white' },
-      { name: 'Supabase', logo: './svg/supabase.svg', filter: 'filter-white' },
-      { name: 'SQL Lite', logo: './svg/sqllite.svg' }
+      { name: 'SQL Server', logo: '/svg/sql.svg' },
+      { name: 'PostgreSQL', logo: '/svg/postgresql.svg' },
+      { name: 'MongoDB', logo: '/svg/mongodb.svg', filter: 'filter-white' },
+      { name: 'Supabase', logo: '/svg/supabase.svg', filter: 'filter-white' },
+      { name: 'SQL Lite', logo: '/svg/sqllite.svg' }
     ],
     dataViz: [
-      { name: 'PowerBI', logo: './svg/powerbi.svg' },
-      { name: 'Tableau', logo: './svg/tableau.svg' },
-      { name: 'Excel', logo: './svg/excel.svg' },
-      { name: 'Google Analytics', logo: './svg/google-analytics.svg' }
+      { name: 'PowerBI', logo: '/svg/powerbi.svg' },
+      { name: 'Tableau', logo: '/svg/tableau.svg' },
+      { name: 'Excel', logo: '/svg/excel.svg' },
+      { name: 'Google Analytics', logo: '/svg/google-analytics.svg' }
     ],
     webDev: [
       { name: 'HTML', svg: '<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="m3 2 1.578 17.824L12 22l7.467-2.175L21 2H3Zm14.049 6.048H9.075l.172 2.016h7.697l-.626 6.565-4.246 1.381-4.281-1.455-.288-2.932h2.024l.16 1.411 2.4.815 2.346-.763.297-3.005H7.416l-.562-6.05h10.412l-.217 2.017Z"/></svg>' },
-      { name: 'CSS', logo: './svg/css.svg' },
-      { name: 'JavaScript', logo: './svg/javascript.svg' },
-      { name: 'Django', logo: './svg/django-logo-negative.svg' }
+      { name: 'CSS', logo: '/svg/css.svg' },
+      { name: 'JavaScript', logo: '/svg/javascript.svg' },
+      { name: 'Django', logo: '/svg/django-logo-negative.svg' }
     ],
     mobileDev: [
-      { name: 'Java', logo: './svg/java.svg' }
+      { name: 'Java', logo: '/svg/java.svg' }
     ],
     infrastructure: [
-      { name: 'Azure AppService', logo: './svg/azure.svg' },
-      { name: 'Azure Kubernetes', logo: './svg/azure-aks.svg' },
-      { name: 'Docker', logo: './svg/docker.svg' },
-      { name: 'Google Drive', logo: './svg/google-drive.svg' }
+      { name: 'Azure AppService', logo: '/svg/azure.svg' },
+      { name: 'Azure Kubernetes', logo: '/svg/azure-aks.svg' },
+      { name: 'Docker', logo: '/svg/docker.svg' },
+      { name: 'Google Drive', logo: '/svg/google-drive.svg' }
     ]
   }
 
