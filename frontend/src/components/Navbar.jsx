@@ -61,58 +61,56 @@ const Navbar = ({ language, toggleLanguage, toggleContact }) => {
 
   return (
     <div className="banner-top glass animated-glass">
-      <div className="banner-content">
-        <p className="logo">
-          <span style={{ color: 'cyan' }}>RAFAEL</span>ORTIZ
-        </p>
+      <p className="logo">
+        <span style={{ color: 'cyan' }}>RAFAEL</span>ORTIZ
+      </p>
 
+      <button 
+        className="menu-toggle" 
+        aria-label="Abrir menú"
+        onClick={toggleMenu}
+      >
+        &#9776;
+      </button>
+
+      <nav id="nav-banner" className={menuOpen ? 'active' : ''}>
+        <ul className="nav-list">
+          <li className="nav-link">
+            <a className="nlink" href="#home" onClick={handleNavClick}>
+              {t.home}
+            </a>
+          </li>
+          <li className="nav-link">
+            <a className="nlink" href="#job" onClick={handleNavClick}>
+              {t.projects}
+            </a>
+          </li>
+          <li className="nav-link">
+            <a className="nlink" href="#about" onClick={handleNavClick}>
+              {t.about}
+            </a>
+          </li>
+          <li className="nav-link">
+            <a className="nlink" href="#contact" onClick={handleNavClick}>
+              {t.contact}
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <div className="banner-actions">
         <button 
-          className="menu-toggle" 
-          aria-label="Abrir menú"
-          onClick={toggleMenu}
+          id="lang-toggle" 
+          className="lang-switcher"
+          onClick={toggleLanguage}
         >
-          &#9776;
+          EN/ES
         </button>
-
-        <nav id="nav-banner" className={menuOpen ? 'active' : ''}>
-          <ul className="nav-list">
-            <li className="nav-link">
-              <a className="nlink" href="#home" onClick={handleNavClick}>
-                {t.home}
-              </a>
-            </li>
-            <li className="nav-link">
-              <a className="nlink" href="#job" onClick={handleNavClick}>
-                {t.projects}
-              </a>
-            </li>
-            <li className="nav-link">
-              <a className="nlink" href="#about" onClick={handleNavClick}>
-                {t.about}
-              </a>
-            </li>
-            <li className="nav-link">
-              <a className="nlink" href="#contact" onClick={handleNavClick}>
-                {t.contact}
-              </a>
-            </li>
-          </ul>
-        </nav>
-
-        <div className="banner-actions">
-          <button 
-            id="lang-toggle" 
-            className="lang-switcher"
-            onClick={toggleLanguage}
-          >
-            EN/ES
+        <a href="/cv.html" target="_blank" rel="noopener">
+          <button type="button" className="download-curriculum">
+            {t.viewCV}
           </button>
-          <a href="/cv.html" target="_blank" rel="noopener">
-            <button type="button" className="download-curriculum">
-              {t.viewCV}
-            </button>
-          </a>
-        </div>
+        </a>
       </div>
     </div>
   )

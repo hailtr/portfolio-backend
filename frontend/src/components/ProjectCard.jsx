@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 
-const ProjectCard = ({ project, language }) => {
+const ProjectCard = ({ project, language, debugExpanded }) => {
   const navigate = useNavigate()
-  const [isHovered, setIsHovered] = useState(false)
+  const [isHovered, setIsHovered] = useState(debugExpanded || false)
 
   const handleClick = () => {
     navigate(`/project/${project.slug}`)
@@ -18,10 +18,10 @@ const ProjectCard = ({ project, language }) => {
 
   return (
     <div 
-      className="job-card"
+      className={`job-card ${debugExpanded ? 'debug-expanded' : ''}`}
       onClick={handleClick}
       onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseLeave={() => !debugExpanded && setIsHovered(false)}
     >
       <div className="job-card-inner">
         <div className="job-card-media-container">
