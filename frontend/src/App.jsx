@@ -34,6 +34,7 @@ function App() {
       })
   }, [language])
 
+
   // Add scroll reveal animation
   useEffect(() => {
     if (loading) return
@@ -86,7 +87,9 @@ function App() {
           </main>
         } />
         <Route path="/project/:slug" element={
-          <ProjectDetail language={language} />
+          <main className="visible">
+            <ProjectDetail language={language} />
+          </main>
         } />
       </Routes>
 
