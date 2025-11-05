@@ -5,13 +5,11 @@ import ExperienceCard from './ExperienceCard'
 const AboutSection = ({ language }) => {
   const translations = {
     es: {
-      description: 'Me encanta resolver problemas, automatizar tareas y optimizar procesos. Investigador de naturaleza, encuentro que aprender y colaborar es una forma efectiva de crecer y compartir conocimiento.',
       skills: 'Habilidades',
       education: 'Educación',
       experience: 'Experiencia'
     },
     en: {
-      description: 'I love solving problems, automating tasks and optimizing processes. A researcher by nature, I find that learning and collaborating is an effective way to grow and share knowledge.',
       skills: 'Skills',
       education: 'Education',
       experience: 'Experience'
@@ -57,13 +55,7 @@ const AboutSection = ({ language }) => {
   return (
     <section className="section reveal-section">
       <div className="aboutme-section">
-        <div className="content-container">
-          <div className="about-intro">
-            <p className="about-intro-text" id="about">{t.description}</p>
-          </div>
-        </div>
-
-        <div className="content-container reveal-section">
+        <div className="content-container reveal-section visible" id="about">
           <h2>{t.skills}</h2>
           <SkillsTree language={language} />
         </div>
