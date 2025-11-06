@@ -1,11 +1,11 @@
 const ProfileSection = ({ language }) => {
   const translations = {
     es: {
-      role: 'Data Analyst',
+      role: 'Full-stack Data Engineer',
       tagline: 'Transformando datos en decisiones estratégicas',
     },
     en: {
-      role: 'Data Analyst',
+      role: 'Full-stack Data Engineer',
       tagline: 'Transforming data into strategic decisions',
     }
   }
