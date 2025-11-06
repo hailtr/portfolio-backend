@@ -23,54 +23,54 @@ const SkillsTree = ({ language }) => {
   // Skills configuration - icons are resolved automatically via iconUtils
   const skills = {
     languages: [
-      { name: 'Python', roles: ['data_analyst', 'ml_engineer', 'data_engineer'] },
-      { name: 'SQL', roles: ['data_analyst', 'ml_engineer', 'data_engineer'] },
-      { name: 'R', roles: ['data_analyst', 'ml_engineer'] },
-      { name: 'JavaScript', roles: ['data_analyst', 'ml_engineer', 'data_engineer'] },
-      { name: 'Java', roles: ['mobileDev'] }
+      { name: 'Python' },
+      { name: 'SQL' },
+      { name: 'R' },
+      { name: 'JavaScript' },
+      { name: 'Java' }
     ],
     
     dataTools: [
       // Análisis
-      { name: 'Pandas', roles: ['data_analyst', 'ml_engineer'] },
-      { name: 'NumPy', roles: ['data_analyst', 'ml_engineer'] },
-      { name: 'DAX', roles: ['data_analyst'], description: 'Power BI formulas' },
+      { name: 'Pandas' },
+      { name: 'NumPy' },
+      { name: 'DAX', description: 'Power BI formulas' },
       
       // Visualización
-      { name: 'Power BI', roles: ['data_analyst'] },
-      { name: 'Tableau', roles: ['data_analyst'] },
-      { name: 'Excel', roles: ['data_analyst'] },
+      { name: 'Power BI' },
+      { name: 'Tableau' },
+      { name: 'Excel' },
       
       // ML/AI
-      { name: 'TensorFlow', roles: ['ml_engineer'] },
-      { name: 'Scikit-learn', roles: ['ml_engineer'] },
+      { name: 'TensorFlow' },
+      { name: 'Scikit-learn' },
       
       // Bases de Datos
-      { name: 'PostgreSQL', roles: ['data_engineer', 'ml_engineer'] },
-      { name: 'MongoDB', roles: ['data_engineer'] },
-      { name: 'Supabase', roles: ['data_engineer'] }
+      { name: 'PostgreSQL' },
+      { name: 'MongoDB' },
+      { name: 'Supabase' }
     ],
     
     webStack: [
-      { name: 'React', roles: ['data_analyst', 'ml_engineer', 'data_engineer'] },
-      { name: 'Flask', roles: ['ml_engineer', 'data_engineer'] },
-      { name: 'Django', roles: ['data_engineer'] },
-      { name: 'HTML', roles: ['data_analyst', 'ml_engineer', 'data_engineer'] },
-      { name: 'CSS', roles: ['data_analyst', 'ml_engineer', 'data_engineer'] }
+      { name: 'React' },
+      { name: 'Flask' },
+      { name: 'Django' },
+      { name: 'HTML' },
+      { name: 'CSS' }
     ],
     
     cloudInfra: [
-      { name: 'Docker', roles: ['ml_engineer', 'data_engineer'] },
-      { name: 'Azure', roles: ['data_engineer', 'ml_engineer'] },
-      { name: 'Kubernetes', roles: ['data_engineer'] },
-      { name: 'Google Cloud', roles: ['data_engineer', 'ml_engineer'] }
+      { name: 'Docker' },
+      { name: 'Azure' },
+      { name: 'Kubernetes' },
+      { name: 'Google Cloud' }
     ],
     
     methodologies: [
-      { name: 'Git', roles: ['data_analyst', 'ml_engineer', 'data_engineer'] },
-      { name: 'MLOps', roles: ['ml_engineer'] },
-      { name: 'Data Modeling', roles: ['data_engineer', 'data_analyst'] },
-      { name: 'Agile', roles: ['data_analyst', 'ml_engineer', 'data_engineer'] }
+      { name: 'Git' },
+      { name: 'MLOps' },
+      { name: 'Data Modeling' },
+      { name: 'Agile' }
     ]
   }
 
