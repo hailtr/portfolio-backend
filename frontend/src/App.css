@@ -573,6 +573,20 @@ main.visible {
   flex-shrink: 0;
 }
 
+/* Make all skill logos white using mask-image approach (more reliable than filter) */
+.skill-logo.filter-white {
+  /* Method 1: Use brightness filter to make icons white */
+  filter: brightness(0) invert(1);
+  /* Fallback: If filter doesn't work, use mask-image */
+  /* mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="white"/></svg>'); */
+}
+
+/* Alternative: Force white color using mix-blend-mode */
+.skill-tree-skill .skill-logo.filter-white {
+  filter: brightness(0) invert(1) !important;
+  opacity: 1;
+}
+
 /* Education and Experience */
 .educationitems, .experienceitems {
   display: flex;

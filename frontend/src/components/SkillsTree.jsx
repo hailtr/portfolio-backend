@@ -1,96 +1,190 @@
+import { useState } from 'react'
+import { getIconConfig } from '../utils/iconUtils'
+
 const SkillsTree = ({ language }) => {
   const translations = {
     es: {
-      programming: 'Programación',
-      databases: 'Bases de Datos',
-      dataViz: 'Visualización de Datos',
-      webDev: 'Desarrollo Web',
-      mobileDev: 'Desarrollo Móvil',
-      infrastructure: 'Infraestructura'
+      languages: 'Lenguajes',
+      dataTools: 'Herramientas de Datos', 
+      webStack: 'Stack Web',
+      cloudInfra: 'Cloud & Infraestructura',
+      methodologies: 'Metodologías',
+      all: 'Todos',
+      dataAnalyst: 'Analista de Datos',
+      mlEngineer: 'Ingeniero ML',
+      dataEngineer: 'Ingeniero de Datos'
     },
     en: {
-      programming: 'Programming',
-      databases: 'Databases',
-      dataViz: 'Data Visualization',
-      webDev: 'Web Development',
-      mobileDev: 'Mobile Development',
-      infrastructure: 'Infrastructure'
+      languages: 'Languages',
+      dataTools: 'Data Tools',
+      webStack: 'Web Stack', 
+      cloudInfra: 'Cloud & Infrastructure',
+      methodologies: 'Methodologies',
+      all: 'All',
+      dataAnalyst: 'Data Analyst',
+      mlEngineer: 'ML Engineer',
+      dataEngineer: 'Data Engineer'
     }
   }
 
   const t = translations[language] || translations.es
 
+  // Skills configuration - icons are resolved automatically via iconUtils
   const skills = {
-    programming: [
-      { name: 'Python', logo: '/svg/python.svg' },
-      { name: 'Java', logo: '/svg/java.svg' },
-      { name: 'DAX', logo: '/svg/powerbi.svg' },
-      { name: 'R', logo: '/svg/r.svg', filter: 'filter-white' }
+    languages: [
+      { name: 'Python', roles: ['data_analyst', 'ml_engineer', 'data_engineer'] },
+      { name: 'SQL', roles: ['data_analyst', 'ml_engineer', 'data_engineer'] },
+      { name: 'R', roles: ['data_analyst', 'ml_engineer'] },
+      { name: 'JavaScript', roles: ['data_analyst', 'ml_engineer', 'data_engineer'] },
+      { name: 'Java', roles: ['mobileDev'] }
     ],
-    databases: [
-      { name: 'SQL Server', logo: '/svg/sql.svg' },
-      { name: 'PostgreSQL', logo: '/svg/postgresql.svg' },
-      { name: 'MongoDB', logo: '/svg/mongodb.svg', filter: 'filter-white' },
-      { name: 'Supabase', logo: '/svg/supabase.svg', filter: 'filter-white' },
-      { name: 'SQL Lite', logo: '/svg/sqllite.svg' }
+    
+    dataTools: [
+      // Análisis
+      { name: 'Pandas', roles: ['data_analyst', 'ml_engineer'] },
+      { name: 'NumPy', roles: ['data_analyst', 'ml_engineer'] },
+      { name: 'DAX', roles: ['data_analyst'], description: 'Power BI formulas' },
+      
+      // Visualización
+      { name: 'Power BI', roles: ['data_analyst'] },
+      { name: 'Tableau', roles: ['data_analyst'] },
+      { name: 'Excel', roles: ['data_analyst'] },
+      
+      // ML/AI
+      { name: 'TensorFlow', roles: ['ml_engineer'] },
+      { name: 'Scikit-learn', roles: ['ml_engineer'] },
+      
+      // Bases de Datos
+      { name: 'PostgreSQL', roles: ['data_engineer', 'ml_engineer'] },
+      { name: 'MongoDB', roles: ['data_engineer'] },
+      { name: 'Supabase', roles: ['data_engineer'] }
     ],
-    dataViz: [
-      { name: 'PowerBI', logo: '/svg/powerbi.svg' },
-      { name: 'Tableau', logo: '/svg/tableau.svg' },
-      { name: 'Excel', logo: '/svg/excel.svg' },
-      { name: 'Google Analytics', logo: '/svg/google-analytics.svg' }
+    
+    webStack: [
+      { name: 'React', roles: ['data_analyst', 'ml_engineer', 'data_engineer'] },
+      { name: 'Flask', roles: ['ml_engineer', 'data_engineer'] },
+      { name: 'Django', roles: ['data_engineer'] },
+      { name: 'HTML', roles: ['data_analyst', 'ml_engineer', 'data_engineer'] },
+      { name: 'CSS', roles: ['data_analyst', 'ml_engineer', 'data_engineer'] }
     ],
-    webDev: [
-      { name: 'HTML', svg: '<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="m3 2 1.578 17.824L12 22l7.467-2.175L21 2H3Zm14.049 6.048H9.075l.172 2.016h7.697l-.626 6.565-4.246 1.381-4.281-1.455-.288-2.932h2.024l.16 1.411 2.4.815 2.346-.763.297-3.005H7.416l-.562-6.05h10.412l-.217 2.017Z"/></svg>' },
-      { name: 'CSS', logo: '/svg/css.svg' },
-      { name: 'JavaScript', logo: '/svg/javascript.svg' },
-      { name: 'Django', logo: '/svg/django-logo-negative.svg' }
+    
+    cloudInfra: [
+      { name: 'Docker', roles: ['ml_engineer', 'data_engineer'] },
+      { name: 'Azure', roles: ['data_engineer', 'ml_engineer'] },
+      { name: 'Kubernetes', roles: ['data_engineer'] },
+      { name: 'Google Cloud', roles: ['data_engineer', 'ml_engineer'] }
     ],
-    mobileDev: [
-      { name: 'Java', logo: '/svg/java.svg' }
-    ],
-    infrastructure: [
-      { name: 'Azure AppService', logo: '/svg/azure.svg' },
-      { name: 'Azure Kubernetes', logo: '/svg/azure-aks.svg' },
-      { name: 'Docker', logo: '/svg/docker.svg' },
-      { name: 'Google Drive', logo: '/svg/google-drive.svg' }
+    
+    methodologies: [
+      { name: 'Git', roles: ['data_analyst', 'ml_engineer', 'data_engineer'] },
+      { name: 'MLOps', roles: ['ml_engineer'] },
+      { name: 'Data Modeling', roles: ['data_engineer', 'data_analyst'] },
+      { name: 'Agile', roles: ['data_analyst', 'ml_engineer', 'data_engineer'] }
     ]
   }
 
-  const renderSkill = (skill) => (
-    <div className="skill-tree-skill" key={skill.name}>
-      {skill.svg ? (
-        <div dangerouslySetInnerHTML={{ __html: skill.svg }} style={{ width: '25px', height: '25px' }} />
-      ) : (
-        <img 
-          className={`skill-logo ${skill.filter || ''}`}
-          src={skill.logo} 
-          alt={`Logo ${skill.name}`}
-          height="25" 
-          width="25"
-          loading="lazy"
-        />
-      )}
-      <p>{skill.name}</p>
-    </div>
-  )
+  const [selectedRole, setSelectedRole] = useState('all')
+
+  const renderSkill = (skill, key) => {
+    const iconConfig = getIconConfig(skill.name, skill.filter)
+    
+    return (
+      <div 
+        key={key}
+        className={`skill-tree-skill ${
+          selectedRole === 'all' || skill.roles.includes(selectedRole) 
+            ? 'skill-visible' 
+            : 'skill-dimmed'
+        }`} 
+        data-roles={skill.roles.join(' ')}
+      >
+        {/* Render inline SVG if available, otherwise use img tag */}
+        {iconConfig.inlineSvg ? (
+          <div 
+            className={`skill-logo ${iconConfig.filter}`}
+            dangerouslySetInnerHTML={{ __html: iconConfig.inlineSvg }}
+            style={{ 
+              width: '25px', 
+              height: '25px', 
+              display: 'inline-block',
+              lineHeight: 0
+            }}
+          />
+        ) : iconConfig.url ? (
+          <img 
+            className={`skill-logo ${iconConfig.filter || 'filter-white'}`}
+            src={iconConfig.url} 
+            alt={`Logo ${skill.name}`}
+            height="25" 
+            width="25"
+            loading="lazy"
+            onError={(e) => {
+              e.target.style.display = 'none'
+              console.warn(`Icon not found for: ${skill.name}`)
+            }}
+          />
+        ) : null}
+        <p>{skill.name}</p>
+        <div className="role-indicators">
+          {skill.roles.map(role => (
+            <span 
+              key={role} 
+              className={`role-indicator ${role}`}
+              title={role.replace('_', ' ')}
+            />
+          ))}
+        </div>
+      </div>
+    )
+  }
 
   const categories = [
-    { key: 'programming', skills: skills.programming, title: t.programming },
-    { key: 'databases', skills: skills.databases, title: t.databases },
-    { key: 'dataViz', skills: skills.dataViz, title: t.dataViz },
-    { key: 'webDev', skills: skills.webDev, title: t.webDev },
-    { key: 'mobileDev', skills: skills.mobileDev, title: t.mobileDev },
-    { key: 'infrastructure', skills: skills.infrastructure, title: t.infrastructure }
+    { key: 'languages', skills: skills.languages, title: t.languages },
+    { key: 'dataTools', skills: skills.dataTools, title: t.dataTools },
+    { key: 'webStack', skills: skills.webStack, title: t.webStack },
+    { key: 'cloudInfra', skills: skills.cloudInfra, title: t.cloudInfra },
+    { key: 'methodologies', skills: skills.methodologies, title: t.methodologies }
   ]
 
   return (
     <div className="skills-container">
+      
+      <div className="role-filters">
+        <button 
+          className={selectedRole === 'all' ? 'active' : ''}
+          onClick={() => setSelectedRole('all')}
+        >
+          {t.all}
+        </button>
+        <button 
+          className={selectedRole === 'data_analyst' ? 'active' : ''}
+          onClick={() => setSelectedRole('data_analyst')}
+        >
+          {t.dataAnalyst}
+        </button>
+        <button 
+          className={selectedRole === 'ml_engineer' ? 'active' : ''}
+          onClick={() => setSelectedRole('ml_engineer')}
+        >
+          {t.mlEngineer}
+        </button>
+        <button 
+          className={selectedRole === 'data_engineer' ? 'active' : ''}
+          onClick={() => setSelectedRole('data_engineer')}
+        >
+          {t.dataEngineer}
+        </button>
+      </div>
+
       {categories.map((category, idx) => (
-        <div key={category.key} className="skill-category glass animated-glass round-border" style={{ animationDelay: `${idx * 0.1}s` }}>
+        <div 
+          key={category.key} 
+          className="skill-category glass animated-glass round-border" 
+          style={{ animationDelay: `${idx * 0.1}s` }}
+        >
           <h3 className="skill-category-title">{category.title}</h3>
           <div className="skill-category-items">
-            {category.skills.map(renderSkill)}
+            {category.skills.map(skill => renderSkill(skill, skill.name))}
           </div>
         </div>
       ))}
@@ -99,4 +193,3 @@ const SkillsTree = ({ language }) => {
 }
 
 export default SkillsTree
-
