@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { getIconConfig } from '../utils/iconUtils'
 
 const SkillsTree = ({ language }) => {
@@ -8,22 +7,14 @@ const SkillsTree = ({ language }) => {
       dataTools: 'Herramientas de Datos', 
       webStack: 'Stack Web',
       cloudInfra: 'Cloud & Infraestructura',
-      methodologies: 'Metodologías',
-      all: 'Todos',
-      dataAnalyst: 'Analista de Datos',
-      mlEngineer: 'Ingeniero ML',
-      dataEngineer: 'Ingeniero de Datos'
+      methodologies: 'Metodologías'
     },
     en: {
       languages: 'Languages',
       dataTools: 'Data Tools',
       webStack: 'Web Stack', 
       cloudInfra: 'Cloud & Infrastructure',
-      methodologies: 'Methodologies',
-      all: 'All',
-      dataAnalyst: 'Data Analyst',
-      mlEngineer: 'ML Engineer',
-      dataEngineer: 'Data Engineer'
+      methodologies: 'Methodologies'
     }
   }
 
@@ -83,20 +74,13 @@ const SkillsTree = ({ language }) => {
     ]
   }
 
-  const [selectedRole, setSelectedRole] = useState('all')
-
   const renderSkill = (skill, key) => {
     const iconConfig = getIconConfig(skill.name, skill.filter)
     
     return (
       <div 
         key={key}
-        className={`skill-tree-skill ${
-          selectedRole === 'all' || skill.roles.includes(selectedRole) 
-            ? 'skill-visible' 
-            : 'skill-dimmed'
-        }`} 
-        data-roles={skill.roles.join(' ')}
+        className="skill-tree-skill"
       >
         {/* Render inline SVG if available, otherwise use img tag */}
         {iconConfig.inlineSvg ? (
@@ -125,15 +109,6 @@ const SkillsTree = ({ language }) => {
           />
         ) : null}
         <p>{skill.name}</p>
-        <div className="role-indicators">
-          {skill.roles.map(role => (
-            <span 
-              key={role} 
-              className={`role-indicator ${role}`}
-              title={role.replace('_', ' ')}
-            />
-          ))}
-        </div>
       </div>
     )
   }
@@ -148,34 +123,6 @@ const SkillsTree = ({ language }) => {
 
   return (
     <div className="skills-container">
-      
-      <div className="role-filters">
-        <button 
-          className={selectedRole === 'all' ? 'active' : ''}
-          onClick={() => setSelectedRole('all')}
-        >
-          {t.all}
-        </button>
-        <button 
-          className={selectedRole === 'data_analyst' ? 'active' : ''}
-          onClick={() => setSelectedRole('data_analyst')}
-        >
-          {t.dataAnalyst}
-        </button>
-        <button 
-          className={selectedRole === 'ml_engineer' ? 'active' : ''}
-          onClick={() => setSelectedRole('ml_engineer')}
-        >
-          {t.mlEngineer}
-        </button>
-        <button 
-          className={selectedRole === 'data_engineer' ? 'active' : ''}
-          onClick={() => setSelectedRole('data_engineer')}
-        >
-          {t.dataEngineer}
-        </button>
-      </div>
-
       {categories.map((category, idx) => (
         <div 
           key={category.key} 
