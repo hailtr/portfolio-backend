@@ -75,11 +75,17 @@ def build_cv_from_entities(lang='es'):
         
         # Override with profile entity if exists
         if profile_entity:
+            # Get name from meta (not from translation.title which is the role)
+            if profile_entity.meta and 'name' in profile_entity.meta:
+                name = profile_entity.meta['name']
+            
             profile_trans = next((t for t in profile_entity.translations if t.lang == lang), None)
             if profile_trans:
-                name = profile_trans.title or name
-                label = profile_trans.subtitle or label
-                summary = profile_trans.summary or summary
+                # title is the role, subtitle is tagline, summary is summary
+                if profile_trans.title:
+                    label = profile_trans.title  # This is the role (Data Engineer)
+                if profile_trans.summary:
+                    summary = profile_trans.summary
             
             if profile_entity.meta:
                 email = profile_entity.meta.get('email', email)
@@ -239,7 +245,15 @@ def build_cv_from_entities(lang='es'):
             {"language": "Inglés" if lang == 'es' else "English", "fluency": "Fluido" if lang == 'es' else "Fluent"}
         ]
         
-        return cv_data if cv_data["work"] or cv_data["skills"] else None
+        # Only return if we have meaningful content with proper name and summary
+        # This ensures we fall back to JSON if database doesn't have proper translations
+        has_content = (
+            cv_data["basics"]["name"] and 
+            cv_data["basics"]["name"] != "" and
+            cv_data["basics"]["summary"] and
+            len(cv_data["skills"]) > 0
+        )
+        return cv_data if has_content else None
         
     except Exception as e:
         import logging

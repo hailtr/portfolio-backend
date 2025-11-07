@@ -130,15 +130,17 @@ def import_skills(skills):
         }
         
         # Skills don't need translations (name is same in all languages)
-        t = EntityTranslation(
-            lang='es',  # Default language
-            title=item.get('name'),
-            subtitle=item.get('level', ''),
-            summary='',
-            description='',
-            content={}
-        )
-        entity.translations.append(t)
+        # Create translation for BOTH languages since skill names are universal
+        for lang in ['es', 'en']:
+            t = EntityTranslation(
+                lang=lang,
+                title=item.get('name'),
+                subtitle=item.get('level', ''),
+                summary='',
+                description='',
+                content={}
+            )
+            entity.translations.append(t)
         
         count += 1
     
