@@ -694,9 +694,7 @@ h4 {
     min-height: auto;
   }
   
-  .page-1 {
-    min-height: 100vh !important; /* Override for flexbox distribution */
-  }
+  /* page-1 flexbox rules are defined above at line 739 */
 
   .page .resume-header,
   .page .resume-content {
@@ -736,31 +734,49 @@ h4 {
   }
 
   /* Page 1: Keep single-column layout, ensure it fits on one page */
-  .page-1 {
-    page-break-after: always;
-    page-break-inside: avoid;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh; /* Ensure it uses full page height */
+  .page-1,
+  .page-1.cv-page {
+    page-break-after: always !important;
+    page-break-inside: avoid !important;
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 100% !important; /* Use full page height */
+    height: 100% !important; /* Force full height */
   }
   
   /* Add flex properties to sections */
   .page-1 .container {
-    flex-shrink: 0; /* Don't shrink sections */
+    flex-shrink: 0 !important; /* Don't shrink sections */
   }
   
-  /* Add flexible spacing between sections */
-  .page-1 .summary-container,
-  .page-1 .skills-container,
+  /* Add flexible spacing between sections - increase to fill space */
+  .page-1 .summary-container {
+    margin-bottom: 20px !important;
+    padding-top: 12px !important;
+  }
+  
+  .page-1 .skills-container {
+    margin-bottom: 20px !important;
+    padding-top: 12px !important;
+  }
+  
   .page-1 .education-container {
-    margin-bottom: 12px; /* Consistent spacing between sections */
+    margin-bottom: 25px !important;
+    padding-top: 15px !important;
+  }
+  
+  /* Ensure languages section is pushed to bottom */
+  .page-1 .languages-container-compact {
+    margin-top: auto !important;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
   }
   
   .page-1-header {
-    padding: 10px 0 8px 0;
+    padding: 15px 0 12px 0 !important;
     text-align: center;
-    margin-bottom: 10px;
-    flex-shrink: 0;
+    margin-bottom: 15px !important;
+    flex-shrink: 0 !important;
   }
   
   .profile-img {
