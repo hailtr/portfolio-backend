@@ -292,9 +292,9 @@ ul.two-column li {
 
 /* Skills: Inline keywords - optimized for scalability */
 .skill-group {
-  margin-bottom: 12px;
-  line-height: 1.6;
-  padding: 8px 0;
+  margin-bottom: 6px;
+  line-height: 1.5;
+  padding: 4px 0;
   border-bottom: 1px solid #f0f0f0;
 }
 
@@ -703,11 +703,22 @@ h4 {
   
   /* Ensure proper spacing in print */
   .container {
-    padding-top: 15px;
+    padding-top: 12px;
   }
 
   .item {
     margin-bottom: 15px;
+  }
+  
+  /* Reduce skills spacing in print */
+  .skills-container {
+    padding-top: 8px;
+  }
+  
+  .skills-container .skill-group {
+    margin-bottom: 4px;
+    padding: 2px 0;
+    line-height: 1.4;
   }
 
   /* Page 1: Keep single-column layout, ensure it fits on one page */
@@ -717,21 +728,58 @@ h4 {
   }
   
   .page-1-header {
-    padding: 12px 0 10px 0;
+    padding: 8px 0 8px 0;
     text-align: center;
+    margin-bottom: 12px;
   }
   
   .profile-img {
-    width: 80px;
-    height: 80px;
+    width: 75px;
+    height: 75px;
+  }
+  
+  .profile-pic-centered {
+    margin: 0 auto 8px auto;
+  }
+  
+  .profile-info-centered {
+    margin-bottom: 8px;
   }
   
   .contact-line-centered {
     font-size: 9px;
+    padding-top: 6px;
+    margin-top: 6px;
   }
   
   .languages-inline-compact {
     font-size: 9px;
+  }
+  
+  .languages-container-compact {
+    padding-top: 8px;
+    margin-top: 6px;
+  }
+  
+  /* Tighter spacing for summary and education in print */
+  .summary-container {
+    padding-top: 8px;
+  }
+  
+  .education-container {
+    padding-top: 10px;
+  }
+  
+  .summary {
+    margin: 3px 0 3px;
+  }
+  
+  .education-container .item {
+    margin-bottom: 12px;
+  }
+  
+  .keyline {
+    margin: 6px 0 8px;
   }
 
   /* Page 2+: Single column, can extend */
