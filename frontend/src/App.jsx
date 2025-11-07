@@ -22,7 +22,7 @@ function App() {
   useEffect(() => {
     // Fetch projects from API and wait for them
     setLoading(true)
-    fetch(`${API_BASE_URL}/entities?lang=${language}`)
+    fetch(`${API_BASE_URL}/entities?lang=${language}&type=project`)
       .then(res => res.json())
       .then(data => {
         setProjects(data)

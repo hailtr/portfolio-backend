@@ -1,0 +1,540 @@
+{
+  "_INSTRUCTIONS": "This is your normalized data. Fill it out, then run: python scripts/import_portfolio_data.py --file backend/data/portfolio_normalized.json",
+  
+  "profile": {
+    "name": "Rafael Ortiz",
+    "email": "lustigrfortiz@gmail.com",
+    "phone": "+58 424-2700455",
+    "location": {
+      "city": "Caracas",
+      "region": "Distrito Capital",
+      "country": "Venezuela"
+    },
+    "social": {
+      "linkedin": "https://www.linkedin.com/in/rafaelortizaguilar/",
+      "github": "https://github.com/hailtr",
+      "website": "https://rfo-portfolio.vercel.app/"
+    },
+    "translations": {
+      "es": {
+        "role": "Data Engineer",
+        "tagline": "Transformando datos en decisiones de negocio",
+        "summary": "Data Engineer con más de 2 años construyendo soluciones end-to-end: desde la ingesta y transformación de datos hasta sistemas de automatización en producción. Especializado en Python, SQL, ETL y cloud infrastructure. Experiencia desarrollando sistemas de automatización con IA (OCR + NLP) que generaron ahorros de $5K/mes, pipelines de datos en tiempo real para cumplimiento normativo, y automatización de infraestructura en Azure."
+      },
+      "en": {
+        "role": "Data Engineer",
+        "tagline": "Transforming data into business decisions",
+        "summary": "Data Engineer with 2+ years building end-to-end data solutions: from ingestion and transformation to production automation systems. Specialized in Python, SQL, ETL pipelines, and cloud infrastructure. Experience developing AI-powered automation systems (OCR + NLP) that saved $5K/month, real-time data pipelines for compliance monitoring, and Azure infrastructure automation."
+      }
+    }
+  },
+
+  "work_experience": [
+    {
+      "slug": "honor-data-engineer",
+      "company": "HONOR Venezuela",
+      "company_url": "",
+      "location": "Venezuela",
+      "startDate": "2024-09",
+      "endDate": "2024-10",
+      "tags": ["Python", "Flask", "SQLAlchemy", "SQLite", "Data Modeling", "ETL", "API Design", "Alembic"],
+      "images": {
+        "desktop": "",
+        "mobile": "",
+        "preview_video": ""
+      },
+      "show_in_portfolio": true,
+      "show_in_cv": true,
+      "translations": {
+        "es": {
+          "position": "Data Engineer",
+          "summary": "Migración completa de procesos de datos desde Excel/WhatsApp a sistema de ingeniería con base de datos, API REST y workflows automatizados. Responsable de arquitectura de datos, modelado y pipelines ETL para retail.",
+          "highlights": [
+            "Migré operaciones de Excel mensual a <b>base de datos PostgreSQL real</b>, construyendo sistema completo con Flask + SQLAlchemy y API REST",
+            "Reduje errores de entrada manual en <b>~90%</b> implementando validación multi-capa, data modeling y pipelines ETL automatizados",
+            "Creé sistema de <b>auditoría y seguimiento</b> inexistente previamente con workflow states (PENDING → APPROVED → ACTIVE) y approval tracking",
+            "Aceleré creación de tiendas de <b>1 semana a minutos</b> automatizando procesos bulk y desarrollando herramientas CLI para carga FK-aware"
+          ]
+        },
+        "en": {
+          "position": "Data Engineer",
+          "summary": "Complete migration of data processes from Excel/WhatsApp to engineered system with database, REST API, and automated workflows. Responsible for data architecture, modeling, and ETL pipelines for retail operations.",
+          "highlights": [
+            "Migrated operations from monthly Excel sheets to <b>real PostgreSQL database</b>, building complete system with Flask + SQLAlchemy and REST API",
+            "Reduced manual input errors by <b>~90%</b> implementing multi-layer validation, data modeling, and automated ETL pipelines",
+            "Created previously non-existent <b>audit trail and follow-up system</b> with workflow states (PENDING → APPROVED → ACTIVE) and approval tracking",
+            "Accelerated store creation from <b>1 week to minutes</b> automating bulk processes and developing CLI tools for FK-aware data loading"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "venepandi-data-consultant",
+      "company": "Venepandi C.A.",
+      "company_url": "https://venepandi.com/",
+      "location": "Venezuela",
+      "startDate": "2025-03",
+      "endDate": "2025-06",
+      "tags": ["Python", "OCR", "Tesseract", "Whisper", "OpenAI"],
+      "images": {
+        "desktop": "",
+        "mobile": "",
+        "preview_video": ""
+      },
+      "show_in_portfolio": true,
+      "show_in_cv": true,
+      "translations": {
+        "es": {
+          "position": "Data Engineer",
+          "summary": "Desarrollo de sistemas de automatización con IA para procesamiento de datos no estructurados. Integración de OCR y NLP para transformar recibos físicos y audios en pipelines de datos estructurados.",
+          "highlights": [
+            "Diseñé e implementé un <b>sistema de automatización end-to-end</b> utilizando <b>OCR (Tesseract) y Whisper (OpenAI)</b> para extraer datos desde recibos físicos y audios",
+            "Construí <b>pipeline de datos</b> para transformar información no estructurada en datos relacionales integrables con reportes",
+            "Generé <b>impacto de negocio directo: $5,000 USD/mes</b> en reducción de gastos mediante automatización de procesos manuales"
+          ]
+        },
+        "en": {
+          "position": "Data Engineer",
+          "summary": "Built AI-powered automation systems for unstructured data processing. Integration of OCR and NLP to transform physical receipts and audio into structured data pipelines.",
+          "highlights": [
+            "Designed and implemented <b>end-to-end automation system</b> using <b>OCR (Tesseract) and Whisper (OpenAI)</b> to extract data from physical receipts and audio",
+            "Built <b>data pipeline</b> to transform unstructured information into relational data integrable with reporting systems",
+            "Generated <b>direct business impact: $5,000 USD/month</b> cost reduction through automation of manual processes"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "thermogroup-data-analyst",
+      "company": "Thermogroup",
+      "company_url": "https://www.instagram.com/thermogroupvzla/",
+      "location": "Venezuela",
+      "startDate": "2024-02",
+      "endDate": "2024-12",
+      "tags": ["Python", "DAX", "Power BI", "ProfitPlus", "PostgreSQL", "Django"],
+      "images": {
+        "desktop": "",
+        "mobile": "",
+        "preview_video": ""
+      },
+      "show_in_portfolio": true,
+      "show_in_cv": true,
+      "translations": {
+        "es": {
+          "position": "Data Engineer",
+          "summary": "Diseño e implementación de pipelines de datos end-to-end para monitoreo operativo y cumplimiento normativo. Arquitectura de soluciones que integran recolección, ETL, validación y reporting.",
+          "highlights": [
+            "Diseñé e implementé <b>sistema de monitoreo en tiempo real</b> integrando <b>pipelines ETL, validación de calidad de datos y reporting automatizado</b> orientado a cumplimiento",
+            "Desarrollé <b>framework de transformación de datos</b> que redujo errores manuales en 70% mediante automatización y validaciones programáticas",
+            "Construí <b>infraestructura de BI</b> con Power BI y PostgreSQL para seguimiento continuo de KPIs operativos y preparación para auditorías"
+          ]
+        },
+        "en": {
+          "position": "Data Engineer",
+          "summary": "Design and implementation of end-to-end data pipelines for operational monitoring and compliance. Architecture of solutions integrating collection, ETL, validation, and reporting.",
+          "highlights": [
+            "Designed and implemented <b>real-time monitoring system</b> integrating <b>ETL pipelines, data quality validation, and automated reporting</b> for compliance",
+            "Developed <b>data transformation framework</b> that reduced manual errors by 70% through automation and programmatic validations",
+            "Built <b>BI infrastructure</b> with Power BI and PostgreSQL for continuous operational KPI tracking and audit readiness"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "austranet-infrastructure",
+      "company": "Austranet",
+      "company_url": "https://www.austranet.com/",
+      "location": "Chile",
+      "startDate": "2023-08",
+      "endDate": "2023-12",
+      "tags": ["Python", "SQL Server", "Windows Server", "PRTG", "Azure", "PowerQuery"],
+      "images": {
+        "desktop": "",
+        "mobile": "",
+        "preview_video": ""
+      },
+      "show_in_portfolio": true,
+      "show_in_cv": true,
+      "translations": {
+        "es": {
+          "position": "Infrastructure Engineer",
+          "summary": "Automatización de infraestructura cloud y desarrollo de soluciones de data governance en entorno de Gobierno, Riesgo y Cumplimiento (GRC).",
+          "highlights": [
+            "Desarrollé <b>sistema automatizado de inventario</b> en Azure con Python, catalogando 200+ recursos con metadata para <b>compliance y asset management</b>",
+            "Implementé <b>pipelines de backup automatizados</b> en Azure, Docker y sistemas legacy mediante scripts Python y Azure Functions",
+            "Trabajé en entorno <b>AustranetGRC</b>, aplicando frameworks de cumplimiento, políticas de datos y auditoría en infraestructura cloud"
+          ]
+        },
+        "en": {
+          "position": "Infrastructure Engineer",
+          "summary": "Cloud infrastructure automation and data governance solutions in Governance, Risk and Compliance (GRC) environment.",
+          "highlights": [
+            "Developed <b>automated inventory system</b> in Azure with Python, cataloging 200+ resources with metadata for <b>compliance and asset management</b>",
+            "Implemented <b>automated backup pipelines</b> in Azure, Docker and legacy systems using Python scripts and Azure Functions",
+            "Worked in <b>AustranetGRC</b> environment, applying compliance frameworks, data policies and auditing to cloud infrastructure"
+          ]
+        }
+      }
+    }
+  ],
+
+  "skills": [
+    {
+      "slug": "python",
+      "name": "Python",
+      "category": "languages",
+      "level": "advanced",
+      "show_in_cv": true,
+      "show_in_portfolio": true
+    },
+    {
+      "slug": "sql",
+      "name": "SQL",
+      "category": "languages",
+      "level": "advanced",
+      "show_in_cv": true,
+      "show_in_portfolio": true
+    },
+    {
+      "slug": "java",
+      "name": "Java",
+      "category": "languages",
+      "level": "intermediate",
+      "show_in_cv": true,
+      "show_in_portfolio": true
+    },
+    {
+      "slug": "javascript",
+      "name": "JavaScript",
+      "category": "languages",
+      "level": "intermediate",
+      "show_in_cv": true,
+      "show_in_portfolio": true
+    },
+    {
+      "slug": "bash",
+      "name": "Bash/Shell",
+      "category": "languages",
+      "level": "intermediate",
+      "show_in_cv": false,
+      "show_in_portfolio": false
+    },
+    {
+      "slug": "etl",
+      "name": "ETL Pipelines",
+      "category": "data-engineering",
+      "level": "advanced",
+      "show_in_cv": true,
+      "show_in_portfolio": true
+    },
+    {
+      "slug": "data-modeling",
+      "name": "Data Modeling",
+      "category": "data-engineering",
+      "level": "advanced",
+      "show_in_cv": true,
+      "show_in_portfolio": true
+    },
+    {
+      "slug": "snowflake",
+      "name": "Snowflake",
+      "category": "databases",
+      "level": "intermediate",
+      "show_in_cv": true,
+      "show_in_portfolio": true
+    },
+    {
+      "slug": "postgresql",
+      "name": "PostgreSQL",
+      "category": "databases",
+      "level": "advanced",
+      "show_in_cv": true,
+      "show_in_portfolio": true
+    },
+    {
+      "slug": "sql-server",
+      "name": "SQL Server",
+      "category": "databases",
+      "level": "intermediate",
+      "show_in_cv": true,
+      "show_in_portfolio": true
+    },
+    {
+      "slug": "bigquery",
+      "name": "BigQuery",
+      "category": "databases",
+      "level": "beginner",
+      "show_in_cv": false,
+      "show_in_portfolio": false
+    },
+    {
+      "slug": "redis",
+      "name": "Redis",
+      "category": "databases",
+      "level": "beginner",
+      "show_in_cv": false,
+      "show_in_portfolio": false
+    },
+    {
+      "slug": "mongodb",
+      "name": "MongoDB",
+      "category": "databases",
+      "level": "beginner",
+      "show_in_cv": false,
+      "show_in_portfolio": false
+    },
+    {
+      "slug": "pandas",
+      "name": "Pandas",
+      "category": "data-engineering",
+      "level": "advanced",
+      "show_in_cv": true,
+      "show_in_portfolio": true
+    },
+    {
+      "slug": "numpy",
+      "name": "NumPy",
+      "category": "data-engineering",
+      "level": "advanced",
+      "show_in_cv": true,
+      "show_in_portfolio": true
+    },
+    {
+      "slug": "scikit-learn",
+      "name": "Scikit-learn",
+      "category": "data-engineering",
+      "level": "intermediate",
+      "show_in_cv": true,
+      "show_in_portfolio": true
+    },
+    {
+      "slug": "apache-spark",
+      "name": "Apache Spark",
+      "category": "data-engineering",
+      "level": "beginner",
+      "show_in_cv": false,
+      "show_in_portfolio": false
+    },
+    {
+      "slug": "apache-kafka",
+      "name": "Apache Kafka",
+      "category": "data-engineering",
+      "level": "beginner",
+      "show_in_cv": false,
+      "show_in_portfolio": false
+    },
+    {
+      "slug": "apache-airflow",
+      "name": "Apache Airflow",
+      "category": "data-engineering",
+      "level": "beginner",
+      "show_in_cv": false,
+      "show_in_portfolio": false
+    },
+    {
+      "slug": "dbt",
+      "name": "dbt",
+      "category": "data-engineering",
+      "level": "beginner",
+      "show_in_cv": false,
+      "show_in_portfolio": false
+    },
+    {
+      "slug": "fastapi",
+      "name": "FastAPI",
+      "category": "data-engineering",
+      "level": "beginner",
+      "show_in_cv": false,
+      "show_in_portfolio": false
+    },
+    {
+      "slug": "pytest",
+      "name": "Pytest",
+      "category": "data-engineering",
+      "level": "beginner",
+      "show_in_cv": false,
+      "show_in_portfolio": false
+    },
+    {
+      "slug": "power-bi",
+      "name": "Power BI",
+      "category": "visualization",
+      "level": "advanced",
+      "show_in_cv": true,
+      "show_in_portfolio": true
+    },
+    {
+      "slug": "dax",
+      "name": "DAX",
+      "category": "visualization",
+      "level": "advanced",
+      "show_in_cv": true,
+      "show_in_portfolio": true
+    },
+    {
+      "slug": "matplotlib",
+      "name": "Matplotlib",
+      "category": "visualization",
+      "level": "intermediate",
+      "show_in_cv": true,
+      "show_in_portfolio": true
+    },
+    {
+      "slug": "tableau",
+      "name": "Tableau",
+      "category": "visualization",
+      "level": "beginner",
+      "show_in_cv": false,
+      "show_in_portfolio": false
+    },
+    {
+      "slug": "looker",
+      "name": "Looker",
+      "category": "visualization",
+      "level": "beginner",
+      "show_in_cv": false,
+      "show_in_portfolio": false
+    },
+    {
+      "slug": "azure",
+      "name": "Azure",
+      "category": "cloud",
+      "level": "intermediate",
+      "show_in_cv": true,
+      "show_in_portfolio": true
+    },
+    {
+      "slug": "docker",
+      "name": "Docker",
+      "category": "cloud",
+      "level": "intermediate",
+      "show_in_cv": true,
+      "show_in_portfolio": true
+    },
+    {
+      "slug": "aws",
+      "name": "AWS",
+      "category": "cloud",
+      "level": "beginner",
+      "show_in_cv": false,
+      "show_in_portfolio": false
+    },
+    {
+      "slug": "gcp",
+      "name": "Google Cloud Platform",
+      "category": "cloud",
+      "level": "beginner",
+      "show_in_cv": false,
+      "show_in_portfolio": false
+    },
+    {
+      "slug": "kubernetes",
+      "name": "Kubernetes",
+      "category": "cloud",
+      "level": "beginner",
+      "show_in_cv": false,
+      "show_in_portfolio": false
+    },
+    {
+      "slug": "git",
+      "name": "Git",
+      "category": "devops",
+      "level": "intermediate",
+      "show_in_cv": true,
+      "show_in_portfolio": true
+    },
+    {
+      "slug": "ci-cd",
+      "name": "CI/CD",
+      "category": "devops",
+      "level": "intermediate",
+      "show_in_cv": true,
+      "show_in_portfolio": true
+    },
+    {
+      "slug": "terraform",
+      "name": "Terraform",
+      "category": "devops",
+      "level": "beginner",
+      "show_in_cv": false,
+      "show_in_portfolio": false
+    },
+    {
+      "slug": "github-actions",
+      "name": "GitHub Actions",
+      "category": "devops",
+      "level": "beginner",
+      "show_in_cv": false,
+      "show_in_portfolio": false
+    }
+  ],
+
+  "education": [
+    {
+      "slug": "iugt-computer-science",
+      "institution": "Instituto Universitario de Gerencia y Tecnología",
+      "institution_url": "",
+      "location": "Caracas, Venezuela",
+      "startDate": "2024-01",
+      "endDate": null,
+      "current": true,
+      "courses": ["Python", "SQL", "Java", "Machine Learning", "Data Analysis", "Agile", "Análisis de Sistemas", "Estructuras de Datos", "C"],
+      "show_in_cv": true,
+      "show_in_portfolio": true,
+      "translations": {
+        "es": {
+          "area": "Informática",
+          "studyType": "Técnico Superior Universitario"
+        },
+        "en": {
+          "area": "Computer Science",
+          "studyType": "Higher Technician"
+        }
+      }
+    },
+    {
+      "slug": "udemy-data-science",
+      "institution": "Udemy",
+      "institution_url": "https://www.udemy.com",
+      "location": "Online",
+      "startDate": "",
+      "endDate": "2023",
+      "current": false,
+      "courses": ["Python", "Pandas", "NumPy", "Matplotlib", "Machine Learning", "Statistical Analysis"],
+      "show_in_cv": true,
+      "show_in_portfolio": true,
+      "translations": {
+        "es": {
+          "area": "Data Science",
+          "studyType": "Curso Profesional"
+        },
+        "en": {
+          "area": "Data Science",
+          "studyType": "Professional Course"
+        }
+      }
+    }
+  ],
+
+  "certifications": [
+    {
+      "slug": "microsoft-az-900",
+      "issuer": "Microsoft",
+      "issue_date": "2024-05",
+      "credential_url": "https://learn.microsoft.com/api/credentials/share/es-es/RafaelEstebanOrtizAguilar-2880/A246428961210115?sharingId=FDC73CAD8975D5C6",
+      "show_in_cv": true,
+      "show_in_portfolio": true,
+      "translations": {
+        "es": {
+          "title": "Certificación Microsoft AZ-900",
+          "description": "Fundamentos de Azure y servicios en la nube para soluciones empresariales."
+        },
+        "en": {
+          "title": "Microsoft AZ-900 Certification",
+          "description": "Azure and cloud services fundamentals for enterprise solutions."
+        }
+      }
+    }
+  ]
+}
+

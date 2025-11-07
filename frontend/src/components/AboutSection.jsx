@@ -1,8 +1,14 @@
+import { useState, useEffect } from 'react'
+import API_BASE_URL from '../config'
 import SkillsTree from './SkillsTree'
 import EducationCard from './EducationCard'
 import ExperienceCard from './ExperienceCard'
 
 const AboutSection = ({ language }) => {
+  const [experienceData, setExperienceData] = useState([])
+  const [educationData, setEducationData] = useState([])
+  const [loading, setLoading] = useState(true)
+
   const translations = {
     es: {
       skills: 'Habilidades',
@@ -18,39 +24,57 @@ const AboutSection = ({ language }) => {
 
   const t = translations[language] || translations.es
 
-  const educationData = [
-    {
-      institution: 'IUGT',
-      title: language === 'es' ? 'Técnico Superior en Informática' : 'Higher Technician in Computer Science',
-      date: '2018-2024',
-      skills: [
-        'Python',
-        'SQL', 
-        'Java',
-        'Machine Learning',
-        'Data Analysis',
-        'Agile',
-        language === 'es' ? 'Análisis de Sistemas' : 'Systems Analysis',
-        language === 'es' ? 'Estructuras de Datos' : 'Data Structures',
-        'C'
-      ]
-    }
-  ]
+  useEffect(() => {
+    // Fetch work experience
+    fetch(`${API_BASE_URL}/entities?lang=${language}&type=experience`)
+      .then(res => res.json())
+      .then(data => {
+        const formatted = data.map(item => ({
+          company: item.company || '',
+          role: item.title || '',
+          location: item.location || '',
+          skills: item.tags || []
+        }))
+        setExperienceData(formatted)
+      })
+      .catch(err => console.error('Error fetching experience:', err))
 
-  const experienceData = [
-    {
-      company: 'ThermoGroup C.A',
-      role: 'Data Analyst',
-      location: 'Venezuela',
-      skills: ['Python', 'DAX', 'PowerBI', 'ProfitPlus', 'PostgreSQL', 'Django']
-    },
-    {
-      company: 'Austranet',
-      role: language === 'es' ? 'Analista de Sistemas' : 'Systems Analyst',
-      location: 'Chile',
-      skills: ['Python', 'SQL Server', 'Windows Server', 'PRTG', 'Azure AppService', 'Azure Functions', 'PowerQuery']
-    }
-  ]
+    // Fetch education
+    fetch(`${API_BASE_URL}/entities?lang=${language}&type=education`)
+      .then(res => res.json())
+      .then(data => {
+        const formatted = data.map(item => {
+          // Format date
+          let dateStr = ''
+          if (item.current) {
+            dateStr = item.startDate ? `${item.startDate} - ${language === 'es' ? 'Presente' : 'Present'}` : (language === 'es' ? 'Presente' : 'Present')
+          } else if (item.endDate && item.startDate) {
+            // Both dates: show range
+            dateStr = `${item.startDate} - ${item.endDate}`
+          } else if (item.endDate) {
+            // Only end date (courses): show just the year
+            dateStr = item.endDate
+          } else if (item.startDate) {
+            // Only start date
+            dateStr = item.startDate
+          }
+          
+          return {
+            institution: item.institution || '',
+            title: `${item.subtitle} ${language === 'es' ? 'en' : 'in'} ${item.title}`,
+            date: dateStr,
+            location: item.location || '',
+            skills: item.courses || []
+          }
+        })
+        setEducationData(formatted)
+        setLoading(false)
+      })
+      .catch(err => {
+        console.error('Error fetching education:', err)
+        setLoading(false)
+      })
+  }, [language])
 
   return (
     <section className="section reveal-section">

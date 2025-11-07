@@ -14,7 +14,7 @@ from flask import Blueprint, jsonify, request
 from backend.models.entity import Entity
 from backend.models.translation import EntityTranslation
 from backend import db
-from sqlalchemy import desc
+from sqlalchemy import desc, or_
 from sqlalchemy.orm import joinedload
 import json
 import os
@@ -117,7 +117,15 @@ def get_entities():
                 "summary": translation.summary,
                 "content": translation.content,
                 "created_at": entity.created_at.isoformat() if entity.created_at else None,
-                "updated_at": entity.updated_at.isoformat() if entity.updated_at else None
+                "updated_at": entity.updated_at.isoformat() if entity.updated_at else None,
+                # Additional fields for work experience and education cards
+                "company": entity.meta.get('company', '') if entity.meta else '',
+                "location": entity.meta.get('location', '') if entity.meta else '',
+                "institution": entity.meta.get('institution', '') if entity.meta else '',
+                "startDate": entity.meta.get('startDate', '') if entity.meta else '',
+                "endDate": entity.meta.get('endDate', '') if entity.meta else '',
+                "current": entity.meta.get('current', False) if entity.meta else False,
+                "courses": entity.meta.get('courses', []) if entity.meta else []
             }
             result.append(entity_data)
     
@@ -287,6 +295,61 @@ def get_tags():
         "tags": sorted_tags,
         "total": len(sorted_tags)
     }), 200
+
+
+@api_bp.route('/profile', methods=['GET'])
+@generous_rate_limit()  # 300 requests per minute (lightweight endpoint)
+@cache_response(timeout=600, key_func=cache_key_with_lang)  # Cache for 10 minutes
+def get_profile():
+    """
+    Get profile/hero information for frontend.
+    
+    Query Parameters:
+        - lang: Language code (e.g., 'es', 'en'). Defaults to 'es'
+    
+    Returns:
+        JSON object with profile data (name, role, tagline, location, social links)
+        
+    Performance:
+        - Cached for 10 minutes
+        - Rate limited to 300 req/min
+    """
+    lang = request.args.get('lang', 'es')
+    
+    # Get profile entity
+    profile_entity = Entity.query.options(joinedload(Entity.translations)).filter_by(
+        type='profile', 
+        slug='rafael-ortiz-profile'
+    ).first()
+    
+    if not profile_entity:
+        return jsonify({
+            "error": "Profile not found"
+        }), 404
+    
+    # Get translation
+    translation = next((t for t in profile_entity.translations if t.lang == lang), None)
+    if not translation and profile_entity.translations:
+        translation = profile_entity.translations[0]
+    
+    if not translation:
+        return jsonify({
+            "error": "Profile translation not found"
+        }), 404
+    
+    # Build response
+    # Mapping: title=role, subtitle=tagline, summary=CV summary (not sent to hero)
+    profile_data = {
+        "name": profile_entity.meta.get('name', 'Rafael Ortiz') if profile_entity.meta else 'Rafael Ortiz',
+        "role": translation.title,           # "Data Engineer"
+        "tagline": translation.subtitle,     # Short one-liner
+        "location": profile_entity.meta.get('location', {}) if profile_entity.meta else {},
+        "email": profile_entity.meta.get('email', '') if profile_entity.meta else '',
+        "phone": profile_entity.meta.get('phone', '') if profile_entity.meta else '',
+        "social": profile_entity.meta.get('social', {}) if profile_entity.meta else {}
+    }
+    
+    return jsonify(profile_data), 200
 
 
 @api_bp.route('/cv', methods=['GET'])

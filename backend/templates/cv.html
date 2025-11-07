@@ -16,28 +16,35 @@
       z-index: 1000;
       display: flex;
       gap: 10px;
-      background: rgba(86, 129, 122, 0.9);
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
       padding: 10px 20px;
       border-radius: 25px;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--primary-color);
+      transition: all 0.3s ease;
     }
     .page-navigation button {
-      background: white;
-      border: none;
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid var(--primary-color);
+      color: var(--primary-color);
       padding: 8px 15px;
       border-radius: 20px;
       cursor: pointer;
       font-size: 12px;
-      color: #56817A;
-      transition: all 0.3s;
+      font-weight: 600;
+      transition: all 0.3s ease;
     }
     .page-navigation button:hover {
-      background: #56817A;
+      background: var(--primary-color);
       color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px var(--glow-primary);
     }
     .page-navigation button.active {
-      background: #56817A;
+      background: var(--primary-color);
       color: white;
+      border-color: var(--primary-color);
     }
     .page-navigation button:disabled {
       opacity: 0.5;
@@ -69,21 +76,36 @@
   </style>
 </head>
 <body class="cv-mode">
-  <button id="download-pdf" onclick="window.location.href='{{ url_for('cv.cv_pdf', lang=lang) }}'" style="
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background-color: #56817A;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    font-size: 12px;
-    cursor: pointer;
-    border-radius: 4px;
-    z-index: 1000;
-  ">
-    {% if lang == 'es' %}Descargar PDF{% else %}Download PDF{% endif %}
+  <button id="download-pdf" onclick="window.location.href='{{ url_for('cv.cv_pdf', lang=lang) }}'">
+    {% if lang == 'es' %}📄 Descargar PDF{% else %}📄 Download PDF{% endif %}
   </button>
+  
+  <style>
+    #download-pdf {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 12px 24px;
+      background: var(--primary-color);
+      color: white;
+      border: 2px solid var(--primary-color);
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      z-index: 1001;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 12px var(--glow-primary);
+    }
+    #download-pdf:hover {
+      background: var(--accent-color);
+      border-color: var(--accent-color);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px var(--glow-primary);
+    }
+  </style>
   
   <div class="page-navigation">
     <button onclick="showPage(1)" id="page-btn-1" class="active">{% if lang == 'es' %}Página 1{% else %}Page 1{% endif %}</button>
@@ -107,16 +129,17 @@
           </div>
           <div class="profile-info-centered">
             <h1>{{ cv_data.basics.name }}</h1>
-            <h2>{{ cv_data.basics.label }}</h2>
+            <h2 style="font-size: 0.85em; line-height: 1.2;">{{ cv_data.basics.label }}</h2>
           </div>
           <div class="contact-line-centered">
             {{ cv_data.basics.email }} • {{ cv_data.basics.phone }} • {{ cv_data.basics.location.city }}, {{ cv_data.basics.location.region }}
             {% if cv_data.basics.profiles %}
               {% for profile in cv_data.basics.profiles %}
-                {% if profile.network == 'LinkedIn' %} • <a href="{{ profile.url }}" target="_blank">LinkedIn</a>{% endif %}
+                {% if profile.network == 'LinkedIn' %} • <a href="{{ profile.url }}" target="_blank">{{ profile.url }}</a>{% endif %}
+                {% if profile.network == 'GitHub' %} • <a href="{{ profile.url }}" target="_blank">{{ profile.url }}</a>{% endif %}
+                {% if profile.network == 'Website' %} • <a href="{{ profile.url }}" target="_blank">{{ profile.url }}</a>{% endif %}
               {% endfor %}
             {% endif %}
-            {% if cv_data.basics.website %} • <a href="{{ cv_data.basics.website }}" target="_blank">{% if lang == 'es' %}Portafolio{% else %}Portfolio{% endif %}</a>{% endif %}
           </div>
         </div>
       </header>
@@ -324,7 +347,129 @@
     </main>
   </div>
 
+  <!-- Theme Switcher -->
+  <div class="theme-switcher">
+    <h4>🎨 Theme</h4>
+    <div class="theme-buttons">
+      <button class="theme-btn active" data-theme="emerald" onclick="setTheme('emerald')">
+        💚 Emerald Tech
+      </button>
+      <button class="theme-btn" data-theme="cyberpunk" onclick="setTheme('cyberpunk')">
+        🌊 Cyberpunk Teal
+      </button>
+      <button class="theme-btn" data-theme="matrix" onclick="setTheme('matrix')">
+        🟢 Matrix Green
+      </button>
+      <button class="theme-btn" data-theme="github" onclick="setTheme('github')">
+        💙 GitHub Dark
+      </button>
+      <button class="theme-btn" data-theme="sunset" onclick="setTheme('sunset')">
+        🌅 Sunset Coral
+      </button>
+    </div>
+  </div>
+
   <script>
+    // Theme Switcher with localStorage persistence
+    function setTheme(themeName) {
+      // Set theme on html element
+      document.documentElement.setAttribute('data-theme', themeName);
+      
+      // Save to localStorage
+      localStorage.setItem('cv-theme', themeName);
+      
+      // Update active button
+      document.querySelectorAll('.theme-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      document.querySelector(`.theme-btn[data-theme="${themeName}"]`).classList.add('active');
+    }
+    
+    // Draggable Theme Switcher
+    (function() {
+      const themeSwitcher = document.querySelector('.theme-switcher');
+      let isDragging = false;
+      let currentX;
+      let currentY;
+      let initialX;
+      let initialY;
+      let xOffset = 0;
+      let yOffset = 0;
+      
+      // Load saved position
+      const savedPosition = localStorage.getItem('theme-switcher-position');
+      if (savedPosition) {
+        const { x, y } = JSON.parse(savedPosition);
+        xOffset = x;
+        yOffset = y;
+        themeSwitcher.style.transform = `translate(${x}px, ${y}px)`;
+      }
+      
+      themeSwitcher.addEventListener('mousedown', dragStart);
+      document.addEventListener('mousemove', drag);
+      document.addEventListener('mouseup', dragEnd);
+      
+      // Touch events for mobile
+      themeSwitcher.addEventListener('touchstart', dragStart);
+      document.addEventListener('touchmove', drag);
+      document.addEventListener('touchend', dragEnd);
+      
+      function dragStart(e) {
+        if (e.type === 'touchstart') {
+          initialX = e.touches[0].clientX - xOffset;
+          initialY = e.touches[0].clientY - yOffset;
+        } else {
+          initialX = e.clientX - xOffset;
+          initialY = e.clientY - yOffset;
+        }
+        
+        if (e.target === themeSwitcher || e.target === themeSwitcher.querySelector('h4')) {
+          isDragging = true;
+          themeSwitcher.classList.add('dragging');
+        }
+      }
+      
+      function drag(e) {
+        if (isDragging) {
+          e.preventDefault();
+          
+          if (e.type === 'touchmove') {
+            currentX = e.touches[0].clientX - initialX;
+            currentY = e.touches[0].clientY - initialY;
+          } else {
+            currentX = e.clientX - initialX;
+            currentY = e.clientY - initialY;
+          }
+          
+          xOffset = currentX;
+          yOffset = currentY;
+          
+          themeSwitcher.style.transform = `translate(${currentX}px, ${currentY}px)`;
+        }
+      }
+      
+      function dragEnd(e) {
+        if (isDragging) {
+          initialX = currentX;
+          initialY = currentY;
+          isDragging = false;
+          themeSwitcher.classList.remove('dragging');
+          
+          // Save position
+          localStorage.setItem('theme-switcher-position', JSON.stringify({ x: xOffset, y: yOffset }));
+        }
+      }
+    })();
+    
+    // Load saved theme on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('cv-theme') || 'emerald';
+      if (savedTheme !== 'emerald') {
+        setTheme(savedTheme);
+      }
+    });
+    
+    // Page navigation
     function showPage(pageNum) {
       // Hide all pages
       document.querySelectorAll('.cv-page').forEach(page => {

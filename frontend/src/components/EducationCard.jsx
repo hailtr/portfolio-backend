@@ -7,9 +7,15 @@ const EducationCard = ({ education }) => {
       </div>
       <p>
         <i className="fa-solid fa-calendar"></i> {education.date}
+        {education.location && (
+          <>
+            {' • '}
+            <i className="fa-solid fa-location-dot"></i> {education.location}
+          </>
+        )}
       </p>
       <div className="skill-logo-name">
-        {education.skills.map((skill, idx) => (
+        {education.skills && education.skills.map((skill, idx) => (
           <span key={idx} className="relative-skill">
             {skill}
           </span>

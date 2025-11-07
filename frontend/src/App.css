@@ -659,15 +659,17 @@ main.visible {
   max-width: calc(50% - var(--space-md));
 }
 
-/* Education cards (single card, centered) */
+/* Education cards (grid layout for multiple cards) */
 .educationitems {
-  display: flex;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-lg);
+  width: 100%;
 }
 
 .educationitems .education-card {
   width: 100%;
-  max-width: 700px;
+  max-width: none;
 }
 
 .education-card::before, 
