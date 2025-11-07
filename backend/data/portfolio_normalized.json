@@ -2,7 +2,7 @@
   "_INSTRUCTIONS": "This is your normalized data. Fill it out, then run: python scripts/import_portfolio_data.py --file backend/data/portfolio_normalized.json",
   
   "metadata": {
-    "version": "1.0.0",
+    "version": "1.0.1",
     "profile": "rafael-ortiz-profile",
     "theme": "emerald",
     "creationDate": "2024-01-01T00:00:00Z",
@@ -43,8 +43,8 @@
       "company": "HONOR Venezuela",
       "company_url": "",
       "location": "Venezuela",
-      "startDate": "2024-09",
-      "endDate": "2024-10",
+      "startDate": "2025-09",
+      "endDate": "2025-10",
       "tags": ["Python", "Flask", "SQLAlchemy", "SQLite", "Data Modeling", "ETL", "API Design", "Alembic"],
       "images": {
         "desktop": "",

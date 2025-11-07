@@ -135,8 +135,8 @@
             {{ cv_data.basics.email }} • {{ cv_data.basics.phone }} • {{ cv_data.basics.location.city }}, {{ cv_data.basics.location.region }}
             {% if cv_data.basics.profiles %}
               {% for profile in cv_data.basics.profiles %}
-                {% if profile.network == 'LinkedIn' %} • <a href="{{ profile.url }}" target="_blank">{{ profile.url }}</a>{% endif %}
-                {% if profile.network == 'GitHub' %} • <a href="{{ profile.url }}" target="_blank">{{ profile.url }}</a>{% endif %}
+                {% if profile.network == 'LinkedIn' %} <br>• <a href="{{ profile.url }}" target="_blank">{{ profile.url }}</a>{% endif %}
+                {% if profile.network == 'GitHub' %} <br>• <a href="{{ profile.url }}" target="_blank">{{ profile.url }}</a>{% endif %}
                 {% if profile.network == 'Website' %} <br>• <b>{% if lang == 'es' %}Portafolio (ver proyectos):{% else %}Portfolio (view projects):{% endif %} <a href="{{ profile.url }}" target="_blank">{{ profile.url }}</a>{% endif %}</b>
               {% endfor %}
             {% endif %}
