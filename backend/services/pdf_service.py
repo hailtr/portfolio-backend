@@ -39,20 +39,30 @@ class PDFService:
         Returns:
             BytesIO object with PDF content
         """
-        # Render HTML template with CV data
-        html_string = render_template('cv.html', cv_data=cv_data, lang=lang)
+        # Get absolute paths for static files
+        backend_dir = os.path.dirname(os.path.dirname(__file__))
+        static_dir = os.path.join(backend_dir, 'static')
+        css_path = os.path.join(static_dir, 'styles', 'cv.css')
+        images_dir = os.path.join(static_dir, 'images')
         
-        # Get CSS file path
-        css_path = os.path.join(
-            os.path.dirname(os.path.dirname(__file__)),
-            'static',
-            'styles',
-            'cv.css'
+        # Prepare image path for template (absolute path for WeasyPrint)
+        profile_img_path = os.path.join(images_dir, 'profilepicture.jpg')
+        if os.path.exists(profile_img_path):
+            # Use file:// URL for WeasyPrint
+            profile_img_url = f'file://{profile_img_path}'.replace('\\', '/')
+        else:
+            profile_img_url = None
+        
+        # Render HTML template with CV data and absolute image path
+        html_string = render_template(
+            'cv.html', 
+            cv_data=cv_data, 
+            lang=lang,
+            profile_img_abs_path=profile_img_url
         )
         
-        # Generate PDF
-        # WeasyPrint can fetch online images automatically
-        base_url = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+        # Generate PDF with absolute base URL
+        base_url = backend_dir
         html = HTML(string=html_string, base_url=base_url)
         
         # Load CSS if it exists
@@ -61,7 +71,6 @@ class PDFService:
             css = CSS(filename=css_path)
         
         # Generate PDF bytes
-        # WeasyPrint will automatically fetch online images (http/https URLs)
         pdf_bytes = BytesIO()
         html.write_pdf(pdf_bytes, stylesheets=[css] if css else None)
         pdf_bytes.seek(0)

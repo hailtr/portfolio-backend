@@ -167,8 +167,112 @@ ul.two-column li {
   border: 2px solid #56817A;
 }
 
+/* Page 1: Centered header layout */
+.page-1-header {
+  padding: 15px 0 15px 0;
+  margin-bottom: 18px;
+  text-align: center;
+}
+
+.header-centered {
+  width: 100%;
+}
+
+.profile-pic-centered {
+  margin: 0 auto 12px auto;
+  display: inline-block;
+}
+
+.profile-img {
+  width: 85px;
+  height: 85px;
+  border-radius: 50%;
+  border: 2px solid #56817A;
+  object-fit: cover;
+  display: block;
+}
+
+.profile-info-centered {
+  margin-bottom: 10px;
+}
+
+.profile-info-centered h1 {
+  margin-bottom: 4px;
+}
+
+.profile-info-centered h2 {
+  margin-top: 0;
+  font-weight: 300;
+}
+
+.contact-line-centered {
+  font-size: 10px;
+  color: #666;
+  text-align: center;
+  padding-top: 8px;
+  border-top: 1px solid #f0f0f0;
+  margin-top: 8px;
+}
+
+.contact-line-centered a {
+  color: #56817A;
+  text-decoration: none;
+}
+
+.contact-line-centered a:hover {
+  text-decoration: underline;
+}
+
+/* Skills: Inline keywords - optimized for scalability */
+.skill-group {
+  margin-bottom: 10px;
+  line-height: 1.6;
+}
+
+.skill-group:last-child {
+  margin-bottom: 0;
+}
+
+.skill-category {
+  font-weight: 700;
+  font-size: 12px;
+  display: inline-block;
+  margin-right: 8px;
+  vertical-align: top;
+  min-width: 140px;
+}
+
+.skill-keywords-inline {
+  font-size: 11px;
+  color: #555;
+  display: inline;
+  word-wrap: break-word;
+}
+
+/* Languages: Compact single line */
+.languages-container-compact {
+  padding-top: 12px;
+  margin-top: 8px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.languages-inline-compact {
+  font-size: 10px;
+  margin: 0;
+  color: #555;
+  text-align: center;
+}
+
+.languages-inline-compact strong {
+  color: #39424B;
+  margin-right: 5px;
+}
+
 .summary {
   margin: 5px 0 5px;
+  text-align: justify;
+  line-height: 1.5;
+  font-size: 11px;
 }
 
 /* Layouts */
@@ -355,14 +459,28 @@ ul.two-column li {
     margin-bottom: 15px;
   }
 
-  /* Page 1: Keep two-column layout, ensure it fits on one page */
+  /* Page 1: Keep single-column layout, ensure it fits on one page */
   .page-1 {
     page-break-after: always;
     page-break-inside: avoid;
   }
   
-  .page-1 .left-column {
-    width: 160px;
+  .page-1-header {
+    padding: 12px 0 10px 0;
+    text-align: center;
+  }
+  
+  .profile-img {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .contact-line-centered {
+    font-size: 9px;
+  }
+  
+  .languages-inline-compact {
+    font-size: 9px;
   }
 
   /* Page 2+: Single column, can extend */
