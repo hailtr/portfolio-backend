@@ -96,9 +96,13 @@ em {
 ul {
   margin: 10px 0 0;
   -webkit-padding-start: 25px;
+  page-break-inside: auto; /* Allow lists to break if needed */
 }
 ul li {
   padding-left: 10px;
+  page-break-inside: avoid; /* Keep list items together */
+  orphans: 2;
+  widows: 2;
 }
 ul.minimal {
   list-style: none;
@@ -121,12 +125,15 @@ ul.two-column li {
 /* Page Setup for PDF */
 @page {
   size: A4;
-  margin: 2cm 1.5cm;
+  margin: 1.5cm 1.5cm;
 }
 
+/* Better pagination - allow containers to break if needed, but prefer not to */
 .container {
   padding-top: 20px;
-  page-break-inside: avoid;
+  page-break-inside: auto; /* Changed from avoid - allow breaking if container is too large */
+  orphans: 3; /* Minimum lines at bottom of page */
+  widows: 3; /* Minimum lines at top of page */
 }
 
 .keyline {
@@ -177,6 +184,7 @@ ul.two-column li {
   padding: 36px;
   margin: 0;
   box-sizing: border-box;
+  page-break-after: auto; /* Allow page to break naturally */
 }
 
 .page:after {
@@ -199,30 +207,63 @@ ul.two-column li {
 
 .item {
   margin-bottom: 15px;
-  page-break-inside: avoid;
+  page-break-inside: avoid; /* Keep individual items together */
+  orphans: 2;
+  widows: 2;
 }
 .item:last-child {
   margin-bottom: 0;
 }
 
-/* Pagination fixes */
+/* Pagination fixes - smarter break handling */
 .work-container .item,
 .education-container .item,
 .awards-container .item {
-  page-break-inside: avoid;
+  page-break-inside: avoid; /* Keep job/education entries together */
   page-break-after: auto;
+  margin-bottom: 20px; /* More space between items */
 }
 
-.container {
+/* Prevent headers from being orphaned */
+.title {
+  page-break-after: avoid;
   page-break-inside: avoid;
+}
+
+.title h3 {
+  page-break-after: avoid;
+}
+
+/* Keep section headers with their content */
+.section-header {
+  page-break-after: avoid;
 }
 
 .resume-header {
   page-break-after: avoid;
+  page-break-inside: avoid;
 }
 
 .summary-container {
   page-break-after: auto;
+}
+
+/* Prevent breaking between title and content */
+.container .title + * {
+  page-break-before: avoid;
+}
+
+/* Better spacing for multi-page */
+.resume-content {
+  page-break-inside: auto;
+}
+
+.left-column {
+  page-break-inside: auto; /* Allow sidebar to break if needed */
+}
+
+.right-column {
+  page-break-inside: auto;
 }
 
 /* Hide download button in print/PDF */
@@ -233,21 +274,48 @@ ul.two-column li {
   
   body {
     margin: 0;
+    background: white;
+  }
+
+  .page {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    border-top: none;
+    box-shadow: none;
+    min-height: auto;
   }
 
   .page .resume-header,
   .page .resume-content {
-    padding: 0 22px 0 34px;
+    padding: 0;
+  }
+  
+  .resume-header {
+    padding: 20px 0 15px 0;
+  }
+
+  .resume-content {
+    padding: 0;
   }
   
   .fa-external-link {
     display: none;
   }
   
-  #resume {
-    width: 100%;
-    max-width: none;
-    margin: 0;
+  /* Ensure proper spacing in print */
+  .container {
+    padding-top: 15px;
+  }
+
+  .item {
+    margin-bottom: 15px;
+  }
+
+  /* Better column handling in print */
+  .left-column {
+    width: 160px;
   }
 }
 
