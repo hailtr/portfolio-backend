@@ -12,6 +12,7 @@ import sys
 import os
 import json
 import argparse
+from datetime import datetime
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -20,7 +21,7 @@ from backend.models.entity import Entity
 from backend.models.translation import EntityTranslation
 from backend.services.cache_service import invalidate_entities_cache
 
-def import_profile(profile_data):
+def import_profile(profile_data, metadata=None):
     """Import profile information"""
     print("\n👤 Importing profile...")
     
@@ -35,6 +36,8 @@ def import_profile(profile_data):
     
     entity.slug = 'rafael-ortiz-profile'
     entity.type = 'profile'
+    
+    # Build meta with profile data
     entity.meta = {
         'name': profile_data.get('name'),
         'email': profile_data.get('email'),
@@ -42,6 +45,18 @@ def import_profile(profile_data):
         'location': profile_data.get('location', {}),
         'social': profile_data.get('social', {})
     }
+    
+    # Add metadata if provided
+    if metadata:
+        entity.meta['import_version'] = metadata.get('version')
+        entity.meta['imported_at'] = datetime.utcnow().isoformat()
+        entity.meta['cv_metadata'] = {
+            'version': metadata.get('version'),
+            'profile': metadata.get('profile'),
+            'theme': metadata.get('theme'),
+            'creationDate': metadata.get('creationDate'),
+            'printCount': metadata.get('printCount', 0)
+        }
     
     # Add translations (role, tagline, summary)
     for lang, trans in profile_data.get('translations', {}).items():
@@ -269,11 +284,16 @@ def main():
             print(f"❌ Database error: {e}")
             return 1
         
+        # Extract metadata
+        metadata = data.get('metadata', {})
+        if metadata:
+            print(f"\n📋 Metadata: v{metadata.get('version', 'N/A')} - Profile: {metadata.get('profile', 'N/A')}")
+        
         # Import data
         total = 0
         
         if 'profile' in data:
-            total += import_profile(data['profile'])
+            total += import_profile(data['profile'], metadata)
         
         if 'work_experience' in data:
             total += import_work_experience(data['work_experience'])

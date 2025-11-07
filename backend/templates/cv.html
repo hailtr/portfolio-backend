@@ -137,7 +137,7 @@
               {% for profile in cv_data.basics.profiles %}
                 {% if profile.network == 'LinkedIn' %} • <a href="{{ profile.url }}" target="_blank">{{ profile.url }}</a>{% endif %}
                 {% if profile.network == 'GitHub' %} • <a href="{{ profile.url }}" target="_blank">{{ profile.url }}</a>{% endif %}
-                {% if profile.network == 'Website' %} • <a href="{{ profile.url }}" target="_blank">{{ profile.url }}</a>{% endif %}
+                {% if profile.network == 'Website' %} <br>• <b>{% if lang == 'es' %}Portafolio (ver proyectos):{% else %}Portfolio (view projects):{% endif %} <a href="{{ profile.url }}" target="_blank">{{ profile.url }}</a>{% endif %}</b>
               {% endfor %}
             {% endif %}
           </div>
@@ -188,10 +188,7 @@
               {{ edu.startDate }} - {{ edu.endDate if edu.endDate else ('Presente' if lang == 'es' else 'Present') }}
             </h5>
           </div>
-          {% if edu.location %}
-          <h5 class="location">{{ edu.location }}</h5>
-          {% endif %}
-          <h4>{{ edu.studyType }} {% if edu.area %}{% if lang == 'es' %}en{% else %}in{% endif %} {{ edu.area }}{% endif %}</h4>
+          <h4>{{ edu.studyType }}{% if edu.area %} {% if lang == 'es' %}en{% else %}in{% endif %} {{ edu.area }}{% endif %}{% if edu.location %} - {{ edu.location }}{% endif %}</h4>
           {% if edu.gpa %}
           <h5>GPA {{ edu.gpa }}</h5>
           {% endif %}

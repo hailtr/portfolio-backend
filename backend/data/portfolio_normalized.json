@@ -1,6 +1,14 @@
 {
   "_INSTRUCTIONS": "This is your normalized data. Fill it out, then run: python scripts/import_portfolio_data.py --file backend/data/portfolio_normalized.json",
   
+  "metadata": {
+    "version": "1.0.0",
+    "profile": "rafael-ortiz-profile",
+    "theme": "emerald",
+    "creationDate": "2024-01-01T00:00:00Z",
+    "printCount": 0
+  },
+  
   "profile": {
     "name": "Rafael Ortiz",
     "email": "lustigrfortiz@gmail.com",
@@ -19,12 +27,12 @@
       "es": {
         "role": "Data Engineer",
         "tagline": "Transformando datos en decisiones de negocio",
-        "summary": "Data Engineer con experiencia construyendo soluciones end-to-end en Python, SQL y cloud infrastructure. Desarrollé sistemas de automatización con IA (OCR + NLP) que generaron ahorros de $5K/mes y pipelines de datos en tiempo real para cumplimiento normativo."
+        "summary": "Data Engineer especializado en pipelines de datos end-to-end, infraestructura cloud y automatización de procesos de negocio. Capacidad demostrada para transformar operaciones manuales en sistemas escalables y engineeringizados usando Python, SQL y stacks de datos modernos. He construido soluciones de automatización con IA y monitoreo de cumplimiento en tiempo real que generan impacto de negocio medible y eficiencia operacional."
       },
       "en": {
         "role": "Data Engineer",
         "tagline": "Transforming data into business decisions",
-        "summary": "Data Engineer with experience building end-to-end solutions in Python, SQL, and cloud infrastructure. Developed AI-powered automation systems (OCR + NLP) that saved $5K/month and real-time data pipelines for compliance monitoring."
+        "summary": "Data Engineer specializing in end-to-end data pipelines, cloud infrastructure, and business process automation. Proven ability to transform manual operations into scalable, engineered systems using Python, SQL, and modern data stacks. Built AI-powered automation and real-time compliance monitoring solutions that deliver measurable business impact and operational efficiency."
       }
     }
   },
@@ -488,7 +496,7 @@
         },
         "en": {
           "area": "Computer Science",
-          "studyType": "Higher Technician"
+          "studyType": "Associate Degree"
         }
       }
     },
