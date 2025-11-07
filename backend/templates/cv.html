@@ -77,7 +77,7 @@
 </head>
 <body class="cv-mode">
   <button id="download-pdf" onclick="window.location.href='{{ url_for('cv.cv_pdf', lang=lang) }}'">
-    {% if lang == 'es' %}📄 Descargar PDF{% else %}📄 Download PDF{% endif %}
+    {% if lang == 'es' %}Descargar PDF{% else %}Download PDF{% endif %}
   </button>
   
   <style>
@@ -349,22 +349,22 @@
 
   <!-- Theme Switcher -->
   <div class="theme-switcher">
-    <h4>🎨 Theme</h4>
+    <h4>Theme</h4>
     <div class="theme-buttons">
       <button class="theme-btn active" data-theme="emerald" onclick="setTheme('emerald')">
-        💚 Emerald Tech
+        Emerald Tech
       </button>
       <button class="theme-btn" data-theme="cyberpunk" onclick="setTheme('cyberpunk')">
-        🌊 Cyberpunk Teal
+        Cyberpunk Teal
       </button>
       <button class="theme-btn" data-theme="matrix" onclick="setTheme('matrix')">
-        🟢 Matrix Green
+        Matrix Green
       </button>
       <button class="theme-btn" data-theme="github" onclick="setTheme('github')">
-        💙 GitHub Dark
+        GitHub Dark
       </button>
       <button class="theme-btn" data-theme="sunset" onclick="setTheme('sunset')">
-        🌅 Sunset Coral
+        Sunset Coral
       </button>
     </div>
   </div>
