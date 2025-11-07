@@ -14,7 +14,6 @@ def requires_role(role):
         @wraps(view_func)
         def wrapped_view(*args, **kwargs):
             user_role = session.get("user_role")
-            print("DECORATOR | user_role:", user_role, "| required:", role)
             if user_role != role:
                 return abort(403, description="Access denied")
             return view_func(*args, **kwargs)

@@ -60,7 +60,8 @@ app.config['ADMIN_TOKEN'] = os.getenv("ADMIN_TOKEN", "changeme")
 # Session configuration
 from datetime import timedelta
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)  # Session lasts 7 days
-app.config['SESSION_COOKIE_SECURE'] = False  # Set to True in production with HTTPS
+# Secure cookies in production (HTTPS), False for local development
+app.config['SESSION_COOKIE_SECURE'] = os.getenv('FLASK_ENV') == 'production'
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {

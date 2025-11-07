@@ -4,6 +4,7 @@ from backend import db
 from backend.models.entity import Entity
 from backend.models.translation import EntityTranslation
 from backend.services.cloudinary_service import cloudinary_service
+from backend.services.cache_service import invalidate_entities_cache
 import json
 from auth.decorators import requires_login, requires_role
 
@@ -16,8 +17,6 @@ admin_bp = Blueprint('admin', __name__, template_folder='../../templates')
 def admin_home():
     ready = request.args.get("ready")
     edit_id = request.args.get("edit")
-    from flask import session
-    print("DEBUG SESSION:", dict(session))
 
     if ready == "true":
         try:
@@ -53,6 +52,8 @@ def admin_home():
 
 
 @admin_bp.route('/admin/check')
+@requires_login
+@requires_role("admin")
 def admin_check():
     retries = 3
     for attempt in range(retries):
@@ -71,9 +72,23 @@ def admin_check():
 
 
 @admin_bp.route('/admin/save', methods=['POST'])
+@requires_login
+@requires_role("admin")
 def admin_save():
     form = request.form
     entity_id = form.get("id")
+    
+    # Input validation
+    slug = form.get("slug", "").strip()
+    entity_type = form.get("type", "").strip()
+    
+    if not slug or not entity_type:
+        return jsonify({"error": "Slug and type are required"}), 400
+    
+    # Validate slug format (alphanumeric and hyphens only)
+    import re
+    if not re.match(r'^[a-z0-9-]+$', slug):
+        return jsonify({"error": "Slug must contain only lowercase letters, numbers, and hyphens"}), 400
 
     if entity_id:
         entity = Entity.query.get_or_404(entity_id)
@@ -81,8 +96,8 @@ def admin_save():
         entity = Entity()
         db.session.add(entity)
 
-    entity.slug = form.get("slug")
-    entity.type = form.get("type")
+    entity.slug = slug
+    entity.type = entity_type
     entity.meta = {
         "category": form.get("category"),
         "tags": [t.strip() for t in form.get("tags", "").split(",") if t.strip()],
@@ -113,6 +128,10 @@ def admin_save():
         entity.translations.append(t)
 
     db.session.commit()
+    
+    # Invalidate cache after updating entities
+    invalidate_entities_cache()
+    
     return redirect(url_for('admin.admin_home', ready='true'))
 
 
@@ -133,6 +152,10 @@ def admin_delete(id):
     
     db.session.delete(entity)
     db.session.commit()
+    
+    # Invalidate cache after deleting entities
+    invalidate_entities_cache()
+    
     return redirect(url_for('admin.admin_home', ready='true'))
 
 

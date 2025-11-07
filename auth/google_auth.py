@@ -41,7 +41,6 @@ def callback_google():
     # Obtiene la información del usuario
     resp = google.get('userinfo')
     user_info = resp.json()
-    print("UserInfo:", user_info)
 
     # Verifica si el correo electrónico está verificado (google side)
     if not user_info.get("verified_email"):
@@ -87,7 +86,8 @@ def callback_google():
             break  # Success, exit retry loop
             
         except Exception as e:
-            print(f"Database error (attempt {retry_count + 1}/{max_retries}): {e}")
+            import logging
+            logging.warning(f"Database error (attempt {retry_count + 1}/{max_retries}): {e}")
             db.session.rollback()
             retry_count += 1
             
@@ -110,7 +110,8 @@ def callback_google():
 
     # Si el correo coincide con el admin, actualiza el rol en DB (aunque ya exista)
     if email == admin_email and user.role != "admin":
-        print("Elevando privilegios: asignando admin")
+        import logging
+        logging.info(f"Granting admin privileges to: {email}")
         user.role = "admin"
     
     # Make session permanent (lasts 7 days as configured)
