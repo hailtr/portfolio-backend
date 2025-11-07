@@ -182,9 +182,19 @@ ul.two-column li {
   box-shadow: 0 1px 10px rgba(0, 0, 0, 0.5);
   width: 794px;
   padding: 36px;
-  margin: 0;
+  margin: 0 auto 30px auto; /* Center pages and add spacing for HTML view */
   box-sizing: border-box;
-  page-break-after: auto; /* Allow page to break naturally */
+}
+
+/* Screen view: show/hide pages */
+.cv-page.hidden {
+  display: none;
+}
+
+@media screen {
+  .cv-pages-container {
+    padding-bottom: 100px; /* Space for navigation */
+  }
 }
 
 .page:after {
@@ -198,11 +208,42 @@ ul.two-column li {
   width: 160px;
   margin-right: 20px;
   word-wrap: break-word;
+  page-break-inside: auto;
 }
 
 .right-column {
   width: auto;
   overflow: hidden;
+  page-break-inside: auto;
+}
+
+/* Page 1: Fixed two-column layout, must fit on one page */
+.page-1 {
+  page-break-after: always; /* Force page 1 to end, start page 2 on new page */
+  page-break-inside: avoid; /* Keep page 1 content together */
+}
+
+.page-1-content {
+  page-break-inside: avoid; /* Keep page 1 content together */
+}
+
+/* Page 2: Single-column, can extend to multiple pages */
+.page-2 {
+  page-break-before: always; /* Always start on new page */
+  page-break-inside: auto; /* Allow breaking across pages */
+}
+
+.page-2-content,
+.single-column {
+  width: 100%;
+  max-width: 100%;
+}
+
+.page-2 .left-column,
+.page-2 .right-column {
+  float: none;
+  width: 100%;
+  margin: 0;
 }
 
 .item {
@@ -258,23 +299,24 @@ ul.two-column li {
   page-break-inside: auto;
 }
 
-.left-column {
-  page-break-inside: auto; /* Allow sidebar to break if needed */
-}
-
-.right-column {
-  page-break-inside: auto;
-}
-
 /* Hide download button in print/PDF */
 @media print {
-  #download-pdf {
+  #download-pdf,
+  .page-navigation {
     display: none !important;
   }
   
   body {
     margin: 0;
     background: white;
+  }
+
+  /* Show all pages in print */
+  .cv-page {
+    display: block !important;
+  }
+  .cv-page.hidden {
+    display: block !important;
   }
 
   .page {
@@ -313,9 +355,31 @@ ul.two-column li {
     margin-bottom: 15px;
   }
 
-  /* Better column handling in print */
-  .left-column {
+  /* Page 1: Keep two-column layout, ensure it fits on one page */
+  .page-1 {
+    page-break-after: always;
+    page-break-inside: avoid;
+  }
+  
+  .page-1 .left-column {
     width: 160px;
+  }
+
+  /* Page 2+: Single column, can extend */
+  .page-2 {
+    page-break-before: always;
+    page-break-inside: auto;
+  }
+  
+  .page-2 .single-column {
+    width: 100%;
+  }
+  
+  .page-2 .left-column,
+  .page-2 .right-column {
+    float: none;
+    width: 100%;
+    margin: 0;
   }
 }
 
