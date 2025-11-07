@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
+import API_BASE_URL from '../config'
 
 const Navbar = ({ language, toggleLanguage, toggleContact }) => {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -106,7 +107,7 @@ const Navbar = ({ language, toggleLanguage, toggleContact }) => {
         >
           EN/ES
         </button>
-        <a href="/cv.html" target="_blank" rel="noopener">
+        <a href={`${API_BASE_URL.replace('/api', '')}/cv?lang=${language}`} target="_blank" rel="noopener">
           <button type="button" className="download-curriculum">
             {t.viewCV}
           </button>

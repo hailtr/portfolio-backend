@@ -10,6 +10,8 @@ from backend.models.entity import Entity
 from backend.models.translation import EntityTranslation
 from backend import db
 from sqlalchemy import desc
+import json
+import os
 
 api_bp = Blueprint('api', __name__, url_prefix='/api')
 
@@ -243,6 +245,50 @@ def get_tags():
         "tags": sorted_tags,
         "total": len(sorted_tags)
     }), 200
+
+
+@api_bp.route('/cv', methods=['GET'])
+def get_cv():
+    """
+    Get CV/Resume data.
+    
+    Query Parameters:
+        - lang: Language code (e.g., 'es', 'en'). Defaults to 'es'
+    
+    Returns:
+        JSON object with CV data in JSON Resume format
+    """
+    lang = request.args.get('lang', 'es')
+    
+    # Load resume.json from legacy folder
+    legacy_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'legacy', 'resume.json')
+    
+    try:
+        with open(legacy_path, 'r', encoding='utf-8') as f:
+            resume_data = json.load(f)
+        
+        # Return the requested language version
+        if lang in resume_data:
+            return jsonify(resume_data[lang]), 200
+        else:
+            # Fallback to 'es' if requested language not found
+            return jsonify(resume_data.get('es', {})), 200
+            
+    except FileNotFoundError:
+        return jsonify({
+            "error": "CV data not found",
+            "message": "resume.json file not found in legacy folder"
+        }), 404
+    except json.JSONDecodeError as e:
+        return jsonify({
+            "error": "Invalid JSON",
+            "message": str(e)
+        }), 500
+    except Exception as e:
+        return jsonify({
+            "error": "Server error",
+            "message": str(e)
+        }), 500
 
 
 # Error handlers for API blueprint

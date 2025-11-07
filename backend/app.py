@@ -12,6 +12,7 @@ from backend.models.translation import EntityTranslation
 from sqlalchemy import text
 from backend.routes.admin import admin_bp
 from backend.routes.api import api_bp
+from backend.routes.cv import cv_bp
 from auth.google_auth import auth_bp, oauth
 from backend.routes.index import index_bp
 
@@ -82,6 +83,7 @@ app.register_blueprint(api_bp)
 app.register_blueprint(admin_bp)
 app.register_blueprint(auth_bp)
 app.register_blueprint(index_bp)
+app.register_blueprint(cv_bp)
 
 
 # Run the app

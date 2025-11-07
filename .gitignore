@@ -36,3 +36,6 @@ Thumbs.db
 
 # Otros archivos de configuración
 *.code-workspace
+
+# Legacy
+legacy/

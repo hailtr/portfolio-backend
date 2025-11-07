@@ -190,13 +190,13 @@ main.visible {
   text-decoration: none;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   padding: var(--space-xs) var(--space-md);
-  color: rgba(248, 250, 252, 0.85);
+  color: cyan;
   border-radius: var(--radius-md);
   letter-spacing: 0.02em;
 }
 
 .nav-list a:hover {
-  color: var(--accent-cyan);
+  color: rgba(248, 250, 252, 0.85);
   background: rgba(0, 217, 255, 0.15);
 }
 
