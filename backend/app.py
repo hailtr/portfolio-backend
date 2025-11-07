@@ -3,6 +3,9 @@ import logging
 from flask import Flask, jsonify, request, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from flask_compress import Compress
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from dotenv import load_dotenv
 from backend import db
 import time
@@ -15,6 +18,8 @@ from backend.routes.api import api_bp
 from backend.routes.cv import cv_bp
 from auth.google_auth import auth_bp, oauth
 from backend.routes.index import index_bp
+from backend.services.cache_service import cache, check_cache_health
+from backend.utils import rate_limit
 
 # Logging configuration
 logging.basicConfig(
@@ -78,12 +83,66 @@ logger.info("Database URI loaded from environment")
 db.init_app(app)
 logger.info("Database connection initialized")
 
+# Initialize cache
+cache.init_app(app)
+logger.info("Cache initialized")
+
+# Initialize compression (gzip responses)
+compress = Compress(app)
+logger.info("Response compression enabled")
+
+# Initialize rate limiter
+# Storage: Use Redis if available, otherwise in-memory
+redis_url = os.getenv('REDIS_URL')
+limiter = Limiter(
+    app=app,
+    key_func=get_remote_address,
+    storage_uri=redis_url if redis_url else "memory://",
+    default_limits=["200 per day", "50 per hour"],  # Global limits
+    storage_options={"socket_connect_timeout": 30},
+    strategy="fixed-window"
+)
+logger.info(f"Rate limiter initialized with {'Redis' if redis_url else 'memory'} storage")
+
+# Make limiter available to routes
+rate_limit.init_limiter(limiter)
+
 logger.info("Registering blueprints")
 app.register_blueprint(api_bp)
 app.register_blueprint(admin_bp)
 app.register_blueprint(auth_bp)
 app.register_blueprint(index_bp)
 app.register_blueprint(cv_bp)
+
+
+# Enhanced health check endpoint
+@app.route('/health', methods=['GET'])
+def health():
+    """Comprehensive health check including cache and database"""
+    health_status = {
+        "status": "healthy",
+        "timestamp": time.time(),
+        "services": {}
+    }
+    
+    # Check database
+    try:
+        db.session.execute(text("SELECT 1"))
+        health_status["services"]["database"] = "connected"
+    except Exception as e:
+        health_status["status"] = "degraded"
+        health_status["services"]["database"] = f"error: {str(e)}"
+    
+    # Check cache
+    cache_healthy = check_cache_health()
+    health_status["services"]["cache"] = "operational" if cache_healthy else "unavailable"
+    
+    # Check rate limiter
+    health_status["services"]["rate_limiter"] = "active"
+    health_status["services"]["cache_type"] = "redis" if redis_url else "memory"
+    
+    status_code = 200 if health_status["status"] == "healthy" else 503
+    return jsonify(health_status), status_code
 
 
 # Run the app

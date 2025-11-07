@@ -3,6 +3,11 @@ REST API endpoints for portfolio data.
 
 These endpoints serve JSON data to the React frontend.
 All endpoints are public (no authentication required for reading).
+
+Features:
+- Caching: Responses cached for 5 minutes (configurable per endpoint)
+- Rate Limiting: Protects against abuse
+- Query Optimization: Eager loading to reduce DB queries
 """
 
 from flask import Blueprint, jsonify, request
@@ -10,13 +15,17 @@ from backend.models.entity import Entity
 from backend.models.translation import EntityTranslation
 from backend import db
 from sqlalchemy import desc
+from sqlalchemy.orm import joinedload
 import json
 import os
+from backend.services.cache_service import cache_response, cache_key_with_lang, cache_key_simple
+from backend.utils.rate_limit import api_rate_limit, generous_rate_limit, strict_rate_limit
 
 api_bp = Blueprint('api', __name__, url_prefix='/api')
 
 
 @api_bp.route('/health', methods=['GET'])
+@generous_rate_limit()  # More generous for health checks
 def health_check():
     """
     Health check endpoint for monitoring.
@@ -40,6 +49,8 @@ def health_check():
 
 
 @api_bp.route('/entities', methods=['GET'])
+@api_rate_limit()  # 100 requests per minute
+@cache_response(timeout=300, key_func=cache_key_with_lang)  # Cache for 5 minutes
 def get_entities():
     """
     Get all entities with translations.
@@ -51,13 +62,18 @@ def get_entities():
     
     Returns:
         JSON array of entities with translations
+        
+    Performance:
+        - Cached for 5 minutes
+        - Rate limited to 100 req/min
+        - Uses eager loading for translations
     """
     lang = request.args.get('lang', 'es')
     entity_type = request.args.get('type')
     category = request.args.get('category')
     
-    # Build query
-    query = Entity.query
+    # Build query with eager loading (reduces N+1 queries)
+    query = Entity.query.options(joinedload(Entity.translations))
     
     if entity_type:
         query = query.filter(Entity.type == entity_type)
@@ -109,6 +125,8 @@ def get_entities():
 
 
 @api_bp.route('/entities/<slug>', methods=['GET'])
+@api_rate_limit()  # 100 requests per minute
+@cache_response(timeout=300, key_func=cache_key_with_lang)  # Cache for 5 minutes
 def get_entity_by_slug(slug):
     """
     Get a single entity by slug with translations.
@@ -118,10 +136,16 @@ def get_entity_by_slug(slug):
     
     Returns:
         JSON object with entity data and all available translations
+        
+    Performance:
+        - Cached for 5 minutes
+        - Rate limited to 100 req/min
+        - Uses eager loading for translations
     """
     lang = request.args.get('lang', 'es')
     
-    entity = Entity.query.filter_by(slug=slug).first()
+    # Eager load translations to avoid N+1 queries
+    entity = Entity.query.options(joinedload(Entity.translations)).filter_by(slug=slug).first()
     
     if not entity:
         return jsonify({
@@ -169,12 +193,18 @@ def get_entity_by_slug(slug):
 
 
 @api_bp.route('/languages', methods=['GET'])
+@generous_rate_limit()  # 300 requests per minute (lightweight endpoint)
+@cache_response(timeout=600, key_func=cache_key_simple)  # Cache for 10 minutes
 def get_available_languages():
     """
     Get list of available languages in the system.
     
     Returns:
         JSON array of language codes
+        
+    Performance:
+        - Cached for 10 minutes (changes infrequently)
+        - Rate limited to 300 req/min
     """
     # Query distinct languages from translations
     languages = db.session.query(EntityTranslation.lang).distinct().all()
@@ -187,6 +217,8 @@ def get_available_languages():
 
 
 @api_bp.route('/categories', methods=['GET'])
+@generous_rate_limit()  # 300 requests per minute (lightweight endpoint)
+@cache_response(timeout=600, key_func=cache_key_with_lang)  # Cache for 10 minutes
 def get_categories():
     """
     Get list of all categories used in entities.
@@ -196,6 +228,10 @@ def get_categories():
     
     Returns:
         JSON array of unique categories
+        
+    Performance:
+        - Cached for 10 minutes (changes infrequently)
+        - Rate limited to 300 req/min
     """
     entity_type = request.args.get('type')
     
@@ -218,12 +254,18 @@ def get_categories():
 
 
 @api_bp.route('/tags', methods=['GET'])
+@generous_rate_limit()  # 300 requests per minute (lightweight endpoint)
+@cache_response(timeout=600, key_func=cache_key_simple)  # Cache for 10 minutes
 def get_tags():
     """
     Get list of all tags used in entities.
     
     Returns:
         JSON array of unique tags with usage count
+        
+    Performance:
+        - Cached for 10 minutes (changes infrequently)
+        - Rate limited to 300 req/min
     """
     entities = Entity.query.all()
     
@@ -248,6 +290,8 @@ def get_tags():
 
 
 @api_bp.route('/cv', methods=['GET'])
+@api_rate_limit()  # 100 requests per minute
+@cache_response(timeout=600, key_func=cache_key_with_lang)  # Cache for 10 minutes
 def get_cv():
     """
     Get CV/Resume data.
@@ -257,6 +301,10 @@ def get_cv():
     
     Returns:
         JSON object with CV data in JSON Resume format
+        
+    Performance:
+        - Cached for 10 minutes (changes infrequently)
+        - Rate limited to 100 req/min
     """
     lang = request.args.get('lang', 'es')
     
