@@ -844,6 +844,40 @@ h4 {
     width: 100%;
     margin: 0;
   }
+  
+  /* Fix education section layout in print - prevent overlapping */
+  .education-container .section-header {
+    display: block !important;
+    width: 100% !important;
+    margin-bottom: 4px !important;
+    overflow: hidden !important;
+  }
+  
+  .education-container .section-header .pull-left,
+  .education-container .section-header .pull-right {
+    float: none !important;
+    display: inline-block !important;
+    width: auto !important;
+  }
+  
+  .education-container .section-header .pull-right {
+    margin-left: 10px !important;
+  }
+  
+  .education-container .location {
+    display: block !important;
+    clear: both !important;
+    margin-top: 2px !important;
+    margin-bottom: 4px !important;
+    padding-bottom: 6px !important;
+  }
+  
+  .education-container h4 {
+    display: block !important;
+    clear: both !important;
+    margin-top: 2px !important;
+    margin-bottom: 4px !important;
+  }
 }
 
 /* Components */
@@ -889,6 +923,7 @@ h4 {
   padding-bottom: 6px;
   font-weight: 400;
 }
+
 .education-container .specialization {
   text-transform: none;
   font-style: italic;
