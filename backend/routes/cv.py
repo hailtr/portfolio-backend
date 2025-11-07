@@ -40,15 +40,15 @@ def get_cv_data_from_db(lang='es', profile_slug='default'):
 
 
 def get_cv_data_from_json(lang='es'):
-    """Load CV data from legacy resume.json (fallback)"""
-    legacy_path = os.path.join(
-        os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 
-        'legacy', 
+    """Load CV data from backend/data/resume.json (fallback)"""
+    json_path = os.path.join(
+        os.path.dirname(os.path.dirname(__file__)), 
+        'data', 
         'resume.json'
     )
     
     try:
-        with open(legacy_path, 'r', encoding='utf-8') as f:
+        with open(json_path, 'r', encoding='utf-8') as f:
             resume_data = json.load(f)
         return resume_data.get(lang, resume_data.get('es', {}))
     except Exception:

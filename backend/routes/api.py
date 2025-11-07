@@ -260,11 +260,11 @@ def get_cv():
     """
     lang = request.args.get('lang', 'es')
     
-    # Load resume.json from legacy folder
-    legacy_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'legacy', 'resume.json')
+    # Load resume.json from backend/data folder
+    json_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'resume.json')
     
     try:
-        with open(legacy_path, 'r', encoding='utf-8') as f:
+        with open(json_path, 'r', encoding='utf-8') as f:
             resume_data = json.load(f)
         
         # Return the requested language version
@@ -277,7 +277,7 @@ def get_cv():
     except FileNotFoundError:
         return jsonify({
             "error": "CV data not found",
-            "message": "resume.json file not found in legacy folder"
+            "message": "resume.json file not found in backend/data folder"
         }), 404
     except json.JSONDecodeError as e:
         return jsonify({
