@@ -402,6 +402,9 @@ ul.two-column li {
 .page-1 {
   page-break-after: always; /* Force page 1 to end, start page 2 on new page */
   page-break-inside: avoid; /* Keep page 1 content together */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Distribute sections evenly */
 }
 
 .page-1-content {
@@ -725,6 +728,10 @@ h4 {
   .page-1 {
     page-break-after: always;
     page-break-inside: avoid;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100vh; /* Ensure it uses full page height */
   }
   
   .page-1-header {
@@ -758,7 +765,7 @@ h4 {
   
   .languages-container-compact {
     padding-top: 6px;
-    margin-top: 5px;
+    margin-top: auto; /* Push to bottom of flexbox container */
   }
   
   /* Tighter spacing for summary and education in print */
