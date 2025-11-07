@@ -19,12 +19,12 @@
       "es": {
         "role": "Data Engineer",
         "tagline": "Transformando datos en decisiones de negocio",
-        "summary": "Data Engineer con más de 2 años construyendo soluciones end-to-end: desde la ingesta y transformación de datos hasta sistemas de automatización en producción. Especializado en Python, SQL, ETL y cloud infrastructure. Experiencia desarrollando sistemas de automatización con IA (OCR + NLP) que generaron ahorros de $5K/mes, pipelines de datos en tiempo real para cumplimiento normativo, y automatización de infraestructura en Azure."
+        "summary": "Data Engineer con experiencia construyendo soluciones end-to-end en Python, SQL y cloud infrastructure. Desarrollé sistemas de automatización con IA (OCR + NLP) que generaron ahorros de $5K/mes y pipelines de datos en tiempo real para cumplimiento normativo."
       },
       "en": {
         "role": "Data Engineer",
         "tagline": "Transforming data into business decisions",
-        "summary": "Data Engineer with 2+ years building end-to-end data solutions: from ingestion and transformation to production automation systems. Specialized in Python, SQL, ETL pipelines, and cloud infrastructure. Experience developing AI-powered automation systems (OCR + NLP) that saved $5K/month, real-time data pipelines for compliance monitoring, and Azure infrastructure automation."
+        "summary": "Data Engineer with experience building end-to-end solutions in Python, SQL, and cloud infrastructure. Developed AI-powered automation systems (OCR + NLP) that saved $5K/month and real-time data pipelines for compliance monitoring."
       }
     }
   },
