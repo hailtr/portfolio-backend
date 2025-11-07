@@ -730,14 +730,26 @@ h4 {
     page-break-inside: avoid;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     min-height: 100vh; /* Ensure it uses full page height */
+  }
+  
+  /* Add flex properties to sections */
+  .page-1 .container {
+    flex-shrink: 0; /* Don't shrink sections */
+  }
+  
+  /* Add flexible spacing between sections */
+  .page-1 .summary-container,
+  .page-1 .skills-container,
+  .page-1 .education-container {
+    margin-bottom: 12px; /* Consistent spacing between sections */
   }
   
   .page-1-header {
     padding: 10px 0 8px 0;
     text-align: center;
     margin-bottom: 10px;
+    flex-shrink: 0;
   }
   
   .profile-img {
