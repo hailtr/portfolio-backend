@@ -1,135 +1,154 @@
-# Dynamic AI-Driven Portfolio
+# Portfolio Backend - Rafael Ortiz
 
 ## Overview
-This project is a dynamic, AI-assisted portfolio designed to adapt its content to the visitor’s intent.  
-It moves beyond traditional static portfolios by using AI to highlight the most relevant information for each visitor and automating content maintenance.
+A full-stack portfolio application showcasing projects, experience, and skills for a Data Engineer.  
+Built with a Flask backend and React frontend, this system provides a dynamic, maintainable portfolio with multilingual support, admin panel for content management, and server-side PDF generation for CVs.
 
-Originally built as a Single Page Application (SPA) with a JSON data source, it is now being re-architected with a Flask backend and a React frontend.  
-The goal is to achieve a modular, maintainable, and intelligent structure capable of generating personalized experiences and printable, pixel-perfect CVs.
+The application features a clean separation between frontend and backend, with PostgreSQL as the primary data store and JSON caching for performance. Content is managed through an admin interface, eliminating the need for direct code edits.
 
 ---
 
-## Objectives
-1. **Maintainability**  
-   Transition from static content to a structured data model using JSON as cache and PostgreSQL as the main data store.  
-   Updates should be made through data uploads rather than direct code edits.
+## Features
 
-2. **Intelligence**  
-   Integrate AI capabilities (Azure AI or OpenAI) to let the portfolio interpret visitor intent and dynamically prioritize relevant information.
+### Implemented
+- **Flask Backend API** - RESTful API with PostgreSQL database and JSON caching
+- **React Frontend** - Modern, responsive UI with routing and language switching (ES/EN)
+- **Admin Panel** - Content management interface for projects, experiences, and profile data
+- **PDF CV Generation** - Server-side PDF rendering using WeasyPrint for pixel-perfect CVs
+- **Multilingual Support** - Full bilingual content (English/Spanish) with dynamic language switching
+- **Authentication** - Google OAuth integration for admin access
+- **Caching & Performance** - Redis caching layer with fallback to in-memory cache
+- **Rate Limiting** - API protection with configurable rate limits
+- **Health Monitoring** - Comprehensive health check endpoints for services
 
-3. **Reliable PDF Rendering**  
-   Replace client-side screenshots with server-side PDF generation to ensure consistent formatting and pagination.
-
-4. **Design Consistency**  
-   Preserve the current aesthetic while introducing modular CSS and componentized layouts.  
-   Maintain a clear separation between the frontend (React) and backend (Flask).
+### Future Enhancements
+- **AI Personalization** - Context-aware content prioritization based on visitor intent
+- **Advanced Analytics** - Visitor behavior tracking and insights
+- **Chat Assistant** - Interactive portfolio assistant for visitor engagement
 
 ---
 
 ## Architecture
 
 ### High-Level Diagram
+```
 React (Frontend) ───► Flask API ───► PostgreSQL
 │ │
-└──── JSON Cache ◄┘
-
-yaml
-
+└──── Redis Cache ◄┘
+```
 
 **Frontend (React)**  
 Handles user interface, routing, language switching, and dynamic rendering.  
-May be hosted on Vercel, Netlify, or another global CDN.
+Hosted on Vercel with global CDN distribution.
 
 **Backend (Flask)**  
-Acts as the core logic layer for API handling, data retrieval, PDF generation, and AI processing.  
-Deployed on Railway, using PostgreSQL as the database and JSON as a caching mechanism.
+Core API layer handling data retrieval, PDF generation, and admin operations.  
+Deployed on Railway with PostgreSQL database and Redis caching.
 
 **Database (PostgreSQL)**  
-Stores structured portfolio content such as projects, experiences, and metadata.  
-Ensures persistence and supports multilingual data fields.
+Stores structured portfolio content including projects, experiences, and multilingual translations.  
+Ensures data persistence and supports complex queries.
 
-**Cache (JSON)**  
-Serves as a lightweight, fast-access layer to minimize database reads and support offline or fallback rendering.
-
----
-
-## Technology Stack
-
-| Layer | Technology | Purpose |
-|-------|-------------|----------|
-| Frontend | React | UI, routing, dynamic rendering |
-| Backend | Flask | API logic, AI integration, PDF generation |
-| Database | PostgreSQL (Railway) | Structured data storage |
-| Cache | JSON | Local or cloud cache for quick reads |
-| AI Layer | Azure AI / OpenAI | Context-aware personalization |
-| Deployment | Railway (backend), Vercel or Netlify (frontend) | Hosting and CI/CD pipeline |
-| Styling | CSS Modules or Tailwind | Modular design system |
-
----
-
-## Folder Structure
-portfolio/
-│
-├── backend/
-│ ├── app.py
-│ ├── routes/
-│ ├── services/
-│ ├── models/
-│ └── templates/
-│
-├── frontend/
-│ ├── src/
-│ ├── public/
-│ ├── package.json
-│ └── build/
-│
-└── README.md
-
-yaml
+**Cache (Redis/Memory)**  
+Fast-access layer to minimize database reads and improve response times.  
+Falls back to in-memory cache if Redis is unavailable.
 
 
 ---
 
 ## Data Flow
-1. Visitor interacts with React frontend.
-2. Frontend requests data from Flask API.
-3. Flask retrieves information from the JSON cache; if stale or missing, it queries PostgreSQL.
-4. Data is returned to React in a structured format and rendered dynamically.
-5. AI components analyze visitor behavior or query context to adjust what is shown.
-6. On demand, Flask generates PDFs directly from templates and serves them as downloadable resumes.
+1. **Visitor Interaction** - User interacts with React frontend (hosted on Vercel)
+2. **API Request** - Frontend makes requests to Flask API endpoints
+3. **Cache Check** - Flask checks Redis/in-memory cache for data
+4. **Database Query** - If cache miss, queries PostgreSQL for structured portfolio data
+5. **Response** - Data returned as JSON to React frontend
+6. **Rendering** - React dynamically renders content with language support
+7. **PDF Generation** - On demand, Flask generates PDF CVs using WeasyPrint templates
 
 ---
 
-## Roadmap
+## Quick Start
 
-### Phase 1 – Core Infrastructure
-- Flask API with PostgreSQL and JSON cache.
-- React frontend connected to API.
-- Basic bilingual content (English/Spanish).
-- Deployment to Railway and Vercel.
+### Prerequisites
+- Python 3.12+
+- Node.js 18+
+- PostgreSQL database (or SQLite for local development)
+- Redis (optional, for caching)
 
-### Phase 2 – PDF Engine
-- Server-side rendering for clean CV export.
-- Dedicated multilingual templates.
-- Resume versioning and customization.
+### Backend Setup
+```powershell
+# Create virtual environment
+python -m venv venv
+.\venv\Scripts\Activate.ps1
 
-### Phase 3 – AI Personalization
-- Integration with Azure or OpenAI APIs.
-- Context-aware recommendations.
-- Adaptive content highlighting per visitor profile.
+# Install dependencies
+pip install -r requirements.txt
 
-### Phase 4 – Design and Optimization
-- Modular CSS refactor or Tailwind migration.
-- Performance, SEO, and accessibility improvements.
-- Optional chat-style assistant inside portfolio.
+# Copy environment file
+Copy-Item env.example .env
+# Edit .env with your database and API keys
+
+# Run the application
+python run.py
+```
+
+### Frontend Setup
+```powershell
+cd frontend
+npm install
+npm run dev
+```
+
+For detailed setup instructions, see [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)
+
+## Project Structure
+```
+portfolio-backend/
+├── backend/              # Flask application
+│   ├── app.py           # Main Flask app
+│   ├── models/          # SQLAlchemy models
+│   ├── routes/          # API routes (api, admin, cv, index)
+│   ├── services/        # Business logic (cache, PDF, Cloudinary)
+│   ├── templates/       # HTML templates for CV and admin
+│   └── utils/           # Utilities (rate limiting, etc.)
+├── frontend/            # React application
+│   ├── src/
+│   │   ├── components/  # React components
+│   │   ├── pages/       # Page components
+│   │   └── config.js    # API configuration
+│   └── public/          # Static assets
+├── auth/                # Authentication (Google OAuth)
+├── docs/                # Documentation
+├── scripts/             # Utility scripts
+└── data/                # JSON data files
+```
+
+## API Documentation
+See [docs/API.md](docs/API.md) for complete API endpoint documentation.
+
+## Deployment
+- **Backend**: Deployed on Railway with PostgreSQL
+- **Frontend**: Deployed on Vercel
+- **Database**: PostgreSQL (Railway)
+- **Cache**: Redis (not yet)
 
 ---
 
-## Vision
-The long-term vision is to create a self-maintaining, intelligent portfolio system capable of understanding who is visiting and what they are looking for.  
-Rather than listing achievements, the portfolio should **converse** with the visitor—offering the most relevant information first and shaping the narrative dynamically.
+## Technology Stack
 
----
+| Component | Technology | Purpose |
+|-----------|-----------|---------|
+| Frontend | React + Vite | UI, routing, dynamic rendering |
+| Backend | Flask | API logic, PDF generation, admin panel |
+| Database | PostgreSQL | Structured data storage (Railway) |
+| Cache | Redis / Memory | Fast data access layer |
+| PDF Engine | WeasyPrint | Server-side CV generation |
+| Authentication | Google OAuth | Admin access control |
+| Deployment | Railway (backend), Vercel (frontend) | Hosting and CI/CD |
+| Styling | CSS Modules | Component-based styling |
+
+## Contributing
+This is a personal portfolio project. For questions or suggestions, please open an issue.
 
 ## License
 MIT License © Rafael Ortiz
