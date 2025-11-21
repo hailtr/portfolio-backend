@@ -40,16 +40,18 @@
   filter: invert(100%) sepia(0%) saturate(4167%) hue-rotate(179deg) brightness(110%) contrast(101%);
 }
 
+/* --- FIX GLOBAL: Alturas y Root --- */
 html {
   font-size: 10px;
   scroll-behavior: smooth;
-  overflow-x: hidden;
+  height: 100%; /* Asegura altura base */
 }
 
 body {
   margin: 0;
   padding: 0;
   width: 100%;
+  height: 100%; /* Asegura altura base */
   color: #f8fafc;
   background: var(--main-darkblue);
   font-family: 'Inter', 'Open Sans', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -57,7 +59,17 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
+  overflow-x: hidden; /* Mantiene el scroll horizontal oculto */
+  position: relative;
+}
+
+/* FIX: El contenedor de React debe ocupar toda la pantalla */
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden; /* Evita desbordes internos */
 }
 
 html::-webkit-scrollbar {
@@ -111,6 +123,7 @@ main {
   position: relative;
   width: 100%;
   margin: 0;
+  flex: 1; /* Hace que main ocupe el espacio disponible empujando el footer */
 }
 
 main.visible {
@@ -1429,14 +1442,14 @@ main.visible {
   border-color: var(--accent-cyan);
 }
 
-/* Background Shapes - Enhanced */
+/* Background Shapes - FIX CRITICO: FIXED POSITION */
 .App {
   position: relative;
   width: 100%;
 }
 
 .bg-shape {
-  position: absolute;
+  position: fixed; /* <--- CAMBIO CRÍTICO: FIXED */
   z-index: -1;
   border-radius: 50%;
   filter: blur(120px);
