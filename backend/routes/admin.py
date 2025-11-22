@@ -35,7 +35,6 @@ def admin_home():
             entities = Entity.query.all()
             entity = None
             translations = {}
-            available_languages = []
 
             if edit_id:
                 entity = Entity.query.get_or_404(edit_id)
@@ -65,22 +64,20 @@ def admin_home():
 @requires_login
 @requires_role("admin")
 def admin_check():
+    """Check database connectivity with retries."""
     retries = 3
     for attempt in range(retries):
         try:
             db.session.execute(text("SELECT 1"))
-            db.session.commit()
             return jsonify({"ready": True})
         except Exception as e:
             current_app.logger.warning(
-                f"DB check falló (attempt {attempt + 1}/{retries}): {e}"
+                f"DB check failed (attempt {attempt + 1}/{retries}): {e}"
             )
             db.session.rollback()
             if attempt < retries - 1:
                 import time
-
-                time.sleep(1)  # Wait 1 second before retry
-
+                time.sleep(1)
     return jsonify({"ready": False})
 
 
@@ -90,38 +87,39 @@ def admin_check():
 def admin_save():
     form = request.form
     entity_id = form.get("id")
-
-    # Input validation
     slug = form.get("slug", "").strip()
     entity_type = form.get("type", "").strip()
 
+    # Validation
     if not slug or not entity_type:
         return jsonify({"error": "Slug and type are required"}), 400
 
-    # Validate slug format (alphanumeric and hyphens only)
     import re
-
     if not re.match(r"^[a-z0-9-]+$", slug):
-        return (
-            jsonify(
-                {
-                    "error": "Slug must contain only lowercase letters, numbers, and hyphens"
-                }
-            ),
-            400,
-        )
+        return jsonify({
+            "error": (
+                "Slug must contain only lowercase letters, "
+                "numbers, and hyphens"
+            )
+        }), 400
 
+    # Get or create entity
     if entity_id:
         entity = Entity.query.get_or_404(entity_id)
     else:
         entity = Entity()
         db.session.add(entity)
 
+    # Update basic fields
     entity.slug = slug
     entity.type = entity_type
+
+    # Update meta
     entity.meta = {
         "category": form.get("category"),
-        "tags": [t.strip() for t in form.get("tags", "").split(",") if t.strip()],
+        "tags": [
+            t.strip() for t in form.get("tags", "").split(",") if t.strip()
+        ],
         "images": {
             "desktop": form.get("desktop_image", ""),
             "mobile": form.get("mobile_image", ""),
@@ -129,31 +127,37 @@ def admin_save():
         },
     }
 
+    # Update translations
     entity.translations.clear()
-
-    # Always save ES and EN translations
     for lang in ["es", "en"]:
-        try:
-            content = json.loads(form.get(f"content_{lang}", "{}"))
-        except json.JSONDecodeError:
-            content = {}
+        _update_translation(entity, form, lang)
 
-        t = EntityTranslation(
-            lang=lang,
-            title=form.get(f"title_{lang}"),
-            subtitle=form.get(f"subtitle_{lang}"),
-            description=form.get(f"description_{lang}"),
-            summary=form.get(f"summary_{lang}"),
-            content=content,
-        )
-        entity.translations.append(t)
+    try:
+        db.session.commit()
+        invalidate_entities_cache()
+        return redirect(url_for("admin.admin_home", ready="true"))
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(f"Error saving entity: {e}")
+        return jsonify({"error": str(e)}), 500
 
-    db.session.commit()
 
-    # Invalidate cache after updating entities
-    invalidate_entities_cache()
+def _update_translation(entity, form, lang):
+    """Helper to update a single translation."""
+    try:
+        content = json.loads(form.get(f"content_{lang}", "{}"))
+    except json.JSONDecodeError:
+        content = {}
 
-    return redirect(url_for("admin.admin_home", ready="true"))
+    t = EntityTranslation(
+        lang=lang,
+        title=form.get(f"title_{lang}"),
+        subtitle=form.get(f"subtitle_{lang}"),
+        description=form.get(f"description_{lang}"),
+        summary=form.get(f"summary_{lang}"),
+        content=content,
+    )
+    entity.translations.append(t)
 
 
 @admin_bp.route("/admin/delete/<int:id>", methods=["POST"])
@@ -208,7 +212,9 @@ def upload_image():
     public_id = request.form.get("public_id")
 
     # Upload to Cloudinary
-    result = cloudinary_service.upload_image(file, folder=folder, public_id=public_id)
+    result = cloudinary_service.upload_image(
+        file, folder=folder, public_id=public_id
+    )
 
     if result["success"]:
         return jsonify(result), 200

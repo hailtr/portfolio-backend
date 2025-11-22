@@ -1,7 +1,6 @@
 import os
 import logging
-from flask import Flask, jsonify, request, abort
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, jsonify, abort
 from flask_cors import CORS
 from flask_compress import Compress
 from flask_limiter import Limiter
@@ -10,8 +9,6 @@ from dotenv import load_dotenv
 from backend import db
 import time
 from sqlalchemy.exc import OperationalError
-from backend.models.entity import Entity
-from backend.models.translation import EntityTranslation
 from sqlalchemy import text
 from backend.routes.admin import admin_bp
 from backend.routes.api import api_bp
