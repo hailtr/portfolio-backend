@@ -1,9 +1,9 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import ProjectCard from "./ProjectCard";
 
 const ProjectsSection = ({ language, projects }) => {
   const [filter, setFilter] = useState("all");
-  const galleryRef = useRef(null);
+  const [visibleCount, setVisibleCount] = useState(6);
 
   const translations = {
     es: {
@@ -12,6 +12,7 @@ const ProjectsSection = ({ language, projects }) => {
       projects: "Proyectos",
       jobs: "Trabajos",
       learning: "Aprendizaje",
+      loadMore: "Ver más proyectos",
     },
     en: {
       title: "Projects",
@@ -19,6 +20,7 @@ const ProjectsSection = ({ language, projects }) => {
       projects: "Projects",
       jobs: "Jobs",
       learning: "Learning",
+      loadMore: "Load more projects",
     },
   };
 
@@ -34,45 +36,16 @@ const ProjectsSection = ({ language, projects }) => {
   const filteredProjects =
     filter === "all" ? projects : projects.filter((p) => p.category === filter);
 
-  const handleScroll = (direction) => {
-    if (galleryRef.current) {
-      const scrollAmount = 400;
-      const newPosition =
-        galleryRef.current.scrollLeft +
-        (direction === "next" ? scrollAmount : -scrollAmount);
-      galleryRef.current.scrollTo({
-        left: newPosition,
-        behavior: "smooth",
-      });
-    }
-  };
+  const visibleProjects = filteredProjects.slice(0, visibleCount);
 
   const handleFilterChange = (newFilter) => {
     setFilter(filterMap[newFilter] || newFilter);
+    setVisibleCount(6); // Reset visible count on filter change
   };
 
-  useEffect(() => {
-    const gallery = galleryRef.current;
-    if (!gallery) return;
-
-    const updateFades = () => {
-      const leftFade = gallery.previousElementSibling?.previousElementSibling;
-      const rightFade = gallery.previousElementSibling;
-
-      if (leftFade && rightFade) {
-        leftFade.classList.toggle("visible", gallery.scrollLeft > 10);
-        rightFade.classList.toggle(
-          "visible",
-          gallery.scrollLeft < gallery.scrollWidth - gallery.clientWidth - 10,
-        );
-      }
-    };
-
-    gallery.addEventListener("scroll", updateFades);
-    updateFades();
-
-    return () => gallery.removeEventListener("scroll", updateFades);
-  }, [filteredProjects]);
+  const handleLoadMore = () => {
+    setVisibleCount((prev) => prev + 6);
+  };
 
   return (
     <section className="section reveal-section">
@@ -80,9 +53,6 @@ const ProjectsSection = ({ language, projects }) => {
         <div className="content-container">
           <h2 id="job">{t.title}</h2>
           <div className="experience-gallery-wrapper">
-            <div className="experience-fade left"></div>
-            <div className="experience-fade right"></div>
-
             <div className="job-header">
               <div className="experience-filters">
                 <button
@@ -116,8 +86,8 @@ const ProjectsSection = ({ language, projects }) => {
               </div>
             </div>
 
-            <div className="experience-gallery" ref={galleryRef}>
-              {filteredProjects.map((project) => (
+            <div className="experience-gallery">
+              {visibleProjects.map((project) => (
                 <ProjectCard
                   key={project.id}
                   project={project}
@@ -125,6 +95,17 @@ const ProjectsSection = ({ language, projects }) => {
                 />
               ))}
             </div>
+
+            {visibleCount < filteredProjects.length && (
+              <div style={{ textAlign: "center", marginTop: "2rem" }}>
+                <button
+                  className="download-curriculum"
+                  onClick={handleLoadMore}
+                >
+                  {t.loadMore}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
