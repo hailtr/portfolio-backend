@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import ProjectCard from "./ProjectCard";
 
 const ProjectsSection = ({ language, projects }) => {
@@ -86,15 +87,33 @@ const ProjectsSection = ({ language, projects }) => {
               </div>
             </div>
 
-            <div className="experience-gallery">
+            <motion.div
+              className="experience-gallery"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.1 }}
+              variants={{
+                hidden: {},
+                visible: {
+                  transition: {
+                    staggerChildren: 0.1,
+                  },
+                },
+              }}
+            >
               {visibleProjects.map((project) => (
-                <ProjectCard
+                <motion.div
                   key={project.id}
-                  project={project}
-                  language={language}
-                />
+                  variants={{
+                    hidden: { opacity: 0, scale: 0.9, y: 20 },
+                    visible: { opacity: 1, scale: 1, y: 0 },
+                  }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <ProjectCard project={project} language={language} />
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
 
             {visibleCount < filteredProjects.length && (
               <div style={{ textAlign: "center", marginTop: "2rem" }}>

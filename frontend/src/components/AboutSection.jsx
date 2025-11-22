@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import API_BASE_URL from "../config";
 import SkillsTree from "./SkillsTree";
 import EducationCard from "./EducationCard";
@@ -29,9 +30,10 @@ const AboutSection = ({ language }) => {
     fetch(`${API_BASE_URL}/entities?lang=${language}&type=experience`)
       .then((res) => res.json())
       .then((data) => {
+        console.log("Experience data:", data); // Debug log
         const formatted = data.map((item) => ({
-          company: item.company || "",
-          role: item.title || "",
+          company: item.institution || item.title || "",
+          role: item.subtitle || "",
           location: item.location || "",
           skills: item.tags || [],
         }));
@@ -90,20 +92,66 @@ const AboutSection = ({ language }) => {
 
         <div className="content-container reveal-section">
           <h2>{t.experience}</h2>
-          <div className="experienceitems">
+          <motion.div
+            className="experienceitems"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={{
+              hidden: {},
+              visible: {
+                transition: {
+                  staggerChildren: 0.2,
+                },
+              },
+            }}
+          >
             {experienceData.map((exp, idx) => (
-              <ExperienceCard key={idx} experience={exp} />
+              <motion.div
+                key={idx}
+                variants={{
+                  hidden: { opacity: 0, x: -50 },
+                  visible: { opacity: 1, x: 0 },
+                }}
+                transition={{ duration: 0.5 }}
+                style={{ display: "contents" }}
+              >
+                <ExperienceCard experience={exp} />
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
 
         <div className="content-container reveal-section">
           <h2>{t.education}</h2>
-          <div className="educationitems">
+          <motion.div
+            className="educationitems"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={{
+              hidden: {},
+              visible: {
+                transition: {
+                  staggerChildren: 0.15,
+                },
+              },
+            }}
+          >
             {educationData.map((edu, idx) => (
-              <EducationCard key={idx} education={edu} />
+              <motion.div
+                key={idx}
+                variants={{
+                  hidden: { opacity: 0, y: 30 },
+                  visible: { opacity: 1, y: 0 },
+                }}
+                transition={{ duration: 0.5 }}
+                style={{ display: "contents" }}
+              >
+                <EducationCard education={edu} />
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

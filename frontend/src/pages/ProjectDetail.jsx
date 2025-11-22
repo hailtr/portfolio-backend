@@ -22,7 +22,7 @@ const ProjectDetail = ({ language }) => {
   if (error) {
     const isRateLimit = error === "RATELIMIT" || error === "ratelimit";
     return (
-      <div className="pd-error">
+      <div className="project-detail-error">
         <h1>{isRateLimit ? "⏳ Demasiada velocidad" : "Project not found"}</h1>
         <p>
           {isRateLimit

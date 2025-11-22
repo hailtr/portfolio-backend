@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
+import { motion, useScroll, useSpring } from "framer-motion";
 import Navbar from "./components/Navbar";
 import ProfileSection from "./components/ProfileSection";
 import ProjectsSection from "./components/ProjectsSection";
@@ -17,6 +18,12 @@ function App() {
   const [language, setLanguage] = useState("es");
   const [showContact, setShowContact] = useState(false);
   const location = useLocation();
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001,
+  });
 
   const {
     data: projectsData,
@@ -85,6 +92,20 @@ function App() {
 
   return (
     <div className="App">
+      <motion.div
+        className="progress-bar"
+        style={{
+          scaleX,
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: "4px",
+          background: "var(--accent-cyan)",
+          transformOrigin: "0%",
+          zIndex: 10000,
+        }}
+      />
       <BackgroundShapes />
       <Navbar
         language={language}
@@ -92,24 +113,34 @@ function App() {
         toggleContact={toggleContact}
       />
 
-      <Routes>
+      <Routes location={location} key={location.pathname}>
         <Route
           path="/"
           element={
-            <main className="visible">
+            <motion.main
+              className="visible"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
               <ProfileSection language={language} />
               <ProjectsSection language={language} projects={projects} />
               <AboutSection language={language} />
-            </main>
+            </motion.main>
           }
         />
 
         <Route
           path="/project/:slug"
           element={
-            <main className="visible">
+            <motion.main
+              className="visible"
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+            >
               <ProjectDetail language={language} />
-            </main>
+            </motion.main>
           }
         />
       </Routes>
