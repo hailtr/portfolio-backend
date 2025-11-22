@@ -1,14 +1,19 @@
-
 :root {
   --main-grey: #c2c6ce;
   --main-darkblue: #0a1628;
   --main-lightdarkblue: #1a2942;
-  --main-blue: #668DC0;
-  --main-lightblue: #C0D0EF;
+  --main-blue: #668dc0;
+  --main-lightblue: #c0d0ef;
   --accent-cyan: #00d9ff;
   --accent-cyan-glow: rgba(0, 217, 255, 0.3);
-  --gradient: linear-gradient(135deg, var(--main-lightblue), var(--main-blue), var(--main-lightdarkblue), var(--main-darkblue));
-  
+  --gradient: linear-gradient(
+    135deg,
+    var(--main-lightblue),
+    var(--main-blue),
+    var(--main-lightdarkblue),
+    var(--main-darkblue)
+  );
+
   /* Spacing system */
   --space-xs: 0.5rem;
   --space-sm: 1rem;
@@ -16,20 +21,20 @@
   --space-lg: 4rem;
   --space-xl: 6rem;
   --space-2xl: 8rem;
-  
+
   /* Border radius */
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
   --radius-xl: 24px;
   --radius-full: 9999px;
-  
+
   /* Shadows */
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.15);
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.25);
   --shadow-glow: 0 0 40px var(--accent-cyan-glow);
-  
+
   /* Glass effects */
   --glass-bg: rgba(255, 255, 255, 0.03);
   --glass-border: rgba(255, 255, 255, 0.1);
@@ -37,39 +42,43 @@
 }
 
 .filter-white {
-  filter: invert(100%) sepia(0%) saturate(4167%) hue-rotate(179deg) brightness(110%) contrast(101%);
+  filter: invert(100%) sepia(0%) saturate(4167%) hue-rotate(179deg)
+    brightness(110%) contrast(101%);
 }
-
 
 html {
   font-size: 10px;
   scroll-behavior: smooth;
-  height: 100%; 
+  height: 100%;
 }
 
 body {
   margin: 0;
   padding: 0;
   width: 100%;
-  height: 100%; 
+  height: 100%;
   color: #f8fafc;
   background: var(--main-darkblue);
-  font-family: 'Inter', 'Open Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family:
+    "Inter",
+    "Open Sans",
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
   font-size: 1.6rem;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden; 
+  overflow-x: hidden;
   position: relative;
 }
-
 
 #root {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   position: relative;
-  overflow: hidden; 
+  overflow: hidden;
 }
 
 html::-webkit-scrollbar {
@@ -123,7 +132,7 @@ main {
   position: relative;
   width: 100%;
   margin: 0;
-  flex: 1; 
+  flex: 1;
 }
 
 main.visible {
@@ -238,7 +247,7 @@ main.visible {
 }
 
 .download-curriculum::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background: linear-gradient(135deg, var(--main-blue), var(--accent-cyan));
@@ -267,7 +276,9 @@ main.visible {
 
 /* Sections */
 .section {
-  transition: opacity 0.5s ease, transform 0.5s ease;
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
   transform: translateX(0);
   position: relative;
   z-index: 1;
@@ -325,8 +336,7 @@ main.visible {
   object-position: center;
   border-radius: 50%;
   border: 3px solid var(--glass-border);
-  box-shadow: var(--shadow-glow),
-              var(--shadow-lg);
+  box-shadow: var(--shadow-glow), var(--shadow-lg);
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   display: block;
@@ -340,15 +350,20 @@ main.visible {
   height: 28rem;
   border-radius: 50%;
   padding: 3px;
-  background: linear-gradient(135deg, rgba(0, 217, 255, 0.3), rgba(102, 141, 192, 0.3));
+  background: linear-gradient(
+    135deg,
+    rgba(0, 217, 255, 0.3),
+    rgba(102, 141, 192, 0.3)
+  );
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .profile-picture-wrapper:hover {
   transform: scale(1.05);
   background: linear-gradient(135deg, var(--accent-cyan), var(--main-blue));
-  box-shadow: 0 0 60px var(--accent-cyan-glow),
-              var(--shadow-lg);
+  box-shadow:
+    0 0 60px var(--accent-cyan-glow),
+    var(--shadow-lg);
 }
 
 .profile-picture-wrapper .profile-picture {
@@ -380,7 +395,11 @@ main.visible {
 
 .profile-greating h2 .name {
   display: block;
-  background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--main-blue) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--accent-cyan) 0%,
+    var(--main-blue) 100%
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -420,7 +439,7 @@ main.visible {
 }
 
 .country-after::before {
-  content: '📍';
+  content: "📍";
   margin-right: 0.5rem;
 }
 
@@ -446,7 +465,8 @@ main.visible {
   width: 90%;
 }
 
-.aboutme-section h2, .job-section h2 {
+.aboutme-section h2,
+.job-section h2 {
   font-size: clamp(3rem, 5vw, 5rem);
   font-weight: 700;
   color: var(--accent-cyan);
@@ -457,8 +477,9 @@ main.visible {
   display: inline-block;
 }
 
-.aboutme-section h2::after, .job-section h2::after {
-  content: '';
+.aboutme-section h2::after,
+.job-section h2::after {
+  content: "";
   position: absolute;
   left: 0;
   bottom: -8px;
@@ -468,7 +489,7 @@ main.visible {
   border-radius: 2px;
 }
 
-.aboutme-section p:not(.about-intro-text), 
+.aboutme-section p:not(.about-intro-text),
 .job-section p {
   margin: 0;
   font-size: 1.4rem;
@@ -525,8 +546,9 @@ main.visible {
 .skill-category:hover {
   transform: translateY(-4px);
   border-color: rgba(0, 217, 255, 0.3);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2),
-              0 0 40px rgba(0, 217, 255, 0.1);
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.2),
+    0 0 40px rgba(0, 217, 255, 0.1);
 }
 
 .skill-category-title {
@@ -541,7 +563,7 @@ main.visible {
 }
 
 .skill-category-title::before {
-  content: '';
+  content: "";
   width: 4px;
   height: 20px;
   background: linear-gradient(180deg, var(--accent-cyan), var(--main-blue));
@@ -601,14 +623,17 @@ main.visible {
 }
 
 /* Education and Experience */
-.educationitems, .experienceitems {
+.educationitems,
+.experienceitems {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   flex-wrap: wrap;
 }
 
-.experienceitems h1, .experienceitems p, .experienceitems h3 {
+.experienceitems h1,
+.experienceitems p,
+.experienceitems h3 {
   padding: 0;
   margin: 0;
 }
@@ -630,18 +655,22 @@ main.visible {
 }
 
 .relative-skill:hover {
-  background: linear-gradient(135deg, 
-    rgba(0, 217, 255, 0.15), 
-    rgba(102, 141, 192, 0.15));
+  background: linear-gradient(
+    135deg,
+    rgba(0, 217, 255, 0.15),
+    rgba(102, 141, 192, 0.15)
+  );
   border-color: rgba(0, 217, 255, 0.4);
-  box-shadow: 0 4px 12px rgba(0, 217, 255, 0.2),
-              0 0 20px rgba(0, 217, 255, 0.1);
+  box-shadow:
+    0 4px 12px rgba(0, 217, 255, 0.2),
+    0 0 20px rgba(0, 217, 255, 0.1);
   transform: translateY(-2px);
   color: var(--accent-cyan);
 }
 
 /* Education & Experience Cards - Modernized with Equal Heights */
-.education-card, .experience-card {
+.education-card,
+.experience-card {
   background: var(--glass-bg);
   backdrop-filter: blur(var(--glass-blur));
   border: 1px solid var(--glass-border);
@@ -685,24 +714,23 @@ main.visible {
   max-width: none;
 }
 
-.education-card::before, 
+.education-card::before,
 .experience-card::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, 
-    rgba(0, 217, 255, 0.05), 
-    transparent);
+  background: linear-gradient(135deg, rgba(0, 217, 255, 0.05), transparent);
   opacity: 0;
   transition: opacity 0.4s ease;
 }
 
-.education-card:hover, 
+.education-card:hover,
 .experience-card:hover {
   transform: translateY(-4px);
   border-color: rgba(0, 217, 255, 0.3);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2),
-              0 0 40px rgba(0, 217, 255, 0.1);
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.2),
+    0 0 40px rgba(0, 217, 255, 0.1);
 }
 
 .education-card:hover::before,
@@ -792,7 +820,7 @@ main.visible {
   backdrop-filter: blur(12px);
   padding: 1.5rem 2rem;
   border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
   z-index: 9999;
   opacity: 0;
   pointer-events: none;
@@ -853,8 +881,9 @@ main.visible {
   background: var(--glass-bg);
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
-  box-shadow: var(--shadow-lg),
-              inset 0 0 0 1px var(--glass-border);
+  box-shadow:
+    var(--shadow-lg),
+    inset 0 0 0 1px var(--glass-border);
   border: 1px solid var(--glass-border);
 }
 
@@ -868,9 +897,10 @@ main.visible {
 
 .animated-glass:hover {
   transform: translateY(-4px);
-  box-shadow: var(--shadow-lg),
-              0 12px 40px rgba(0, 0, 0, 0.3),
-              inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+  box-shadow:
+    var(--shadow-lg),
+    0 12px 40px rgba(0, 0, 0, 0.3),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.15);
   background: rgba(255, 255, 255, 0.05);
 }
 
@@ -913,10 +943,14 @@ main.visible {
 }
 
 .experience-filters button::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(0, 217, 255, 0.1), rgba(102, 141, 192, 0.1));
+  background: linear-gradient(
+    135deg,
+    rgba(0, 217, 255, 0.1),
+    rgba(102, 141, 192, 0.1)
+  );
   opacity: 0;
   transition: opacity 0.3s ease;
 }
@@ -1055,21 +1089,21 @@ main.visible {
     scrollbar-width: thin;
     scrollbar-color: var(--accent-cyan) transparent;
   }
-  
+
   .experience-gallery.horizontal-scroll::-webkit-scrollbar {
     height: 6px;
   }
-  
+
   .experience-gallery.horizontal-scroll::-webkit-scrollbar-track {
     background: rgba(255, 255, 255, 0.05);
     border-radius: 3px;
   }
-  
+
   .experience-gallery.horizontal-scroll::-webkit-scrollbar-thumb {
     background: linear-gradient(90deg, var(--accent-cyan), var(--main-blue));
     border-radius: 3px;
   }
-  
+
   .experience-gallery.horizontal-scroll::-webkit-scrollbar-thumb:hover {
     background: var(--accent-cyan);
   }
@@ -1107,8 +1141,9 @@ main.visible {
   z-index: 50;
   background: rgba(0, 0, 0, 0.95);
   backdrop-filter: blur(25px);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8),
-              0 0 80px rgba(0, 217, 255, 0.2);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.8),
+    0 0 80px rgba(0, 217, 255, 0.2);
   border-color: rgba(0, 217, 255, 0.5);
 }
 
@@ -1164,11 +1199,10 @@ main.visible {
 
 .job-card:hover .job-card-hover-info,
 .job-card.debug-expanded .job-card-hover-info {
-  max-height: 500px; 
+  max-height: 500px;
   padding: var(--space-md) var(--space-md) var(--space-xs);
   opacity: 1;
 }
-
 
 .job-card.debug-expanded .job-card-inner {
   height: auto;
@@ -1176,8 +1210,9 @@ main.visible {
   z-index: 50;
   background: rgba(0, 0, 0, 0.95);
   backdrop-filter: blur(25px);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8),
-              0 0 80px rgba(0, 217, 255, 0.2);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.8),
+    0 0 80px rgba(0, 217, 255, 0.2);
   border-color: rgba(0, 217, 255, 0.5);
 }
 
@@ -1461,7 +1496,8 @@ main.visible {
 }
 
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translate(0, 0) scale(1);
   }
   33% {
@@ -1575,7 +1611,9 @@ main.visible {
 }
 
 /* Responsive Styles */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 

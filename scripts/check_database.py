@@ -1,6 +1,7 @@
 """
 Quick script to check if you have projects in your database
 """
+
 import sys
 import os
 
@@ -15,7 +16,7 @@ with app.app_context():
     print("=" * 60)
     print("DATABASE CHECK")
     print("=" * 60)
-    
+
     # Check connection
     try:
         db.session.execute(db.text("SELECT 1"))
@@ -23,11 +24,11 @@ with app.app_context():
     except Exception as e:
         print(f"✗ Database connection failed: {e}")
         sys.exit(1)
-    
+
     # Check entities
     entities = Entity.query.all()
     print(f"\nTotal entities in database: {len(entities)}")
-    
+
     if len(entities) == 0:
         print("\n⚠️  NO PROJECTS FOUND!")
         print("This is why your gallery is empty.")
@@ -42,6 +43,5 @@ with app.app_context():
             print(f"  - {entity.slug} ({entity.type})")
             translations = [t.lang for t in entity.translations]
             print(f"    Languages: {', '.join(translations)}")
-    
-    print("\n" + "=" * 60)
 
+    print("\n" + "=" * 60)

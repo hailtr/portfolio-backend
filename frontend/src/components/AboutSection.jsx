@@ -1,80 +1,84 @@
-import { useState, useEffect } from 'react'
-import API_BASE_URL from '../config'
-import SkillsTree from './SkillsTree'
-import EducationCard from './EducationCard'
-import ExperienceCard from './ExperienceCard'
+import { useState, useEffect } from "react";
+import API_BASE_URL from "../config";
+import SkillsTree from "./SkillsTree";
+import EducationCard from "./EducationCard";
+import ExperienceCard from "./ExperienceCard";
 
 const AboutSection = ({ language }) => {
-  const [experienceData, setExperienceData] = useState([])
-  const [educationData, setEducationData] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [experienceData, setExperienceData] = useState([]);
+  const [educationData, setEducationData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const translations = {
     es: {
-      skills: 'Habilidades',
-      education: 'Educación',
-      experience: 'Experiencia'
+      skills: "Habilidades",
+      education: "Educación",
+      experience: "Experiencia",
     },
     en: {
-      skills: 'Skills',
-      education: 'Education',
-      experience: 'Experience'
-    }
-  }
+      skills: "Skills",
+      education: "Education",
+      experience: "Experience",
+    },
+  };
 
-  const t = translations[language] || translations.es
+  const t = translations[language] || translations.es;
 
   useEffect(() => {
     // Fetch work experience
     fetch(`${API_BASE_URL}/entities?lang=${language}&type=experience`)
-      .then(res => res.json())
-      .then(data => {
-        const formatted = data.map(item => ({
-          company: item.company || '',
-          role: item.title || '',
-          location: item.location || '',
-          skills: item.tags || []
-        }))
-        setExperienceData(formatted)
+      .then((res) => res.json())
+      .then((data) => {
+        const formatted = data.map((item) => ({
+          company: item.company || "",
+          role: item.title || "",
+          location: item.location || "",
+          skills: item.tags || [],
+        }));
+        setExperienceData(formatted);
       })
-      .catch(err => console.error('Error fetching experience:', err))
+      .catch((err) => console.error("Error fetching experience:", err));
 
     // Fetch education
     fetch(`${API_BASE_URL}/entities?lang=${language}&type=education`)
-      .then(res => res.json())
-      .then(data => {
-        const formatted = data.map(item => {
+      .then((res) => res.json())
+      .then((data) => {
+        const formatted = data.map((item) => {
           // Format date
-          let dateStr = ''
+          let dateStr = "";
           if (item.current) {
-            dateStr = item.startDate ? `${item.startDate} - ${language === 'es' ? 'Presente' : 'Present'}` : (language === 'es' ? 'Presente' : 'Present')
+            dateStr = item.startDate
+              ? `${item.startDate} - ${language === "es" ? "Presente" : "Present"}`
+              : language === "es"
+                ? "Presente"
+                : "Present";
           } else if (item.endDate && item.startDate) {
             // Both dates: show range
-            dateStr = `${item.startDate} - ${item.endDate}`
+            dateStr = `${item.startDate} - ${item.endDate}`;
           } else if (item.endDate) {
             // Only end date (courses): show just the year
-            dateStr = item.endDate
+            dateStr = item.endDate;
           } else if (item.startDate) {
             // Only start date
-            dateStr = item.startDate
+            dateStr = item.startDate;
           }
-          
+
           return {
-            institution: item.institution || '',
-            title: `${item.subtitle} ${language === 'es' ? 'en' : 'in'} ${item.title}`,
+            institution: item.institution || "",
+            title: `${item.subtitle} ${language === "es" ? "en" : "in"} ${item.title}`,
             date: dateStr,
-            location: item.location || '',
-            skills: item.courses || []
-          }
-        })
-        setEducationData(formatted)
-        setLoading(false)
+            location: item.location || "",
+            skills: item.courses || [],
+          };
+        });
+        setEducationData(formatted);
+        setLoading(false);
       })
-      .catch(err => {
-        console.error('Error fetching education:', err)
-        setLoading(false)
-      })
-  }, [language])
+      .catch((err) => {
+        console.error("Error fetching education:", err);
+        setLoading(false);
+      });
+  }, [language]);
 
   return (
     <section className="section reveal-section">
@@ -103,8 +107,7 @@ const AboutSection = ({ language }) => {
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default AboutSection
-
+export default AboutSection;

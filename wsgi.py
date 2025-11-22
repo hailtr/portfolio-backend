@@ -21,8 +21,6 @@ from backend.app import app
 # This is what the WSGI server imports
 application = app
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Fallback for direct execution
     app.run()
-
-

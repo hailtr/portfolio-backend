@@ -13,6 +13,7 @@ GET /api/health
 ```
 
 **Response:**
+
 ```json
 {
   "status": "healthy",
@@ -31,16 +32,19 @@ GET /api/entities
 ```
 
 **Query Parameters:**
+
 - `lang` (optional): Language code (`es`, `en`, etc.). Default: `es`
 - `type` (optional): Filter by entity type (e.g., `project`)
 - `category` (optional): Filter by category
 
 **Example:**
+
 ```
 GET /api/entities?lang=en&type=project
 ```
 
 **Response:**
+
 ```json
 [
   {
@@ -71,14 +75,17 @@ GET /api/entities/<slug>
 ```
 
 **Query Parameters:**
+
 - `lang` (optional): Preferred language. Default: `es`
 
 **Example:**
+
 ```
 GET /api/entities/portfolio?lang=en
 ```
 
 **Response:**
+
 ```json
 {
   "id": 1,
@@ -125,6 +132,7 @@ GET /api/languages
 ```
 
 **Response:**
+
 ```json
 {
   "languages": ["es", "en"],
@@ -143,9 +151,11 @@ GET /api/categories
 ```
 
 **Query Parameters:**
+
 - `type` (optional): Filter by entity type
 
 **Response:**
+
 ```json
 {
   "categories": ["proyectos", "trabajo"],
@@ -164,6 +174,7 @@ GET /api/tags
 ```
 
 **Response:**
+
 ```json
 {
   "tags": [
@@ -180,6 +191,7 @@ GET /api/tags
 ## CORS Configuration
 
 The API allows requests from:
+
 - `http://localhost:3000` (React default)
 - `http://localhost:5173` (Vite default)
 - Custom origins via `CORS_ORIGINS` environment variable
@@ -193,6 +205,7 @@ The API allows requests from:
 ## Error Responses
 
 ### 404 Not Found
+
 ```json
 {
   "error": "Not found",
@@ -201,6 +214,7 @@ The API allows requests from:
 ```
 
 ### 500 Internal Server Error
+
 ```json
 {
   "error": "Internal server error",
@@ -213,6 +227,7 @@ The API allows requests from:
 ## Testing the API
 
 ### Using curl:
+
 ```bash
 # Health check
 curl http://localhost:5000/api/health
@@ -225,10 +240,11 @@ curl http://localhost:5000/api/entities/portfolio?lang=en
 ```
 
 ### Using the test script:
+
 ```bash
 python test_api.py
 ```
 
 ### Using your browser:
-Just open: `http://localhost:5000/api/entities?lang=es`
 
+Just open: `http://localhost:5000/api/entities?lang=es`

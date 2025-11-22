@@ -50,7 +50,7 @@
       opacity: 0.5;
       cursor: not-allowed;
     }
-    
+
     /* Page transition animation */
     .cv-pages-container {
       position: relative;
@@ -79,7 +79,7 @@
   <button id="download-pdf" onclick="window.location.href='{{ url_for('cv.cv_pdf', lang=lang) }}'">
     {% if lang == 'es' %}Descargar PDF{% else %}Download PDF{% endif %}
   </button>
-  
+
   <style>
     #download-pdf {
       position: fixed;
@@ -106,7 +106,7 @@
       box-shadow: 0 6px 20px var(--glow-primary);
     }
   </style>
-  
+
   <div class="page-navigation">
     <button onclick="showPage(1)" id="page-btn-1" class="active">{% if lang == 'es' %}Página 1{% else %}Page 1{% endif %}</button>
     <button onclick="showPage(2)" id="page-btn-2">{% if lang == 'es' %}Página 2{% else %}Page 2{% endif %}</button>
@@ -371,17 +371,17 @@
     function setTheme(themeName) {
       // Set theme on html element
       document.documentElement.setAttribute('data-theme', themeName);
-      
+
       // Save to localStorage
       localStorage.setItem('cv-theme', themeName);
-      
+
       // Update active button
       document.querySelectorAll('.theme-btn').forEach(btn => {
         btn.classList.remove('active');
       });
       document.querySelector(`.theme-btn[data-theme="${themeName}"]`).classList.add('active');
     }
-    
+
     // Draggable Theme Switcher
     (function() {
       const themeSwitcher = document.querySelector('.theme-switcher');
@@ -392,7 +392,7 @@
       let initialY;
       let xOffset = 0;
       let yOffset = 0;
-      
+
       // Load saved position
       const savedPosition = localStorage.getItem('theme-switcher-position');
       if (savedPosition) {
@@ -401,16 +401,16 @@
         yOffset = y;
         themeSwitcher.style.transform = `translate(${x}px, ${y}px)`;
       }
-      
+
       themeSwitcher.addEventListener('mousedown', dragStart);
       document.addEventListener('mousemove', drag);
       document.addEventListener('mouseup', dragEnd);
-      
+
       // Touch events for mobile
       themeSwitcher.addEventListener('touchstart', dragStart);
       document.addEventListener('touchmove', drag);
       document.addEventListener('touchend', dragEnd);
-      
+
       function dragStart(e) {
         if (e.type === 'touchstart') {
           initialX = e.touches[0].clientX - xOffset;
@@ -419,17 +419,17 @@
           initialX = e.clientX - xOffset;
           initialY = e.clientY - yOffset;
         }
-        
+
         if (e.target === themeSwitcher || e.target === themeSwitcher.querySelector('h4')) {
           isDragging = true;
           themeSwitcher.classList.add('dragging');
         }
       }
-      
+
       function drag(e) {
         if (isDragging) {
           e.preventDefault();
-          
+
           if (e.type === 'touchmove') {
             currentX = e.touches[0].clientX - initialX;
             currentY = e.touches[0].clientY - initialY;
@@ -437,27 +437,27 @@
             currentX = e.clientX - initialX;
             currentY = e.clientY - initialY;
           }
-          
+
           xOffset = currentX;
           yOffset = currentY;
-          
+
           themeSwitcher.style.transform = `translate(${currentX}px, ${currentY}px)`;
         }
       }
-      
+
       function dragEnd(e) {
         if (isDragging) {
           initialX = currentX;
           initialY = currentY;
           isDragging = false;
           themeSwitcher.classList.remove('dragging');
-          
+
           // Save position
           localStorage.setItem('theme-switcher-position', JSON.stringify({ x: xOffset, y: yOffset }));
         }
       }
     })();
-    
+
     // Load saved theme on page load
     window.addEventListener('DOMContentLoaded', () => {
       const savedTheme = localStorage.getItem('cv-theme') || 'emerald';
@@ -465,27 +465,27 @@
         setTheme(savedTheme);
       }
     });
-    
+
     // Page navigation
     function showPage(pageNum) {
       // Hide all pages
       document.querySelectorAll('.cv-page').forEach(page => {
         page.classList.add('hidden');
       });
-      
+
       // Show selected page
       document.getElementById(`page-${pageNum}`).classList.remove('hidden');
-      
+
       // Update button states
       document.querySelectorAll('.page-navigation button').forEach(btn => {
         btn.classList.remove('active');
       });
       document.getElementById(`page-btn-${pageNum}`).classList.add('active');
-      
+
       // Scroll to top
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-    
+
     // Initialize: show page 1
     showPage(1);
   </script>

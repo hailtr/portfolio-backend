@@ -24,8 +24,8 @@ from backend.utils import rate_limit
 # Logging configuration
 logging.basicConfig(
     level=logging.INFO,
-    format='[%(asctime)s] [%(levelname)s] %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S'
+    format="[%(asctime)s] [%(levelname)s] %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
 )
 logger = logging.getLogger(__name__)
 
@@ -39,32 +39,40 @@ app = Flask(__name__)
 
 # Configure CORS for frontend access
 # In production, restrict origins to your Vercel domain
-default_origins = 'http://localhost:3000,http://localhost:5173,https://rfo-portfolio.vercel.app'
-cors_origins = os.getenv('CORS_ORIGINS', default_origins).split(',')
-CORS(app, resources={
-    r"/api/*": {
-        "origins": cors_origins,
-        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        "allow_headers": ["Content-Type", "Authorization"],
-        "expose_headers": ["Content-Type"],
-        "supports_credentials": False
-    }
-})
+default_origins = (
+    "http://localhost:3000,http://localhost:5173,https://rfo-portfolio.vercel.app"
+)
+cors_origins = os.getenv("CORS_ORIGINS", default_origins).split(",")
+CORS(
+    app,
+    resources={
+        r"/api/*": {
+            "origins": cors_origins,
+            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+            "allow_headers": ["Content-Type", "Authorization"],
+            "expose_headers": ["Content-Type"],
+            "supports_credentials": False,
+        }
+    },
+)
 
 # App configuration
 app.secret_key = os.getenv("FLASK_SECRET_KEY", "fallback_super_secret_key")
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL", "sqlite:///portfolio.db")
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['ADMIN_TOKEN'] = os.getenv("ADMIN_TOKEN", "changeme")
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
+    "DATABASE_URL", "sqlite:///portfolio.db"
+)
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["ADMIN_TOKEN"] = os.getenv("ADMIN_TOKEN", "changeme")
 
 # Session configuration
 from datetime import timedelta
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)  # Session lasts 7 days
+
+app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=7)  # Session lasts 7 days
 # Secure cookies in production (HTTPS), False for local development
-app.config['SESSION_COOKIE_SECURE'] = os.getenv('FLASK_ENV') == 'production'
-app.config['SESSION_COOKIE_HTTPONLY'] = True
-app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
-app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+app.config["SESSION_COOKIE_SECURE"] = os.getenv("FLASK_ENV") == "production"
+app.config["SESSION_COOKIE_HTTPONLY"] = True
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
     "pool_pre_ping": True,
     "pool_recycle": 280,  # Recycle connections before Railway's 5min timeout
     "pool_size": 10,
@@ -74,8 +82,8 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
         "keepalives": 1,
         "keepalives_idle": 30,
         "keepalives_interval": 10,
-        "keepalives_count": 5
-    }
+        "keepalives_count": 5,
+    },
 }
 
 oauth.init_app(app)
@@ -94,16 +102,18 @@ logger.info("Response compression enabled")
 
 # Initialize rate limiter
 # Storage: Use Redis if available, otherwise in-memory
-redis_url = os.getenv('REDIS_URL')
+redis_url = os.getenv("REDIS_URL")
 limiter = Limiter(
     app=app,
     key_func=get_remote_address,
     storage_uri=redis_url if redis_url else "memory://",
     default_limits=["200 per day", "50 per hour"],  # Global limits
     storage_options={"socket_connect_timeout": 30},
-    strategy="fixed-window"
+    strategy="fixed-window",
 )
-logger.info(f"Rate limiter initialized with {'Redis' if redis_url else 'memory'} storage")
+logger.info(
+    f"Rate limiter initialized with {'Redis' if redis_url else 'memory'} storage"
+)
 
 # Make limiter available to routes
 rate_limit.init_limiter(limiter)
@@ -117,15 +127,11 @@ app.register_blueprint(cv_bp)
 
 
 # Enhanced health check endpoint
-@app.route('/health', methods=['GET'])
+@app.route("/health", methods=["GET"])
 def health():
     """Comprehensive health check including cache and database"""
-    health_status = {
-        "status": "healthy",
-        "timestamp": time.time(),
-        "services": {}
-    }
-    
+    health_status = {"status": "healthy", "timestamp": time.time(), "services": {}}
+
     # Check database
     try:
         db.session.execute(text("SELECT 1"))
@@ -133,21 +139,23 @@ def health():
     except Exception as e:
         health_status["status"] = "degraded"
         health_status["services"]["database"] = f"error: {str(e)}"
-    
+
     # Check cache
     cache_healthy = check_cache_health()
-    health_status["services"]["cache"] = "operational" if cache_healthy else "unavailable"
-    
+    health_status["services"]["cache"] = (
+        "operational" if cache_healthy else "unavailable"
+    )
+
     # Check rate limiter
     health_status["services"]["rate_limiter"] = "active"
     health_status["services"]["cache_type"] = "redis" if redis_url else "memory"
-    
+
     status_code = 200 if health_status["status"] == "healthy" else 503
     return jsonify(health_status), status_code
 
 
 # Run the app
-if __name__ == '__main__':
+if __name__ == "__main__":
     logger.info("Running app as standalone script")
 
     with app.app_context():
@@ -161,7 +169,9 @@ if __name__ == '__main__':
             except OperationalError as e:
                 retries += 1
                 wait_time = 0 + retries
-                logger.warning(f"Connection failed: (attempt {retries}), retrying in {wait_time}s...")
+                logger.warning(
+                    f"Connection failed: (attempt {retries}), retrying in {wait_time}s..."
+                )
                 time.sleep(wait_time)
         else:
             logger.error("Database connection failed after multiple retries")

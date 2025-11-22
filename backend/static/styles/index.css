@@ -2,14 +2,21 @@
 :root {
   --main-grey: #c2c6ce;
   --main-darkblue: #0f1c30;
-  --main-lightdarkblue: #304A6E;
-  --main-blue: #668DC0;
-  --main-lightblue: #C0D0EF;
-  --gradiant: linear-gradient(175deg, var(--main-lightblue), var(--main-blue), var(--main-lightdarkblue), var(--main-darkblue));
+  --main-lightdarkblue: #304a6e;
+  --main-blue: #668dc0;
+  --main-lightblue: #c0d0ef;
+  --gradiant: linear-gradient(
+    175deg,
+    var(--main-lightblue),
+    var(--main-blue),
+    var(--main-lightdarkblue),
+    var(--main-darkblue)
+  );
 }
 
 .filter-white {
-  filter: invert(100%) sepia(0%) saturate(4167%) hue-rotate(179deg) brightness(110%) contrast(101%);
+  filter: invert(100%) sepia(0%) saturate(4167%) hue-rotate(179deg)
+    brightness(110%) contrast(101%);
 }
 
 html {
@@ -21,11 +28,12 @@ body {
   margin: 0;
   color: whitesmoke;
   background: var(--main-darkblue);
-  font-family: 'Open Sans', Arial, sans-serif;
+  font-family: "Open Sans", Arial, sans-serif;
   font-size: 1.8rem;
 }
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   width: 100%;
@@ -63,7 +71,6 @@ body::-webkit-scrollbar {
     transform: rotate(360deg);
   }
 }
-
 
 main {
   display: flex;
@@ -127,14 +134,15 @@ main.visible {
   padding: 0.4rem 0.8rem;
   font-size: 1.2rem;
   cursor: pointer;
-  transition: background 0.3s ease, color 0.3s ease;
+  transition:
+    background 0.3s ease,
+    color 0.3s ease;
 }
 
 .lang-switcher:hover {
   background: rgba(255, 255, 255, 0.2);
   color: white;
 }
-
 
 .nav-list {
   display: flex;
@@ -145,7 +153,6 @@ main.visible {
   align-items: center;
   text-align: center;
   height: 100%;
-  
 }
 
 a {
@@ -189,7 +196,9 @@ a:active {
 
 /* Secciones individuales */
 .section {
-  transition: opacity 0.5s ease, transform 0.5s ease;
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
   transform: translateX(0);
   position: relative;
   z-index: 1;
@@ -262,7 +271,6 @@ a:active {
   font-weight: 600;
 }
 
-
 /* Estilos para sección de about me */
 .aboutme-section {
   display: flex;
@@ -282,22 +290,21 @@ a:active {
   flex-direction: column;
   padding: 1rem;
   height: auto;
-  width: 90%
+  width: 90%;
 }
 
-
-
-.aboutme-section h2, .job-section h2 {
+.aboutme-section h2,
+.job-section h2 {
   font-size: 3rem;
   color: cyan;
   margin: 0;
   padding: 0 0 1rem 2rem;
 }
-.aboutme-section p, .job-section p {
+.aboutme-section p,
+.job-section p {
   margin: 0;
   font-size: 1.2rem;
 }
-
 
 .paragraph {
   font-size: 4rem;
@@ -358,12 +365,11 @@ a:active {
 }
 
 .skill-tree-skill p {
-  
   margin-left: 0.5rem;
 }
 
 .skill-tree-title h3 {
-  margin: 0
+  margin: 0;
 }
 
 .skill-tree-column.on {
@@ -372,14 +378,17 @@ a:active {
 
 /* Estilos para sección de educación y experiencias laborales */
 
-.educationitems, .experienceitems {
+.educationitems,
+.experienceitems {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   flex-wrap: wrap;
 }
 
-.experienceitems h1, .experienceitems p, .experienceitems h3 {
+.experienceitems h1,
+.experienceitems p,
+.experienceitems h3 {
   padding: 0;
   margin: 0;
 }
@@ -410,7 +419,8 @@ a:active {
 
 /* Inicio estilos company cards */
 
-.education-card, .experience-card {
+.education-card,
+.experience-card {
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -438,8 +448,6 @@ a:active {
   color: cyan;
 }
 
-
-
 .skill-logo-name {
   display: flex;
   flex-wrap: wrap;
@@ -448,12 +456,7 @@ a:active {
   padding-top: 1rem;
 }
 
-
-
-
 /* Fin estilos company cards */
-
-
 
 /* footer */
 
@@ -478,7 +481,6 @@ a:active {
   line-height: 1.4;
 }
 
-
 /* Estilos para contacto */
 
 .contact-overlay {
@@ -490,7 +492,7 @@ a:active {
   backdrop-filter: blur(12px);
   padding: 1.5rem 2rem;
   border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
   z-index: 9999;
   opacity: 0;
   pointer-events: none;
@@ -502,7 +504,6 @@ a:active {
   pointer-events: auto;
   transform: scale(1);
 }
-
 
 .contact-card {
   text-align: left;
@@ -542,13 +543,11 @@ a:active {
   color: cyan;
 }
 
-
-
-
 /* Fin estilos banners */
 
 /* Estilos para sección de educación y experiencias laborales */
-.educationitems p, .experienceitems p{
+.educationitems p,
+.experienceitems p {
   padding: 0;
 }
 
@@ -562,7 +561,6 @@ a:active {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
-  
 }
 
 .animated-glass {
@@ -623,8 +621,8 @@ a:active {
 }
 
 .experience-gallery {
-  scrollbar-width: thin;               /* Firefox */
-  scrollbar-color: #668DC0 transparent;
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: #668dc0 transparent;
 }
 
 .experience-gallery::-webkit-scrollbar {
@@ -675,15 +673,13 @@ a:active {
 
 .experience-fade.left {
   left: 0;
-  background: linear-gradient(to right, rgba(0,0,0,0.2), rgba(0,0,0,0));
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
 }
 
 .experience-fade.right {
   right: -10px;
-  background: linear-gradient(to left, rgba(0,0,0,0.2), rgba(0,0,0,0));
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
 }
-
-
 
 .experience-gallery {
   display: flex;
@@ -700,7 +696,7 @@ a:active {
   height: 260px;
   border-radius: 1rem;
   padding: 1rem;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(0, 0, 0, 0.1);
   scroll-snap-align: start;
   flex-shrink: 0;
@@ -787,7 +783,9 @@ a:active {
   flex-direction: column;
   gap: 0.8rem;
   position: relative;
-  transition: background 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    background 0.3s ease,
+    box-shadow 0.3s ease;
   overflow: hidden;
 }
 
@@ -859,7 +857,6 @@ a:active {
   margin-top: 0.5rem;
 }
 
-
 /* Estilo opcional para párrafos internos */
 .job-description p {
   margin: 0.5rem 0;
@@ -921,12 +918,12 @@ a:active {
     overflow-y: auto;
     max-height: 90vh;
   }
-  }
+}
 
-  .job-tags {
-    justify-content: flex-start;
-    flex-wrap: wrap;
-  }
+.job-tags {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
 
 /* TRANSICIONES */
 
@@ -943,7 +940,9 @@ a:active {
 
 .job-description {
   opacity: 0.95;
-  transition: opacity 0.3s ease, max-height 0.4s ease;
+  transition:
+    opacity 0.3s ease,
+    max-height 0.4s ease;
 }
 
 .job-card.expanded .job-description {
@@ -951,7 +950,9 @@ a:active {
 }
 
 .job-card {
-  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  transition:
+    box-shadow 0.3s ease,
+    transform 0.3s ease;
 }
 
 .job-card:not(.expanded):hover {
@@ -964,7 +965,9 @@ a:active {
   box-shadow: 0 0 12px rgba(0, 255, 255, 0.3);
   cursor: pointer;
   transform: translateY(-2px);
-  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  transition:
+    box-shadow 0.3s ease,
+    transform 0.3s ease;
 }
 
 .job-card-inner {
@@ -977,9 +980,6 @@ a:active {
 .job-card.expanded .job-card-inner {
   max-height: 1200px; /* o cualquier valor que incluya toda la altura */
 }
-
-
-
 
 .material-symbols-rounded.disabled {
   opacity: 0.3;
@@ -1045,8 +1045,6 @@ a:active {
   right: 10%;
   background: cyan;
 }
-
-
 
 /* Estilos media */
 
@@ -1198,7 +1196,6 @@ a:active {
 }
 
 @media (max-width: 768px) {
-
   .bg-shape {
     filter: blur(60px);
     opacity: 0.15;
@@ -1229,15 +1226,13 @@ a:active {
     z-index: 998;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   }
-  
+
   .menu-toggle {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
     z-index: 999; /* para que esté sobre todo */
   }
-  
-
 
   #nav-banner.active {
     display: block;
@@ -1260,7 +1255,9 @@ a:active {
   }
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -1286,13 +1283,14 @@ svg,
   max-width: 100%;
 }
 
-
 /* Estilos para reveal */
 
 .reveal-section {
   opacity: 0;
   transform: translateY(30px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
 }
 
 .reveal-section.visible {
@@ -1321,7 +1319,9 @@ svg,
   margin-left: auto; /* empuja a la derecha */
   margin-right: 1rem; /* espacio al borde */
   cursor: pointer;
-  transition: background 0.3s ease, color 0.3s ease;
+  transition:
+    background 0.3s ease,
+    color 0.3s ease;
 }
 
 .lang-switcher:hover {
@@ -1353,47 +1353,48 @@ svg,
     gap: 0.5rem;
   }
   .job-card.expanded .job-card-image-container {
-  flex-direction: row;
-  gap: 0.5rem;
-}
-  
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+
   .job-card.expanded {
     padding: 3rem 1rem 1rem 1rem;
   }
   .banner-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
-  gap: 0.5rem;
-}
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    gap: 0.5rem;
+  }
 
-.logo {
-  font-weight: bold;
-  font-size: 1.4rem;
-  color: cyan;
-}
+  .logo {
+    font-weight: bold;
+    font-size: 1.4rem;
+    color: cyan;
+  }
 
-.banner-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
+  .banner-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
 
-.menu-toggle {
-  font-size: 2.4rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: white;
-}
-
+  .menu-toggle {
+    font-size: 2.4rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: white;
+  }
 }
 
 .job-card {
   opacity: 1;
   transform: scale(1);
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
   display: flex;
 }
 

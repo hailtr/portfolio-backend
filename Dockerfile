@@ -28,4 +28,3 @@ COPY . .
 # Procfile: web: gunicorn wsgi:app --bind 0.0.0.0:$PORT --workers 2 --threads 4 --timeout 60 --log-level info
 # Use shell form to allow PORT env var expansion (Railway always sets PORT)
 CMD gunicorn wsgi:app --bind 0.0.0.0:$PORT --workers 2 --threads 4 --timeout 60 --log-level info
-

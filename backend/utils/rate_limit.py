@@ -34,4 +34,3 @@ def generous_rate_limit():
     if limiter:
         return limiter.limit("300 per minute")
     return lambda f: f
-

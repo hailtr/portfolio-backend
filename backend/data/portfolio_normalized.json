@@ -1,6 +1,6 @@
 {
   "_INSTRUCTIONS": "This is your normalized data. Fill it out, then run: python scripts/import_portfolio_data.py --file backend/data/portfolio_normalized.json",
-  
+
   "metadata": {
     "version": "1.0.1",
     "profile": "rafael-ortiz-profile",
@@ -8,7 +8,7 @@
     "creationDate": "2024-01-01T00:00:00Z",
     "printCount": 0
   },
-  
+
   "profile": {
     "name": "Rafael Ortiz",
     "email": "lustigrfortiz@gmail.com",
@@ -45,7 +45,16 @@
       "location": "Venezuela",
       "startDate": "2025-09",
       "endDate": "2025-10",
-      "tags": ["Python", "Flask", "SQLAlchemy", "SQLite", "Data Modeling", "ETL", "API Design", "Alembic"],
+      "tags": [
+        "Python",
+        "Flask",
+        "SQLAlchemy",
+        "SQLite",
+        "Data Modeling",
+        "ETL",
+        "API Design",
+        "Alembic"
+      ],
       "images": {
         "desktop": "",
         "mobile": "",
@@ -119,7 +128,14 @@
       "location": "Venezuela",
       "startDate": "2024-02",
       "endDate": "2024-12",
-      "tags": ["Python", "DAX", "Power BI", "ProfitPlus", "PostgreSQL", "Django"],
+      "tags": [
+        "Python",
+        "DAX",
+        "Power BI",
+        "ProfitPlus",
+        "PostgreSQL",
+        "Django"
+      ],
       "images": {
         "desktop": "",
         "mobile": "",
@@ -155,7 +171,14 @@
       "location": "Chile",
       "startDate": "2023-08",
       "endDate": "2023-12",
-      "tags": ["Python", "SQL Server", "Windows Server", "PRTG", "Azure", "PowerQuery"],
+      "tags": [
+        "Python",
+        "SQL Server",
+        "Windows Server",
+        "PRTG",
+        "Azure",
+        "PowerQuery"
+      ],
       "images": {
         "desktop": "",
         "mobile": "",
@@ -486,7 +509,17 @@
       "startDate": "2024-01",
       "endDate": null,
       "current": true,
-      "courses": ["Python", "SQL", "Java", "Machine Learning", "Data Analysis", "Agile", "Análisis de Sistemas", "Estructuras de Datos", "C"],
+      "courses": [
+        "Python",
+        "SQL",
+        "Java",
+        "Machine Learning",
+        "Data Analysis",
+        "Agile",
+        "Análisis de Sistemas",
+        "Estructuras de Datos",
+        "C"
+      ],
       "show_in_cv": true,
       "show_in_portfolio": true,
       "translations": {
@@ -508,7 +541,14 @@
       "startDate": "",
       "endDate": "2023",
       "current": false,
-      "courses": ["Python", "Pandas", "NumPy", "Matplotlib", "Machine Learning", "Statistical Analysis"],
+      "courses": [
+        "Python",
+        "Pandas",
+        "NumPy",
+        "Matplotlib",
+        "Machine Learning",
+        "Statistical Analysis"
+      ],
       "show_in_cv": true,
       "show_in_portfolio": true,
       "translations": {
@@ -545,4 +585,3 @@
     }
   ]
 }
-

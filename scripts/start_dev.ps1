@@ -34,5 +34,3 @@ Write-Host "Press Ctrl+C to stop" -ForegroundColor Gray
 Write-Host ""
 
 python run.py
-
-

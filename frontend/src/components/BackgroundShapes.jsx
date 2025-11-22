@@ -8,8 +8,7 @@ const BackgroundShapes = () => {
       <div className="bg-shape shape5"></div>
       <div className="bg-shape shape6"></div>
     </>
-  )
-}
+  );
+};
 
-export default BackgroundShapes
-
+export default BackgroundShapes;

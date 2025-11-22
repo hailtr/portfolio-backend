@@ -16,8 +16,7 @@ const ExperienceCard = ({ experience }) => {
         ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ExperienceCard
-
+export default ExperienceCard;

@@ -9,21 +9,21 @@ const EducationCard = ({ education }) => {
         <i className="fa-solid fa-calendar"></i> {education.date}
         {education.location && (
           <>
-            {' • '}
+            {" • "}
             <i className="fa-solid fa-location-dot"></i> {education.location}
           </>
         )}
       </p>
       <div className="skill-logo-name">
-        {education.skills && education.skills.map((skill, idx) => (
-          <span key={idx} className="relative-skill">
-            {skill}
-          </span>
-        ))}
+        {education.skills &&
+          education.skills.map((skill, idx) => (
+            <span key={idx} className="relative-skill">
+              {skill}
+            </span>
+          ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default EducationCard
-
+export default EducationCard;
