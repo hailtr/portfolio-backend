@@ -1,4 +1,4 @@
-// src/hooks/useCachedFetch.js
+
 import { useState, useEffect } from 'react'
 
 const CACHE_DURATION = 1000 * 60 * 60 * 24; // 24 Horas
@@ -9,7 +9,6 @@ export const useCachedFetch = (url, cacheKey) => {
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    // Si no hay URL (ej. esperando que cargue algo previo), no hacemos nada
     if (!url) return;
 
     const fetchData = async () => {
@@ -17,23 +16,19 @@ export const useCachedFetch = (url, cacheKey) => {
       setError(null)
 
       try {
-        // 1. REVISAR CACHÉ (LocalStorage)
-        // Solo revisamos si proveemos una cacheKey
         if (cacheKey) {
           const cachedItem = localStorage.getItem(cacheKey)
           if (cachedItem) {
             const parsed = JSON.parse(cachedItem)
-            // Verificar si caducó
             if (Date.now() - parsed.timestamp < CACHE_DURATION) {
               console.log(`[Cache Hit] Usando datos locales para: ${cacheKey}`)
               setData(parsed.data)
               setLoading(false)
-              return; // ¡Salimos! No tocamos la API
+              return; 
             }
           }
         }
 
-        // 2. SI NO HAY CACHÉ, LLAMAR API
         console.log(`[API Call] Fetching: ${url}`)
         const res = await fetch(url)
 
@@ -44,7 +39,6 @@ export const useCachedFetch = (url, cacheKey) => {
 
         const jsonData = await res.json()
 
-        // 3. GUARDAR EN CACHÉ
         if (cacheKey) {
           localStorage.setItem(cacheKey, JSON.stringify({
             data: jsonData,

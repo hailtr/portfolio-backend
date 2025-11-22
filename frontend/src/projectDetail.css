@@ -1,49 +1,46 @@
-/* --- CORRECCIÓN 1: Wrapper Transparente --- */
-/* Ya no forzamos fondo blanco ni altura mínima que rompa el layout */
+
 .pd-wrapper {
   width: 100%;
-  /* min-height: 100vh;  <-- ELIMINADO para no empujar tus shapes */
   box-sizing: border-box;
-  background-color: transparent; /* <-- IMPORTANTE: Deja ver tus shapes de fondo */
-  color: inherit; /* <-- IMPORTANTE: Usa tu color de letra global */
-  overflow-x: hidden; /* Evita scrolls horizontales accidentales */
+  background-color: transparent; 
+  color: inherit; 
+  overflow-x: hidden; 
 }
 
-/* Ajuste del Nav */
+
 .pd-nav {
-  /* Mantenemos el padding para que no choque con tu navbar fijo */
   padding: 8rem 2rem 1rem 2rem; 
   max-width: 1200px;
   margin: 0 auto;
 }
 
-/* Botón Volver: Usamos colores heredados pero con borde visible */
 .pd-back-btn {
-  background: transparent; /* O rgba(255,255,255, 0.1) si quieres glassmorphism */
-  border: 1px solid currentColor; /* <-- TRUCO: El borde toma el color de tu texto actual */
+  background: transparent;
+  border: 1px solid currentColor; 
   padding: 0.5rem 1.2rem;
   border-radius: 20px;
   cursor: pointer;
   font-size: 0.9rem;
   font-weight: 600;
   transition: all 0.2s;
-  color: inherit; /* Hereda el color del padre */
+  color: inherit; 
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  opacity: 0.8; /* Un poco sutil por defecto */
+  opacity: 0.8; 
 }
 
 .pd-back-btn:hover {
   opacity: 1;
   transform: translateX(-3px);
-  background: rgba(125, 125, 125, 0.1); /* Hover genérico que sirve en claro y oscuro */
+  background: rgba(125, 125, 125, 0.1); 
 }
 
 .pd-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 2rem 4rem 2rem;
+  padding: 0 2rem 12rem 2rem;
 }
 
 .pd-header {
@@ -54,17 +51,17 @@
   font-size: 3rem;
   margin: 0 0 0.5rem 0;
   line-height: 1.1;
-  /* color: #000; <-- ELIMINADO: Usará tu h1 global */
+
 }
 
 .pd-subtitle {
   font-size: 1.5rem;
-  opacity: 0.7; /* En lugar de un color gris fijo, usamos opacidad para que sirva en cualquier fondo */
+  opacity: 0.7;
   font-weight: 300;
   margin: 0;
 }
 
-/* --- CORRECCIÓN IMÁGENES: Marcos neutros --- */
+
 .pd-gallery {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -73,9 +70,7 @@
 }
 
 .pd-image-frame {
-  /* Usamos un fondo semitransparente. 
-     Esto se ve bien si tu fondo es blanco (se ve grisaceo) 
-     o si es oscuro (se ve como un cristal oscuro) */
+
   background-color: rgba(125, 125, 125, 0.1); 
   border-radius: 16px;
   height: 450px; 
@@ -83,22 +78,22 @@
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  border: 1px solid rgba(125, 125, 125, 0.1); /* Borde sutil */
+  border: 1px solid rgba(125, 125, 125, 0.1); 
 }
 
 .pd-image-frame img {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.2); /* Sombra un poco más fuerte para contraste */
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2); 
   border-radius: 8px;
 }
 
-/* --- Layout del Contenido --- */
 .pd-content-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 3rem;
+  
 }
 
 @media (min-width: 768px) {
@@ -112,7 +107,7 @@
   font-size: 0.9rem; 
   text-transform: uppercase; 
   letter-spacing: 1px; 
-  opacity: 0.6; /* Opacidad en vez de color fijo */
+  opacity: 0.6; 
 }
 
 .pd-tags {
@@ -123,7 +118,7 @@
 }
 
 .pd-tag {
-  background: rgba(125, 125, 125, 0.15); /* Fondo adaptativo */
+  background: rgba(125, 125, 125, 0.15); 
   border: 1px solid rgba(125, 125, 125, 0.1);
   padding: 4px 10px;
   border-radius: 6px;
@@ -134,31 +129,22 @@
 
 .pd-cta-btn {
   display: inline-block;
-  /* Este sí lo dejamos solido porque es un CTA, pero puedes ajustar */
   background: currentColor; 
-  color: #fff; /* Ojo: Si tu texto global es blanco, esto no se verá. Mejor usa tu variable de 'color primario' */
-  filter: invert(1); /* TRUCO: Invierte el color del texto para el fondo del botón */
+  color: #fff; 
+  filter: invert(1); 
   padding: 10px 20px;
   border-radius: 8px;
   text-decoration: none;
   font-weight: bold;
 }
 
-/* Si prefieres un botón clásico negro/blanco seguro: */
-/*
-.pd-cta-btn {
-    background: #444;
-    color: #fff;
-}
-*/
+
 
 .pd-description {
   font-size: 1.1rem;
   line-height: 1.8;
-  /* color: #333; <-- ELIMINADO */
 }
 
-/* Para la descripción HTML inyectada, aseguramos que los parrafos no tengan margenes locos */
 .pd-description p {
     margin-bottom: 1.5rem;
 }
@@ -169,16 +155,15 @@
   .pd-image-frame { height: 300px; padding: 1rem; }
 }
 
-/* Fix para el loader del detalle del proyecto */
 .pd-loading {
     width: 100%;
-    height: 100vh; /* Ocupa toda la pantalla */
+    height: 100vh; 
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Centrado vertical */
-    align-items: center;     /* Centrado horizontal */
-    background: var(--main-darkblue); /* Fondo consistente */
-    position: fixed; /* Asegura que flote sobre todo */
+    justify-content: center; 
+    align-items: center;     
+    background: var(--main-darkblue); 
+    position: fixed; 
     top: 0;
     left: 0;
     z-index: 9999;

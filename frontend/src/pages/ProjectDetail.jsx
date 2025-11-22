@@ -40,7 +40,6 @@ const ProjectDetail = ({ language }) => {
     )
   }
 
-  // UI para cuando te banean por Rate Limit
   if (error === "ratelimit") {
     return (
       <div className="pd-error">
@@ -60,13 +59,11 @@ const ProjectDetail = ({ language }) => {
     )
   }
 
-  // ... (El resto de tu renderizado normal sigue igual)
   const t = project.current || {}
   const images = project.images || [project.desktop_image, project.mobile_image].filter(Boolean)
 
   return (
      <div className="pd-wrapper">
-        {/* ... todo tu JSX de contenido ... */}
         <nav className="pd-nav">
             <button className="pd-back-btn" onClick={() => navigate('/#job')}>
             ← {language === 'es' ? 'Volver' : 'Back'}
@@ -79,7 +76,6 @@ const ProjectDetail = ({ language }) => {
             {t.subtitle && <p className="pd-subtitle">{t.subtitle}</p>}
             </header>
 
-            {/* Galería */}
             {images.length > 0 && (
             <div className="pd-gallery">
                 {images.map((img, idx) => (
