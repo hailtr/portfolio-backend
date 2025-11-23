@@ -13,7 +13,7 @@ const ProjectDetail = ({ language }) => {
     loading,
     error,
   } = useCachedFetch(
-    `${API_BASE_URL}/entities/${slug}?lang=${language}`,
+    `${API_BASE_URL}/projects/${slug}?lang=${language}`,
     `project_${slug}_${language}`
   );
 
@@ -38,10 +38,14 @@ const ProjectDetail = ({ language }) => {
 
   if (!project) return null;
 
-  const t = project.current || {};
-  const images =
-    project.images ||
-    [project.desktop_image, project.mobile_image].filter(Boolean);
+  // Data is now flat in the response, no need for project.current
+  const t = project;
+
+  // Images are already in the correct format [{url, type, caption}]
+  let images = project.images || [];
+
+  // Extract URLs for display
+  const imageUrls = images.map(img => img.url);
 
   return (
     <div className="pd-wrapper">
@@ -57,9 +61,9 @@ const ProjectDetail = ({ language }) => {
           {t.subtitle && <p className="pd-subtitle">{t.subtitle}</p>}
         </header>
 
-        {images.length > 0 && (
+        {imageUrls.length > 0 && (
           <div className="pd-gallery">
-            {images.map((img, idx) => (
+            {imageUrls.map((img, idx) => (
               <div key={idx} className="pd-image-frame">
                 <img src={img} alt={`Screenshot ${idx}`} />
               </div>

@@ -1,220 +1,252 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
-  <title>Admin Panel{% if entity %} — {{ entity.slug }}{% endif %}</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/admin.css') }}">
 </head>
-<body class="bg-gray-100 text-gray-800 px-6 py-8">
 
-  <h1 class="text-3xl font-bold mb-6">Panel de Administración</h1>
+<body>
 
-  {% if entities %}
-    <section class="mb-10">
-      <label for="project-select" class="block text-sm font-medium text-gray-700 mb-2">Seleccionar proyecto</label>
-      <div class="flex items-center gap-4">
-        <select id="project-select" class="border rounded-md px-3 py-2" onchange="location.href='/admin?ready=true&edit=' + this.value">
-          <option value="">-- Selecciona --</option>
-          {% for e in entities %}
-            <option value="{{ e.id }}" {% if entity and entity.id == e.id %}selected{% endif %}>
-              {{ e.slug }} — {{ e.type or 'Sin tipo' }}
-            </option>
-          {% endfor %}
-        </select>
-        <a href="{{ url_for('admin.admin_home', ready='true') }}" class="text-sm px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">+ Nuevo proyecto</a>
-      </div>
-    </section>
-  {% endif %}
-
-  <section class="bg-white shadow rounded-md p-6">
-    <h2 class="text-xl font-semibold mb-4">{% if entity %}Editar{% else %}Crear nuevo{% endif %} proyecto</h2>
-
-    <form id="main-form" method="post" action="{{ url_for('admin.admin_save') }}" class="space-y-6">
-      {% if entity %}
-        <input type="hidden" name="id" value="{{ entity.id }}">
-      {% endif %}
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <label>
-          <span class="block text-sm font-medium">Slug</span>
-          <input type="text" name="slug" required value="{{ entity.slug if entity else '' }}"
-            class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
-        </label>
-
-        <label>
-          <span class="block text-sm font-medium">Type</span>
-          <input type="text" name="type" value="{{ entity.type if entity else '' }}"
-            class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
-        </label>
-
-        <label>
-          <span class="block text-sm font-medium">Category</span>
-          <input type="text" name="category" value="{{ entity.meta.category if entity else '' }}"
-            class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
-        </label>
-
-        <label>
-          <span class="block text-sm font-medium">Tags (comma-separated)</span>
-          <input type="text" name="tags" value="{{ entity.meta.tags | join(', ') if entity else '' }}"
-            class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
-        </label>
-      </div>
-
-      <!-- Image Uploads -->
-      <div class="col-span-full mt-6">
-        <h3 class="text-lg font-semibold mb-4">Project Images</h3>
-        <div class="grid md:grid-cols-2 gap-6">
-          <!-- Desktop Image -->
-          <div>
-            <label class="block text-sm font-medium mb-2">Desktop Image</label>
-            <input type="file" id="desktop-image-input" accept="image/*"
-              class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-            <input type="hidden" id="desktop-image-url" name="desktop_image" value="{{ entity.meta.images.desktop if entity and entity.meta and entity.meta.images else '' }}">
-            <div id="desktop-image-preview" class="mt-4 min-h-[100px] border-2 border-dashed border-gray-300 rounded-lg p-4 flex items-center justify-center">
-              {% if entity and entity.meta and entity.meta.images and entity.meta.images.desktop %}
-                <img src="{{ entity.meta.images.desktop }}" class="max-w-full h-auto rounded" alt="Desktop preview">
-              {% else %}
-                <p class="text-gray-400">No image uploaded</p>
-              {% endif %}
-            </div>
-          </div>
-
-          <!-- Mobile Image -->
-          <div>
-            <label class="block text-sm font-medium mb-2">Mobile Image</label>
-            <input type="file" id="mobile-image-input" accept="image/*"
-              class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-            <input type="hidden" id="mobile-image-url" name="mobile_image" value="{{ entity.meta.images.mobile if entity and entity.meta and entity.meta.images else '' }}">
-            <div id="mobile-image-preview" class="mt-4 min-h-[100px] border-2 border-dashed border-gray-300 rounded-lg p-4 flex items-center justify-center">
-              {% if entity and entity.meta and entity.meta.images and entity.meta.images.mobile %}
-                <img src="{{ entity.meta.images.mobile }}" class="max-w-full h-auto rounded" alt="Mobile preview">
-              {% else %}
-                <p class="text-gray-400">No image uploaded</p>
-              {% endif %}
-            </div>
-          </div>
-        </div>
-
-        <!-- Preview Video/GIF (for hover effect) -->
-        <div class="mt-6">
-          <label class="block text-sm font-medium mb-2">Preview Video/GIF URL (optional - for hover effect)</label>
-          <input type="text" name="preview_video" value="{{ entity.meta.images.preview_video if entity and entity.meta and entity.meta.images and entity.meta.images.preview_video else '' }}"
-            placeholder="https://res.cloudinary.com/your-cloud-name/video/upload/..."
-            class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
-          <p class="text-sm text-gray-500 mt-2">Enter a Cloudinary video URL (MP4, WebM) or animated GIF. This will play when users hover over the project card.</p>
-        </div>
-      </div>
-
-      <div class="col-span-full">
-        <hr class="my-6">
-      </div>
-
-      <div class="grid md:grid-cols-2 gap-6">
-        <!-- Spanish Translation -->
-        {% set t_es = translations.get('es') %}
-        <div class="p-4 border rounded-md bg-gray-50">
-          <h3 class="font-semibold text-gray-700 mb-2">Español (ES)</h3>
-          <input type="hidden" name="lang_es" value="es">
-
-          <div class="grid gap-4">
-            <label>
-              <span class="block text-sm font-medium">Título</span>
-              <input type="text" name="title_es" value="{{ t_es.title if t_es else '' }}"
-                class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
-            </label>
-
-            <label>
-              <span class="block text-sm font-medium">Subtítulo</span>
-              <input type="text" name="subtitle_es" value="{{ t_es.subtitle if t_es else '' }}"
-                class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
-            </label>
-
-            <label>
-              <span class="block text-sm font-medium">Descripción</span>
-              <textarea name="description_es" rows="3"
-                class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">{{ t_es.description if t_es else '' }}</textarea>
-            </label>
-
-            <label>
-              <span class="block text-sm font-medium">Resumen</span>
-              <textarea name="summary_es" rows="2"
-                class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">{{ t_es.summary if t_es else '' }}</textarea>
-            </label>
-
-            <label>
-              <span class="block text-sm font-medium">Contenido extra (JSON)</span>
-              <textarea name="content_es" rows="4"
-                class="mt-1 w-full font-mono border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">{{ t_es.content | tojson if t_es and t_es.content else '{}' }}</textarea>
-            </label>
-          </div>
-        </div>
-
-        <!-- English Translation -->
-        {% set t_en = translations.get('en') %}
-        <div class="p-4 border rounded-md bg-gray-50">
-          <h3 class="font-semibold text-gray-700 mb-2">English (EN)</h3>
-          <input type="hidden" name="lang_en" value="en">
-
-          <div class="grid gap-4">
-            <label>
-              <span class="block text-sm font-medium">Title</span>
-              <input type="text" name="title_en" value="{{ t_en.title if t_en else '' }}"
-                class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
-            </label>
-
-            <label>
-              <span class="block text-sm font-medium">Subtitle</span>
-              <input type="text" name="subtitle_en" value="{{ t_en.subtitle if t_en else '' }}"
-                class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
-            </label>
-
-            <label>
-              <span class="block text-sm font-medium">Description</span>
-              <textarea name="description_en" rows="3"
-                class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">{{ t_en.description if t_en else '' }}</textarea>
-            </label>
-
-            <label>
-              <span class="block text-sm font-medium">Summary</span>
-              <textarea name="summary_en" rows="2"
-                class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">{{ t_en.summary if t_en else '' }}</textarea>
-            </label>
-
-            <label>
-              <span class="block text-sm font-medium">Extra content (JSON)</span>
-              <textarea name="content_en" rows="4"
-                class="mt-1 w-full font-mono border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">{{ t_en.content | tojson if t_en and t_en.content else '{}' }}</textarea>
-            </label>
-          </div>
-        </div>
-      </div>
-    </form>
-    {% if entity %}
-  <form id="delete-form" method="post" onsubmit="return confirm('¿Eliminar este proyecto?')" class="hidden">
-    <input type="hidden" name="delete_id" id="delete-id" value="{{ entity.id }}">
-  </form>
-    {% endif %}
-
-    <div class="flex gap-4 mt-6">
-      <button type="submit" form="main-form" name="action" value="draft"
-        class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300">
-        Guardar como borrador
-      </button>
-
-      <button type="submit" form="main-form" name="action" value="publish"
-        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-        Publicar
-      </button>
-
-      {% if entity %}
-        <button type="submit" form="delete-form"
-          class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
-          Eliminar
-        </button>
-      {% endif %}
+  <div class="sidebar">
+    <div class="logo"><i class="fas fa-rocket"></i> Admin Panel</div>
+    <div class="nav-item active" onclick="switchView('projects')"><i class="fas fa-project-diagram"></i> Projects</div>
+    <div class="nav-item" onclick="switchView('experience')"><i class="fas fa-briefcase"></i> Experience</div>
+    <div class="nav-item" onclick="switchView('education')"><i class="fas fa-graduation-cap"></i> Education</div>
+    <div class="nav-item" onclick="switchView('skills')"><i class="fas fa-code"></i> Skills</div>
+    <div class="nav-item" onclick="switchView('certifications')"><i class="fas fa-certificate"></i> Certifications</div>
+    <div class="nav-item" onclick="switchView('profile')"><i class="fas fa-user"></i> Profile</div>
+    <div style="margin-top: auto;">
+      <a href="/admin/backup" class="nav-item" style="color: var(--success); text-decoration: none;" download>
+        <i class="fas fa-download"></i> Backup Database
+      </a>
+      <a href="/" target="_blank" class="nav-item"><i class="fas fa-external-link-alt"></i> View Site</a>
     </div>
-  </section>
+  </div>
+
+  <div class="main-content">
+    <!-- Projects View -->
+    <div id="view-projects" class="view-section">
+      <div class="header">
+        <h2>Projects</h2>
+        <button class="btn btn-primary" onclick="openModal('project')"><i class="fas fa-plus"></i> Add Project</button>
+      </div>
+      <div class="item-list">
+        {% for p in projects %}
+        <div class="list-item">
+          <div class="item-info">
+            <h3>{{ p.title_es or p.slug }}</h3>
+            <p>{{ p.category or '' }}</p>
+          </div>
+          <div class="item-actions">
+            <button class="action-btn" onclick='editProject({{ p.id }})'><i class="fas fa-edit"></i></button>
+            <button class="action-btn delete" onclick="deleteItem('project', {{ p.id }})"><i
+                class="fas fa-trash"></i></button>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Experience View -->
+    <div id="view-experience" class="view-section hidden">
+      <div class="header">
+        <h2>Experience</h2>
+        <button class="btn btn-primary" onclick="openModal('experience')"><i class="fas fa-plus"></i> Add
+          Experience</button>
+      </div>
+      <div class="item-list">
+        {% for e in experiences %}
+        <div class="list-item">
+          <div class="item-info">
+            <h3>{{ e.company }}</h3>
+            <p>{{ e.role_es or '' }} • {{ e.start_date }} - {{ e.end_date or 'Present' }}</p>
+          </div>
+          <div class="item-actions">
+            <button class="action-btn" onclick='editExperience({{ e.id }})'><i class="fas fa-edit"></i></button>
+            <button class="action-btn delete" onclick="deleteItem('experience', {{ e.id }})"><i
+                class="fas fa-trash"></i></button>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Education View -->
+    <div id="view-education" class="view-section hidden">
+      <div class="header">
+        <h2>Education</h2>
+        <button class="btn btn-primary" onclick="openModal('education')"><i class="fas fa-plus"></i> Add
+          Education</button>
+      </div>
+      <div class="item-list">
+        {% for e in education %}
+        <div class="list-item">
+          <div class="item-info">
+            <h3>{{ e.institution }}</h3>
+            <p>{{ e.degree_es or '' }} • {{ e.start_date }} - {{ e.end_date or 'Present' }}</p>
+          </div>
+          <div class="item-actions">
+            <button class="action-btn" onclick='editEducation({{ e.id }})'><i class="fas fa-edit"></i></button>
+            <button class="action-btn delete" onclick="deleteItem('education', {{ e.id }})"><i
+                class="fas fa-trash"></i></button>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Skills View -->
+    <div id="view-skills" class="view-section hidden">
+      <div class="header">
+        <h2>Skills</h2>
+        <button class="btn btn-primary" onclick="openModal('skill')"><i class="fas fa-plus"></i> Add Skill</button>
+      </div>
+      <div class="item-list">
+        {% for s in skills %}
+        <div class="list-item">
+          <div class="item-info">
+            <h3>{{ s.name }}</h3>
+            <p>{{ s.category or '' }} • {{ s.proficiency }}%</p>
+          </div>
+          <div class="item-actions">
+            <button class="action-btn" onclick='editSkill({{ s.id }})'><i class="fas fa-edit"></i></button>
+            <button class="action-btn delete" onclick="deleteItem('skill', {{ s.id }})"><i
+                class="fas fa-trash"></i></button>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Certifications View -->
+    <div id="view-certifications" class="view-section hidden">
+      <div class="header">
+        <h2>Certifications</h2>
+        <button class="btn btn-primary" onclick="openModal('certification')"><i class="fas fa-plus"></i> Add
+          Certification</button>
+      </div>
+      <div class="item-list">
+        {% for c in certifications %}
+        <div class="list-item">
+          <div class="item-info">
+            <h3>{{ c.slug }}</h3>
+            <p>{{ c.issuer or '' }} • {{ c.issue_date or '' }}</p>
+          </div>
+          <div class="item-actions">
+            <button class="action-btn" onclick='editCertification({{ c.id }})'><i class="fas fa-edit"></i></button>
+            <button class="action-btn delete" onclick="deleteItem('certification', {{ c.id }})"><i
+                class="fas fa-trash"></i></button>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Profile View -->
+    <div id="view-profile" class="view-section hidden">
+      <div class="header">
+        <h2>Profile</h2>
+        <button class="btn btn-primary" onclick="saveProfile()"><i class="fas fa-save"></i> Save Changes</button>
+      </div>
+      <div class="card" style="background: var(--bg-card); padding: 2rem; border-radius: 0.5rem;">
+        <form id="profile-form">
+          <div class="form-group">
+            <label class="form-label">Name</label>
+            <input type="text" class="form-control" name="name" value="{{ profile.name }}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-control" name="email" value="{{ profile.email }}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Location (JSON)</label>
+            <input type="text" class="form-control" name="location" value='{{ profile.location | tojson }}'>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Social Links (JSON)</label>
+            <input type="text" class="form-control" name="social" value='{{ profile.social_links | tojson }}'>
+          </div>
+
+          <div class="tabs">
+            <div class="tab active" onclick="switchTab(this, 'profile-es')">Spanish</div>
+            <div class="tab" onclick="switchTab(this, 'profile-en')">English</div>
+          </div>
+
+          {% set trans_es = profile.translations | selectattr('lang', 'equalto', 'es') | first %}
+          {% set trans_en = profile.translations | selectattr('lang', 'equalto', 'en') | first %}
+
+          <div id="profile-es" class="tab-content">
+            <div class="form-group">
+              <label class="form-label">Role (ES)</label>
+              <input type="text" class="form-control" name="role_es" value="{{ trans_es.role if trans_es else '' }}">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Tagline (ES)</label>
+              <input type="text" class="form-control" name="tagline_es"
+                value="{{ trans_es.tagline if trans_es else '' }}">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Bio (ES)</label>
+              <textarea class="form-control" name="bio_es">{{ trans_es.bio if trans_es else '' }}</textarea>
+            </div>
+          </div>
+
+          <div id="profile-en" class="tab-content hidden">
+            <div class="form-group">
+              <label class="form-label">Role (EN)</label>
+              <input type="text" class="form-control" name="role_en" value="{{ trans_en.role if trans_en else '' }}">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Tagline (EN)</label>
+              <input type="text" class="form-control" name="tagline_en"
+                value="{{ trans_en.tagline if trans_en else '' }}">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Bio (EN)</label>
+              <textarea class="form-control" name="bio_en">{{ trans_en.bio if trans_en else '' }}</textarea>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Generic Modal -->
+  <div id="edit-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-title">Edit Item</h3>
+        <button class="action-btn" onclick="closeModal()"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body" id="modal-form-container">
+        <!-- Form injected via JS -->
+      </div>
+      <div class="modal-header"
+        style="border-top: 1px solid var(--border); border-bottom: none; justify-content: flex-end; gap: 1rem;">
+        <button class="btn" style="background: var(--border)" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveItem()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast">Action successful</div>
+
+  <!-- Initialize data from server -->
+  <script>
+    window.projects = {{ projects | tojson }};
+    window.experiences = {{ experiences | tojson }};
+    window.education = {{ education | tojson }};
+    window.skills = {{ skills | tojson }};
+    window.certifications = {{ certifications | tojson }};
+  </script>
 
   <script src="{{ url_for('static', filename='scripts/admin.js') }}"></script>
 </body>
+
 </html>

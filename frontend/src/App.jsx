@@ -30,7 +30,7 @@ function App() {
     loading,
     error,
   } = useCachedFetch(
-    `${API_BASE_URL}/entities?lang=${language}&type=project`,
+    `${API_BASE_URL}/projects?lang=${language}`,
     `home_projects_${language}`,
   );
 

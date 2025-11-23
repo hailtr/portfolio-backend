@@ -27,22 +27,25 @@ const AboutSection = ({ language }) => {
 
   useEffect(() => {
     // Fetch work experience
-    fetch(`${API_BASE_URL}/entities?lang=${language}&type=experience`)
+    fetch(`${API_BASE_URL}/experience?lang=${language}`)
       .then((res) => res.json())
       .then((data) => {
-        console.log("Experience data:", data); // Debug log
         const formatted = data.map((item) => ({
-          company: item.institution || item.title || "",
-          role: item.subtitle || "",
-          location: item.location || "",
+          company: item.company,
+          role: item.title,
+          location: item.location,
           skills: item.tags || [],
+          startDate: item.startDate,
+          endDate: item.endDate,
+          current: item.current,
+          description: item.description
         }));
         setExperienceData(formatted);
       })
       .catch((err) => console.error("Error fetching experience:", err));
 
     // Fetch education
-    fetch(`${API_BASE_URL}/entities?lang=${language}&type=education`)
+    fetch(`${API_BASE_URL}/education?lang=${language}`)
       .then((res) => res.json())
       .then((data) => {
         const formatted = data.map((item) => {
@@ -67,7 +70,7 @@ const AboutSection = ({ language }) => {
 
           return {
             institution: item.institution || "",
-            title: `${item.subtitle} ${language === "es" ? "en" : "in"} ${item.title}`,
+            title: `${item.title} ${language === "es" ? "en" : "in"} ${item.subtitle}`,
             date: dateStr,
             location: item.location || "",
             skills: item.courses || [],

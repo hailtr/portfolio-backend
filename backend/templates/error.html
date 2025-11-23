@@ -1,17 +1,81 @@
-<!-- templates/error.html -->
 <!doctype html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Error</title>
-</head>
-<body>
-    <h1>Error</h1>
-    <p>Lo sentimos, algo salió mal.</p>
-    <p>{{ error.name if error and error.name else "Error inesperado" }}</p>
-    <p>{{ error.description if error and error.description else error }}</p>
+    <title>Error - Admin Panel</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: #0f172a;
+            color: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            padding: 2rem;
+        }
 
-    <button onclick="window.location.href='/'">Volver al inicio</button>
+        .container {
+            background: #1e293b;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            max-width: 800px;
+            width: 100%;
+            border: 1px solid #334155;
+        }
+
+        h1 {
+            color: #ef4444;
+            margin-top: 0;
+        }
+
+        pre {
+            background: #0f172a;
+            padding: 1rem;
+            border-radius: 0.25rem;
+            overflow-x: auto;
+            color: #94a3b8;
+            font-size: 0.875rem;
+        }
+
+        button {
+            background: #38bdf8;
+            color: #0f172a;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        button:hover {
+            background: #0ea5e9;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Error</h1>
+        <p>{{ error }}</p>
+
+        {% if details %}
+        <details>
+            <summary style="cursor: pointer; color: #38bdf8; margin-bottom: 0.5rem;">View Technical Details</summary>
+            <pre>{{ details }}</pre>
+        </details>
+        {% endif %}
+
+        <button onclick="window.location.href='/admin'">Retry Admin</button>
+        <button onclick="window.location.href='/'"
+            style="background: transparent; color: #94a3b8; border: 1px solid #334155; margin-left: 0.5rem;">Go
+            Home</button>
+    </div>
 </body>
+
 </html>

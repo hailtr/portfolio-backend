@@ -3,7 +3,7 @@ const Footer = ({ language }) => {
 
   const translations = {
     es: {
-      credit: `© ${currentYear} Rafael Ortiz - Hecho con React`,
+      credit: `© ${currentYear} Rafael Ortiz - última actualización: ${currentYear}`,
       disclaimer: "Portafolio en desarrollo continuo",
     },
     en: {

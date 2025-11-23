@@ -1,421 +1,339 @@
 """
 REST API endpoints for portfolio data.
-
-These endpoints serve JSON data to the React frontend.
-All endpoints are public (no authentication required for reading).
-
-Features:
-- Caching: Responses cached for 5 minutes (configurable per endpoint)
-- Rate Limiting: Protects against abuse
-- Query Optimization: Eager loading to reduce DB queries
+Refactored to use proper relational models.
 """
 
 from flask import Blueprint, jsonify, request
-from backend.models.entity import Entity
-from backend.models.translation import EntityTranslation
 from backend import db
-from sqlalchemy import desc, or_
+from sqlalchemy import desc
 from sqlalchemy.orm import joinedload
-import json
+from backend.models.project import Project, ProjectTranslation
+from backend.models.experience import Experience, ExperienceTranslation
+from backend.models.education import Education, EducationTranslation
+from backend.models.skill import Skill, SkillTranslation
+from backend.models.profile import Profile, ProfileTranslation
+from backend.models.certification import Certification, CertificationTranslation
+from backend.models.tag import Tag
+from backend.services.cache_service import cache_response, cache_key_with_lang, cache_key_simple
+from backend.utils.rate_limit import api_rate_limit, generous_rate_limit
 import os
-from backend.services.cache_service import (
-    cache_response,
-    cache_key_with_lang,
-    cache_key_simple,
-)
-from backend.utils.rate_limit import (
-    api_rate_limit,
-    generous_rate_limit,
-    strict_rate_limit,
-)
+import json
 
 api_bp = Blueprint("api", __name__, url_prefix="/api")
 
 
 @api_bp.route("/health", methods=["GET"])
-@generous_rate_limit()  # More generous for health checks
+@generous_rate_limit()
 def health_check():
-    """
-    Health check endpoint for monitoring.
-
-    Returns:
-        JSON with status and database connectivity
-    """
     try:
-        # Test database connection
         db.session.execute(db.text("SELECT 1"))
         return jsonify({"status": "healthy", "database": "connected"}), 200
     except Exception as e:
-        return (
-            jsonify(
-                {"status": "unhealthy", "database": "disconnected", "error": str(e)}
-            ),
-            503,
-        )
+        return jsonify({"status": "unhealthy", "error": str(e)}), 503
 
 
-@api_bp.route("/entities", methods=["GET"])
-@api_rate_limit()  # 100 requests per minute
-@cache_response(timeout=300, key_func=cache_key_with_lang)  # Cache for 5 minutes
-def get_entities():
-    """
-    Get all entities with translations.
+# ==========================================
+# PROJECTS
+# ==========================================
 
-    Query Parameters:
-        - lang: Language code (e.g., 'es', 'en'). Defaults to 'es'
-        - type: Filter by entity type (e.g., 'project', 'experience')
-        - category: Filter by category
-
-    Returns:
-        JSON array of entities with translations
-
-    Performance:
-        - Cached for 5 minutes
-        - Rate limited to 100 req/min
-        - Uses eager loading for translations
-    """
+@api_bp.route("/projects", methods=["GET"])
+@api_rate_limit()
+@cache_response(timeout=300, key_func=cache_key_with_lang)
+def get_projects():
     lang = request.args.get("lang", "es")
-    entity_type = request.args.get("type")
     category = request.args.get("category")
 
-    # Build query with eager loading (reduces N+1 queries)
-    query = Entity.query.options(joinedload(Entity.translations))
-
-    if entity_type:
-        query = query.filter(Entity.type == entity_type)
+    query = Project.query.options(
+        joinedload(Project.translations),
+        joinedload(Project.images),
+        joinedload(Project.tags)
+    )
 
     if category:
-        query = query.filter(Entity.meta["category"].astext == category)
+        query = query.filter(Project.category == category)
 
-    # Order by most recent
-    query = query.order_by(desc(Entity.created_at))
-
-    entities = query.all()
-
+    projects = query.order_by(desc(Project.created_at)).all()
+    
     result = []
-    for entity in entities:
-        # Find translation for requested language
-        translation = next((t for t in entity.translations if t.lang == lang), None)
-
-        # Fallback to any available translation if requested lang not found
-        if not translation and entity.translations:
-            translation = entity.translations[0]
-
-        if translation:
-            # Extract images from meta
-            images = entity.meta.get("images", {}) if entity.meta else {}
-
-            entity_data = {
-                "id": entity.id,
-                "slug": entity.slug,
-                "type": entity.type,
-                "category": entity.meta.get("category") if entity.meta else None,
-                "tags": entity.meta.get("tags", []) if entity.meta else [],
-                "desktop_image": images.get("desktop"),
-                "mobile_image": images.get("mobile"),
-                "preview_video": images.get("preview_video"),
-                "title": translation.title,
-                "subtitle": translation.subtitle,
-                "description": translation.description,
-                "summary": translation.summary,
-                "content": translation.content,
-                "created_at": (
-                    entity.created_at.isoformat() if entity.created_at else None
-                ),
-                "updated_at": (
-                    entity.updated_at.isoformat() if entity.updated_at else None
-                ),
-                # Additional fields for work experience and education cards
-                "company": entity.meta.get("company", "") if entity.meta else "",
-                "location": entity.meta.get("location", "") if entity.meta else "",
-                "institution": (
-                    entity.meta.get("institution", "") if entity.meta else ""
-                ),
-                "startDate": entity.meta.get("startDate", "") if entity.meta else "",
-                "endDate": entity.meta.get("endDate", "") if entity.meta else "",
-                "current": entity.meta.get("current", False) if entity.meta else False,
-                "courses": entity.meta.get("courses", []) if entity.meta else [],
-            }
-            result.append(entity_data)
-
+    for p in projects:
+        trans = next((t for t in p.translations if t.lang == lang), None)
+        if not trans and p.translations:
+            trans = p.translations[0]
+            
+        if trans:
+            # Sort images by order
+            images = sorted(p.images, key=lambda x: x.order)
+            
+            # Find preview video (gif or video type)
+            preview_video = next((img.url for img in images if img.type in ['video', 'gif']), None)
+            
+            result.append({
+                "id": p.id,
+                "slug": p.slug,
+                "category": p.category,
+                "url": p.url,
+                "title": trans.title,
+                "subtitle": trans.subtitle,
+                "summary": trans.summary,
+                "description": trans.description,
+                "content": trans.content,
+                "tags": [t.name for t in p.tags],
+                "images": [{
+                    "url": img.url,
+                    "type": img.type,
+                    "caption": img.caption,
+                    "order": img.order
+                } for img in images],
+                # Backward compatibility fields
+                "desktop_image": images[0].url if images else None,
+                "mobile_image": images[1].url if len(images) > 1 else None,
+                "preview_video": preview_video,
+                "created_at": p.created_at.isoformat() if p.created_at else None
+            })
+            
     return jsonify(result), 200
 
 
-@api_bp.route("/entities/<slug>", methods=["GET"])
-@api_rate_limit()  # 100 requests per minute
-@cache_response(timeout=300, key_func=cache_key_with_lang)  # Cache for 5 minutes
-def get_entity_by_slug(slug):
-    """
-    Get a single entity by slug with translations.
-
-    Query Parameters:
-        - lang: Language code (e.g., 'es', 'en'). Defaults to 'es'
-
-    Returns:
-        JSON object with entity data and all available translations
-
-    Performance:
-        - Cached for 5 minutes
-        - Rate limited to 100 req/min
-        - Uses eager loading for translations
-    """
+@api_bp.route("/projects/<slug>", methods=["GET"])
+@api_rate_limit()
+@cache_response(timeout=300, key_func=cache_key_with_lang)
+def get_project(slug):
     lang = request.args.get("lang", "es")
+    
+    project = Project.query.options(
+        joinedload(Project.translations),
+        joinedload(Project.images),
+        joinedload(Project.tags)
+    ).filter_by(slug=slug).first()
+    
+    if not project:
+        return jsonify({"error": "Project not found"}), 404
+        
+    trans = next((t for t in project.translations if t.lang == lang), None)
+    if not trans and project.translations:
+        trans = project.translations[0]
+        
+    images = sorted(project.images, key=lambda x: x.order)
+    preview_video = next((img.url for img in images if img.type in ['video', 'gif']), None)
+    
+    return jsonify({
+        "id": project.id,
+        "slug": project.slug,
+        "category": project.category,
+        "url": project.url,
+        "title": trans.title if trans else "",
+        "subtitle": trans.subtitle if trans else "",
+        "summary": trans.summary if trans else "",
+        "description": trans.description if trans else "",
+        "content": trans.content if trans else {},
+        "tags": [t.name for t in project.tags],
+        "images": [{
+            "url": img.url,
+            "type": img.type,
+            "caption": img.caption,
+            "order": img.order
+        } for img in images],
+        "preview_video": preview_video,
+        "desktop_image": images[0].url if images else None,
+        "mobile_image": images[1].url if len(images) > 1 else None,
+        "created_at": project.created_at.isoformat() if project.created_at else None
+    }), 200
 
-    # Eager load translations to avoid N+1 queries
-    entity = (
-        Entity.query.options(joinedload(Entity.translations))
-        .filter_by(slug=slug)
-        .first()
-    )
 
-    if not entity:
-        return jsonify({"error": "Entity not found", "slug": slug}), 404
+# ==========================================
+# EXPERIENCE
+# ==========================================
 
-    # Get all translations
-    translations_data = {}
-    for translation in entity.translations:
-        translations_data[translation.lang] = {
-            "title": translation.title,
-            "subtitle": translation.subtitle,
-            "description": translation.description,
-            "summary": translation.summary,
-            "content": translation.content,
-        }
-
-    # Get primary translation for requested language
-    primary_translation = translations_data.get(lang)
-
-    # Fallback to first available if requested lang not found
-    if not primary_translation and translations_data:
-        primary_translation = next(iter(translations_data.values()))
-
-    # Extract images from meta
-    images = entity.meta.get("images", {}) if entity.meta else {}
-
-    result = {
-        "id": entity.id,
-        "slug": entity.slug,
-        "type": entity.type,
-        "category": entity.meta.get("category") if entity.meta else None,
-        "tags": entity.meta.get("tags", []) if entity.meta else [],
-        "desktop_image": images.get("desktop"),
-        "mobile_image": images.get("mobile"),
-        "preview_video": images.get("preview_video"),
-        "created_at": entity.created_at.isoformat() if entity.created_at else None,
-        "updated_at": entity.updated_at.isoformat() if entity.updated_at else None,
-        "translations": translations_data,
-        "current": primary_translation,
-    }
-
+@api_bp.route("/experience", methods=["GET"])
+@api_rate_limit()
+@cache_response(timeout=300, key_func=cache_key_with_lang)
+def get_experience():
+    lang = request.args.get("lang", "es")
+    
+    exps = Experience.query.options(
+        joinedload(Experience.translations),
+        joinedload(Experience.tags)
+    ).order_by(desc(Experience.start_date)).all()
+    
+    result = []
+    for e in exps:
+        trans = next((t for t in e.translations if t.lang == lang), None)
+        if not trans and e.translations:
+            trans = e.translations[0]
+            
+        if trans:
+            result.append({
+                "id": e.id,
+                "slug": e.slug,
+                "company": e.company,
+                "location": e.location,
+                "startDate": e.start_date,
+                "endDate": e.end_date,
+                "current": e.current,
+                "title": trans.title,  # Job title
+                "description": trans.description,
+                "tags": [t.name for t in e.tags]
+            })
+            
     return jsonify(result), 200
 
 
-@api_bp.route("/languages", methods=["GET"])
-@generous_rate_limit()  # 300 requests per minute (lightweight endpoint)
-@cache_response(timeout=600, key_func=cache_key_simple)  # Cache for 10 minutes
-def get_available_languages():
-    """
-    Get list of available languages in the system.
+# ==========================================
+# EDUCATION
+# ==========================================
 
-    Returns:
-        JSON array of language codes
-
-    Performance:
-        - Cached for 10 minutes (changes infrequently)
-        - Rate limited to 300 req/min
-    """
-    # Query distinct languages from translations
-    languages = db.session.query(EntityTranslation.lang).distinct().all()
-    lang_codes = [lang[0] for lang in languages]
-
-    return jsonify({"languages": lang_codes, "count": len(lang_codes)}), 200
-
-
-@api_bp.route("/categories", methods=["GET"])
-@generous_rate_limit()  # 300 requests per minute (lightweight endpoint)
-@cache_response(timeout=600, key_func=cache_key_with_lang)  # Cache for 10 minutes
-def get_categories():
-    """
-    Get list of all categories used in entities.
-
-    Query Parameters:
-        - type: Filter categories by entity type
-
-    Returns:
-        JSON array of unique categories
-
-    Performance:
-        - Cached for 10 minutes (changes infrequently)
-        - Rate limited to 300 req/min
-    """
-    entity_type = request.args.get("type")
-
-    query = Entity.query
-    if entity_type:
-        query = query.filter(Entity.type == entity_type)
-
-    entities = query.all()
-
-    # Extract unique categories
-    categories = set()
-    for entity in entities:
-        if entity.meta and "category" in entity.meta:
-            categories.add(entity.meta["category"])
-
-    return (
-        jsonify({"categories": sorted(list(categories)), "count": len(categories)}),
-        200,
-    )
+@api_bp.route("/education", methods=["GET"])
+@api_rate_limit()
+@cache_response(timeout=300, key_func=cache_key_with_lang)
+def get_education():
+    lang = request.args.get("lang", "es")
+    
+    edus = Education.query.options(
+        joinedload(Education.translations),
+        joinedload(Education.courses)
+    ).order_by(desc(Education.start_date)).all()
+    
+    result = []
+    for e in edus:
+        trans = next((t for t in e.translations if t.lang == lang), None)
+        if not trans and e.translations:
+            trans = e.translations[0]
+            
+        if trans:
+            result.append({
+                "id": e.id,
+                "slug": e.slug,
+                "institution": e.institution,
+                "location": e.location,
+                "startDate": e.start_date,
+                "endDate": e.end_date,
+                "current": e.current,
+                "title": trans.title,  # Degree
+                "subtitle": trans.subtitle, # Field
+                "description": trans.description,
+                "courses": [c.name for c in sorted(e.courses, key=lambda x: x.order)]
+            })
+            
+    return jsonify(result), 200
 
 
-@api_bp.route("/tags", methods=["GET"])
-@generous_rate_limit()  # 300 requests per minute (lightweight endpoint)
-@cache_response(timeout=600, key_func=cache_key_simple)  # Cache for 10 minutes
-def get_tags():
-    """
-    Get list of all tags used in entities.
+# ==========================================
+# SKILLS
+# ==========================================
 
-    Returns:
-        JSON array of unique tags with usage count
+@api_bp.route("/skills", methods=["GET"])
+@api_rate_limit()
+@cache_response(timeout=300, key_func=cache_key_with_lang)
+def get_skills():
+    lang = request.args.get("lang", "es")
+    
+    skills = Skill.query.options(
+        joinedload(Skill.translations)
+    ).order_by(Skill.order).all()
+    
+    result = []
+    for s in skills:
+        trans = next((t for t in s.translations if t.lang == lang), None)
+        if not trans and s.translations:
+            trans = s.translations[0]
+            
+        if trans:
+            result.append({
+                "id": s.id,
+                "slug": s.slug,
+                "icon_url": s.icon_url,
+                "proficiency": s.proficiency,
+                "category": s.category,
+                "name": trans.name,
+                "description": trans.description
+            })
+            
+    return jsonify(result), 200
 
-    Performance:
-        - Cached for 10 minutes (changes infrequently)
-        - Rate limited to 300 req/min
-    """
-    entities = Entity.query.all()
 
-    # Count tag occurrences
-    tag_counts = {}
-    for entity in entities:
-        if entity.meta and "tags" in entity.meta:
-            for tag in entity.meta["tags"]:
-                tag_counts[tag] = tag_counts.get(tag, 0) + 1
+# ==========================================
+# CERTIFICATIONS
+# ==========================================
 
-    # Sort by count (descending)
-    sorted_tags = sorted(
-        [{"tag": tag, "count": count} for tag, count in tag_counts.items()],
-        key=lambda x: x["count"],
-        reverse=True,
-    )
+@api_bp.route("/certifications", methods=["GET"])
+@api_rate_limit()
+@cache_response(timeout=300, key_func=cache_key_with_lang)
+def get_certifications():
+    lang = request.args.get("lang", "es")
+    
+    certs = Certification.query.options(
+        joinedload(Certification.translations)
+    ).order_by(desc(Certification.issue_date)).all()
+    
+    result = []
+    for c in certs:
+        trans = next((t for t in c.translations if t.lang == lang), None)
+        if not trans and c.translations:
+            trans = c.translations[0]
+            
+        if trans:
+            result.append({
+                "id": c.id,
+                "slug": c.slug,
+                "issuer": c.issuer,
+                "issueDate": c.issue_date,
+                "expiryDate": c.expiry_date,
+                "url": c.credential_url,
+                "title": trans.title,
+                "description": trans.description
+            })
+            
+    return jsonify(result), 200
 
-    return jsonify({"tags": sorted_tags, "total": len(sorted_tags)}), 200
 
+# ==========================================
+# PROFILE
+# ==========================================
 
 @api_bp.route("/profile", methods=["GET"])
-@generous_rate_limit()  # 300 requests per minute (lightweight endpoint)
-@cache_response(timeout=600, key_func=cache_key_with_lang)  # Cache for 10 minutes
+@api_rate_limit()
+@cache_response(timeout=300, key_func=cache_key_with_lang)
 def get_profile():
-    """
-    Get profile/hero information for frontend.
-
-    Query Parameters:
-        - lang: Language code (e.g., 'es', 'en'). Defaults to 'es'
-
-    Returns:
-        JSON object with profile data (name, role, tagline, location, social links)
-
-    Performance:
-        - Cached for 10 minutes
-        - Rate limited to 300 req/min
-    """
     lang = request.args.get("lang", "es")
-
-    # Get profile entity
-    profile_entity = (
-        Entity.query.options(joinedload(Entity.translations))
-        .filter_by(type="profile", slug="rafael-ortiz-profile")
-        .first()
-    )
-
-    if not profile_entity:
+    
+    profile = Profile.query.options(
+        joinedload(Profile.translations)
+    ).first()  # Assuming single profile
+    
+    if not profile:
         return jsonify({"error": "Profile not found"}), 404
+        
+    trans = next((t for t in profile.translations if t.lang == lang), None)
+    if not trans and profile.translations:
+        trans = profile.translations[0]
+        
+    return jsonify({
+        "name": profile.name,
+        "email": profile.email,
+        "location": profile.location,
+        "avatar_url": profile.avatar_url,
+        "social": profile.social_links,
+        "role": trans.role if trans else "",
+        "tagline": trans.tagline if trans else "",
+        "bio": trans.bio if trans else ""
+    }), 200
 
-    # Get translation
-    translation = next((t for t in profile_entity.translations if t.lang == lang), None)
-    if not translation and profile_entity.translations:
-        translation = profile_entity.translations[0]
 
-    if not translation:
-        return jsonify({"error": "Profile translation not found"}), 404
-
-    # Build response
-    # Mapping: title=role, subtitle=tagline, summary=CV summary (not sent to hero)
-    profile_data = {
-        "name": (
-            profile_entity.meta.get("name", "Rafael Ortiz")
-            if profile_entity.meta
-            else "Rafael Ortiz"
-        ),
-        "role": translation.title,  # "Data Engineer"
-        "tagline": translation.subtitle,  # Short one-liner
-        "location": (
-            profile_entity.meta.get("location", {}) if profile_entity.meta else {}
-        ),
-        "email": profile_entity.meta.get("email", "") if profile_entity.meta else "",
-        "phone": profile_entity.meta.get("phone", "") if profile_entity.meta else "",
-        "social": profile_entity.meta.get("social", {}) if profile_entity.meta else {},
-    }
-
-    return jsonify(profile_data), 200
-
+# ==========================================
+# CV (Legacy/File based)
+# ==========================================
 
 @api_bp.route("/cv", methods=["GET"])
-@api_rate_limit()  # 100 requests per minute
-@cache_response(timeout=600, key_func=cache_key_with_lang)  # Cache for 10 minutes
+@api_rate_limit()
+@cache_response(timeout=600, key_func=cache_key_with_lang)
 def get_cv():
-    """
-    Get CV/Resume data.
-
-    Query Parameters:
-        - lang: Language code (e.g., 'es', 'en'). Defaults to 'es'
-
-    Returns:
-        JSON object with CV data in JSON Resume format
-
-    Performance:
-        - Cached for 10 minutes (changes infrequently)
-        - Rate limited to 100 req/min
-    """
     lang = request.args.get("lang", "es")
-
-    # Load resume.json from backend/data folder
     json_path = os.path.join(
         os.path.dirname(os.path.dirname(__file__)), "data", "resume.json"
     )
-
     try:
         with open(json_path, "r", encoding="utf-8") as f:
             resume_data = json.load(f)
-
-        # Return the requested language version
-        if lang in resume_data:
-            return jsonify(resume_data[lang]), 200
-        else:
-            # Fallback to 'es' if requested language not found
-            return jsonify(resume_data.get("es", {})), 200
-
-    except FileNotFoundError:
-        return (
-            jsonify(
-                {
-                    "error": "CV data not found",
-                    "message": "resume.json file not found in backend/data folder",
-                }
-            ),
-            404,
-        )
-    except json.JSONDecodeError as e:
-        return jsonify({"error": "Invalid JSON", "message": str(e)}), 500
+        return jsonify(resume_data.get(lang, resume_data.get("es", {}))), 200
     except Exception as e:
-        return jsonify({"error": "Server error", "message": str(e)}), 500
-
-
-# Error handlers for API blueprint
-@api_bp.errorhandler(404)
-def api_not_found(error):
-    return jsonify({"error": "Not found", "message": str(error)}), 404
-
-
-@api_bp.errorhandler(500)
-def api_server_error(error):
-    return jsonify({"error": "Internal server error", "message": str(error)}), 500
+        return jsonify({"error": "CV data not found"}), 404
