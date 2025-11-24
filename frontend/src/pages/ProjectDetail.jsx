@@ -2,7 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import API_BASE_URL from "../config";
 import { useCachedFetch } from "../hooks/useCachedFetch";
 import FullScreenLoader from "../components/FullScreenLoader";
-import "../ProjectDetail.css";
+import "../projectDetail.css";
 
 const ProjectDetail = ({ language }) => {
   const { slug } = useParams();
