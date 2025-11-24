@@ -132,8 +132,8 @@ function getFormTemplate(type, data) {
                     <div id="image-container" style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1rem;">
                         ${images.map((img, idx) => `
                             <div class="image-row" style="display: flex; gap: 1rem; padding: 1rem; background: var(--bg-main); border: 1px solid var(--border); border-radius: 0.5rem; align-items: start;">
-                                <div style="width: 100px; height: 100px; flex-shrink: 0;">
-                                    <img src="${img.url}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 0.25rem;">
+                                <div style="width: 100px; height: 100px; flex-shrink: 0; overflow: hidden; border-radius: 0.25rem; background: var(--bg-card);">
+                                    <img src="${img.url}" style="width: 100%; height: 100%; object-fit: cover;">
                                 </div>
                                 <div style="flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
                                     <input type="hidden" class="img-url" value="${img.url}">
@@ -161,7 +161,7 @@ function getFormTemplate(type, data) {
                     </div>
                     <label class="btn" style="background: var(--bg-card); border: 1px dashed var(--border); width: 100%; justify-content: center;">
                         <i class="fas fa-cloud-upload-alt"></i> Upload Image
-                        <input type="file" hidden onchange="uploadImage(this)">
+                        <input type="file" accept="image/*" hidden onchange="uploadImage(this)">
                     </label>
                 </div>
             `;
@@ -306,12 +306,17 @@ async function uploadImage(input) {
     if (data.success) {
       const container = document.getElementById('image-container');
       const div = document.createElement('div');
+      // No need to create a wrapper div, we can just append the HTML string if we handle it right, 
+      // but sticking to the existing pattern:
+      // Actually, the previous code created a wrapper div AND put the .image-row class on it.
+      // Let's match the structure exactly.
+
       div.className = 'image-row';
       div.style.cssText = 'display: flex; gap: 1rem; padding: 1rem; background: var(--bg-main); border: 1px solid var(--border); border-radius: 0.5rem; align-items: start;';
-      const idx = container.children.length;
+
       div.innerHTML = `
-    < div style = "width: 100px; height: 100px; flex-shrink: 0;" >
-                <img src="${data.url}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 0.25rem;">
+            <div style="width: 100px; height: 100px; flex-shrink: 0; overflow: hidden; border-radius: 0.25rem; background: var(--bg-card);">
+                <img src="${data.url}" style="width: 100%; height: 100%; object-fit: cover;">
             </div>
             <div style="flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
                 <input type="hidden" class="img-url" value="${data.url}">
@@ -333,7 +338,7 @@ async function uploadImage(input) {
                     <label for="feat-new-${Date.now()}" style="font-size: 0.9rem; cursor: pointer;">Featured Image</label>
                 </div>
             </div>
-            <button type="button" class="btn" style="background: var(--danger); padding: 0.5rem;" onclick="this.closest('.image-row').remove()"><i class="fas fa-times"></i></button>
+            <button type="button" class="btn" style="background: var(--danger); padding: 0.5rem;" onclick="deleteUploadedImage(this, '${data.public_id}')"><i class="fas fa-times"></i></button>
       `;
       container.appendChild(div);
       showToast('Image uploaded', 'success');
@@ -454,6 +459,25 @@ async function saveItem() {
   } catch (e) {
     showToast(e.message, 'error');
   }
+}
+
+async function deleteUploadedImage(btn, publicId) {
+  if (publicId && publicId !== 'undefined' && publicId !== 'null') {
+    try {
+      const res = await fetch('/admin/delete-image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ public_id: publicId })
+      });
+
+      if (!res.ok) {
+        console.error('Failed to delete image from Cloudinary');
+      }
+    } catch (e) {
+      console.error('Error deleting image:', e);
+    }
+  }
+  btn.closest('.image-row').remove();
 }
 
 

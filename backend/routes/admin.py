@@ -33,6 +33,8 @@ admin_bp = Blueprint("admin", __name__, template_folder="../../templates")
 @requires_login
 @requires_role("admin")
 def admin_home():
+    from sqlalchemy.orm import joinedload
+    
     ready = request.args.get("ready")
     
     if ready == "true":
@@ -41,13 +43,35 @@ def admin_home():
             db.session.execute(text("SELECT 1"))
             db.session.commit()
 
-            # Fetch all data
-            projects_data = Project.query.order_by(desc(Project.created_at)).all()
-            experiences_data = Experience.query.order_by(desc(Experience.start_date)).all()
-            education_data = Education.query.order_by(desc(Education.start_date)).all()
-            skills_data = Skill.query.order_by(Skill.order).all()
-            certifications_data = Certification.query.order_by(desc(Certification.issue_date)).all()
-            profile_data = Profile.query.first()
+            # Fetch all data with eager loading to prevent N+1 queries
+            projects_data = Project.query.options(
+                joinedload(Project.translations),
+                joinedload(Project.images),
+                joinedload(Project.urls),
+                joinedload(Project.tags)
+            ).order_by(desc(Project.created_at)).all()
+            
+            experiences_data = Experience.query.options(
+                joinedload(Experience.translations),
+                joinedload(Experience.tags)
+            ).order_by(desc(Experience.start_date)).all()
+            
+            education_data = Education.query.options(
+                joinedload(Education.translations),
+                joinedload(Education.courses)
+            ).order_by(desc(Education.start_date)).all()
+            
+            skills_data = Skill.query.options(
+                joinedload(Skill.translations)
+            ).order_by(Skill.order).all()
+            
+            certifications_data = Certification.query.options(
+                joinedload(Certification.translations)
+            ).order_by(desc(Certification.issue_date)).all()
+            
+            profile_data = Profile.query.options(
+                joinedload(Profile.translations)
+            ).first()
 
             # Helper to serialize objects
             def serialize(obj):
@@ -620,6 +644,24 @@ def upload_image():
     folder = request.form.get("folder", "portfolio")
     
     result = cloudinary_service.upload_image(file, folder=folder)
+    
+    if result["success"]:
+        return jsonify(result), 200
+    else:
+        return jsonify(result), 500
+
+
+@admin_bp.route("/admin/delete-image", methods=["POST"])
+@requires_login
+@requires_role("admin")
+def delete_image():
+    data = request.get_json()
+    public_id = data.get("public_id")
+    
+    if not public_id:
+        return jsonify({"success": False, "error": "No public_id provided"}), 400
+        
+    result = cloudinary_service.delete_image(public_id)
     
     if result["success"]:
         return jsonify(result), 200
