@@ -27,7 +27,7 @@ const AboutSection = ({ language }) => {
 
   useEffect(() => {
     // Fetch work experience
-    fetch(`${API_BASE_URL}/api/experience?lang=${language}`)
+    fetch(`${API_BASE_URL}/experience?lang=${language}`)
       .then((res) => res.json())
       .then((data) => {
         const formatted = data.map((item) => ({
@@ -45,7 +45,7 @@ const AboutSection = ({ language }) => {
       .catch((err) => console.error("Error fetching experience:", err));
 
     // Fetch education
-    fetch(`${API_BASE_URL}/api/education?lang=${language}`)
+    fetch(`${API_BASE_URL}/education?lang=${language}`)
       .then((res) => res.json())
       .then((data) => {
         const formatted = data.map((item) => {
