@@ -46,7 +46,8 @@ def get_projects():
     query = Project.query.options(
         joinedload(Project.translations),
         joinedload(Project.images),
-        joinedload(Project.tags)
+        joinedload(Project.tags),
+        joinedload(Project.urls)
     )
 
     if category:
@@ -67,11 +68,21 @@ def get_projects():
             # Find preview video (gif or video type)
             preview_video = next((img.url for img in images if img.type in ['video', 'gif']), None)
             
+            # Serialize URLs
+            urls = [
+                {
+                    "type": url.url_type,
+                    "url": url.url,
+                    "label": url.label,
+                    "order": url.order
+                } for url in sorted(p.urls or [], key=lambda x: x.order)
+            ]
+            
             result.append({
                 "id": p.id,
                 "slug": p.slug,
                 "category": p.category,
-                "url": p.url,
+                "urls": urls,
                 "title": trans.title,
                 "subtitle": trans.subtitle,
                 "summary": trans.summary,
@@ -82,7 +93,12 @@ def get_projects():
                     "url": img.url,
                     "type": img.type,
                     "caption": img.caption,
-                    "order": img.order
+                    "order": img.order,
+                    "thumbnail_url": img.thumbnail_url,
+                    "alt_text": img.alt_text,
+                    "width": img.width,
+                    "height": img.height,
+                    "is_featured": img.is_featured
                 } for img in images],
                 # Backward compatibility fields
                 "desktop_image": images[0].url if images else None,
@@ -103,7 +119,8 @@ def get_project(slug):
     project = Project.query.options(
         joinedload(Project.translations),
         joinedload(Project.images),
-        joinedload(Project.tags)
+        joinedload(Project.tags),
+        joinedload(Project.urls)
     ).filter_by(slug=slug).first()
     
     if not project:
@@ -116,11 +133,21 @@ def get_project(slug):
     images = sorted(project.images, key=lambda x: x.order)
     preview_video = next((img.url for img in images if img.type in ['video', 'gif']), None)
     
+    # Serialize URLs
+    urls = [
+        {
+            "type": url.url_type,
+            "url": url.url,
+            "label": url.label,
+            "order": url.order
+        } for url in sorted(project.urls or [], key=lambda x: x.order)
+    ]
+    
     return jsonify({
         "id": project.id,
         "slug": project.slug,
         "category": project.category,
-        "url": project.url,
+        "urls": urls,
         "title": trans.title if trans else "",
         "subtitle": trans.subtitle if trans else "",
         "summary": trans.summary if trans else "",
@@ -131,7 +158,12 @@ def get_project(slug):
             "url": img.url,
             "type": img.type,
             "caption": img.caption,
-            "order": img.order
+            "order": img.order,
+            "thumbnail_url": img.thumbnail_url,
+            "alt_text": img.alt_text,
+            "width": img.width,
+            "height": img.height,
+            "is_featured": img.is_featured
         } for img in images],
         "preview_video": preview_video,
         "desktop_image": images[0].url if images else None,

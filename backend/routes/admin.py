@@ -11,6 +11,7 @@ from flask import (
 from sqlalchemy import text, desc
 from backend import db
 from backend.models.project import Project, ProjectImage, ProjectTranslation
+from backend.models.project_url import ProjectURL
 from backend.models.experience import Experience, ExperienceTranslation
 from backend.models.education import Education, EducationTranslation, Course
 from backend.models.skill import Skill, SkillTranslation
@@ -185,21 +186,71 @@ def save_project():
         project.slug = slug
         project.category = category
         
-        # Handle URL - support both old single URL and new JSON format
-        url_data = data.get("url")
+        # Handle URLs - NEW: Use ProjectURL model
+        # Delete existing URLs if updating
+        if project_id:
+            ProjectURL.query.filter_by(project_id=project.id).delete()
+            db.session.flush()
+        
+        # Process URL data - support multiple formats for backward compatibility
+        url_data = data.get("url") or data.get("urls", [])
+        
         if url_data:
-            # If it's already a JSON string, use it
-            if isinstance(url_data, str) and (url_data.startswith('{') or url_data.startswith('"')):
-                project.url = url_data
-            # If it's a dict, convert to JSON
-            elif isinstance(url_data, dict):
+            # If it's a string (old format), try to parse it
+            if isinstance(url_data, str):
                 import json
-                project.url = json.dumps(url_data)
-            # Otherwise store as-is (backward compatibility)
-            else:
-                project.url = url_data
-        else:
-            project.url = None
+                try:
+                    # Try parsing as JSON
+                    if url_data.startswith('{'):
+                        parsed = json.loads(url_data)
+                        # Convert old JSON format to new ProjectURL entries
+                        for url_type, url_value in parsed.items():
+                            if url_value:
+                                project_url = ProjectURL(
+                                    url_type=url_type,  # e.g., 'github', 'live'
+                                    url=url_value,
+                                    order=0 if url_type == 'github' else 1
+                                )
+                                project.urls.append(project_url)
+                    else:
+                        # Plain string URL - assume it's a live URL
+                        project_url = ProjectURL(
+                            url_type='live',
+                            url=url_data,
+                            order=0
+                        )
+                        project.urls.append(project_url)
+                except json.JSONDecodeError:
+                    # Not JSON, treat as plain URL
+                    project_url = ProjectURL(
+                        url_type='live',
+                        url=url_data,
+                        order=0
+                    )
+                    project.urls.append(project_url)
+            
+            # If it's a list (new format)
+            elif isinstance(url_data, list):
+                for idx, url_item in enumerate(url_data):
+                    if isinstance(url_item, dict):
+                        project_url = ProjectURL(
+                            url_type=url_item.get('type', 'live'),
+                            url=url_item.get('url'),
+                            label=url_item.get('label'),
+                            order=url_item.get('order', idx)
+                        )
+                        project.urls.append(project_url)
+            
+            # If it's a dict (new format, single URL)
+            elif isinstance(url_data, dict):
+                for url_type, url_value in url_data.items():
+                    if url_value:
+                        project_url = ProjectURL(
+                            url_type=url_type,
+                            url=url_value,
+                            order=0 if url_type == 'github' else 1
+                        )
+                        project.urls.append(project_url)
         
         # Update translations - properly delete old ones first
         if project_id:
@@ -231,7 +282,15 @@ def save_project():
                 url=img_data["url"],
                 type=img_data.get("type", "image"),
                 caption=img_data.get("caption"),
-                order=idx
+                order=idx,
+                # New metadata fields (optional)
+                thumbnail_url=img_data.get("thumbnail_url"),
+                alt_text=img_data.get("alt_text"),
+                width=img_data.get("width"),
+                height=img_data.get("height"),
+                file_size=img_data.get("file_size"),
+                mime_type=img_data.get("mime_type"),
+                is_featured=img_data.get("is_featured", False)
             )
             project.images.append(img)
             
