@@ -108,9 +108,9 @@ function getFormTemplate(type, data) {
                     <label class="form-label">Category <span style="color:var(--danger)">*</span></label>
                     <select class="form-control" name="category" required>
                         <option value="">Select a category...</option>
-                        <option value="project" ${d.category === 'project' ? 'selected' : ''}>Project</option>
-                        <option value="work" ${d.category === 'work' ? 'selected' : ''}>Work</option>
-                        <option value="study" ${d.category === 'study' ? 'selected' : ''}>Study</option>
+                        <option value="project" ${(d.category || '').toLowerCase() === 'project' ? 'selected' : ''}>Project</option>
+                        <option value="work" ${(d.category || '').toLowerCase() === 'work' ? 'selected' : ''}>Work</option>
+                        <option value="study" ${(d.category || '').toLowerCase() === 'study' ? 'selected' : ''}>Study</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -167,10 +167,7 @@ function getFormTemplate(type, data) {
             `;
   } else if (type === 'experience') {
     typeFields = `
-                <div class="form-group">
-                    <label class="form-label">Company</label>
-                    <input type="text" class="form-control" name="company" value="${d.company || ''}">
-                </div>
+                <!-- Company field removed as it is stored in translation title -->
                 <div class="form-group">
                     <label class="form-label">Location</label>
                     <input type="text" class="form-control" name="location" value="${d.location || ''}">
@@ -255,11 +252,11 @@ function getFormTemplate(type, data) {
             
             <div id="trans-es" class="tab-content">
                 <div class="form-group">
-                    <label class="form-label">Title/Name (ES) <span style="color:var(--danger)">*</span></label>
+                    <label class="form-label">${type === 'experience' ? 'Company Name (ES)' : type === 'education' ? 'Degree (ES)' : 'Title/Name (ES)'} <span style="color:var(--danger)">*</span></label>
                     <input type="text" class="form-control" name="title_es" value="${(es.title || es.name || '').replace(/"/g, '&quot;')}" required>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Subtitle (ES)</label>
+                    <label class="form-label">${type === 'experience' ? 'Role (ES)' : type === 'education' ? 'Field of Study (ES)' : 'Subtitle (ES)'}</label>
                     <input type="text" class="form-control" name="subtitle_es" value="${(es.subtitle || '').replace(/"/g, '&quot;')}">
                 </div>
                 <div class="form-group">
@@ -270,11 +267,11 @@ function getFormTemplate(type, data) {
 
             <div id="trans-en" class="tab-content hidden">
                 <div class="form-group">
-                    <label class="form-label">Title/Name (EN) <span style="color:var(--danger)">*</span></label>
+                    <label class="form-label">${type === 'experience' ? 'Company Name (EN)' : type === 'education' ? 'Degree (EN)' : 'Title/Name (EN)'} <span style="color:var(--danger)">*</span></label>
                     <input type="text" class="form-control" name="title_en" value="${(en.title || en.name || '').replace(/"/g, '&quot;')}" required>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Subtitle (EN)</label>
+                    <label class="form-label">${type === 'experience' ? 'Role (EN)' : type === 'education' ? 'Field of Study (EN)' : 'Subtitle (EN)'}</label>
                     <input type="text" class="form-control" name="subtitle_en" value="${(en.subtitle || '').replace(/"/g, '&quot;')}">
                 </div>
                 <div class="form-group">
@@ -282,7 +279,7 @@ function getFormTemplate(type, data) {
                     <textarea class="form-control" name="description_en">${en.description || ''}</textarea>
                 </div>
             </div>
-        `;
+  `;
 
   return `<form id="edit-form">${commonFields}${typeFields}${translationFields}</form>`;
 }
@@ -313,7 +310,7 @@ async function uploadImage(input) {
       div.style.cssText = 'display: flex; gap: 1rem; padding: 1rem; background: var(--bg-main); border: 1px solid var(--border); border-radius: 0.5rem; align-items: start;';
       const idx = container.children.length;
       div.innerHTML = `
-            <div style="width: 100px; height: 100px; flex-shrink: 0;">
+    < div style = "width: 100px; height: 100px; flex-shrink: 0;" >
                 <img src="${data.url}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 0.25rem;">
             </div>
             <div style="flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">

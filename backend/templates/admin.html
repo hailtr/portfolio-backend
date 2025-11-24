@@ -35,7 +35,7 @@
       </div>
       <div class="item-list">
         {% for category, items in projects|groupby('category') %}
-        <details open class="category-group">
+        <details class="category-group">
           <summary
             style="margin: 1.5rem 0 0.5rem; color: var(--accent); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; outline: none; user-select: none;">
             {{ category or 'Uncategorized' }} <span style="font-size: 0.8em; opacity: 0.7; margin-left: 0.5rem;">({{
@@ -43,10 +43,11 @@
           </summary>
           <div class="list-group">
             {% for p in items %}
+            {% set trans = p.translations | selectattr('lang', 'equalto', 'es') | first %}
             <div class="list-item" onclick='editProject({{ p.id }})'
               style="cursor: pointer; transition: transform 0.2s, border-color 0.2s;">
               <div class="item-info">
-                <h3>{{ p.title_es or p.slug }}</h3>
+                <h3>{{ trans.title if trans else p.slug }}</h3>
                 <p>{{ p.category or '' }}</p>
               </div>
               <div class="item-actions">
@@ -82,10 +83,12 @@
         </div>
         <div class="item-list">
           {% for e in experiences %}
+          {% set trans = e.translations | selectattr('lang', 'equalto', 'es') | first %}
           <div class="list-item" onclick='editExperience({{ e.id }})' style="cursor: pointer;">
             <div class="item-info">
-              <h3>{{ e.company }}</h3>
-              <p>{{ e.role_es or '' }} • {{ e.start_date }} - {{ e.end_date or 'Present' }}</p>
+              <h3>{{ trans.title if trans else 'No Company' }}</h3>
+              <p>{{ trans.subtitle if trans else 'No Role' }} • {{ e.start_date or '' }} - {{ e.end_date or 'Present' }}
+              </p>
             </div>
             <div class="item-actions">
               <button class="action-btn delete"
@@ -105,10 +108,11 @@
         </div>
         <div class="item-list">
           {% for e in education %}
+          {% set trans = e.translations | selectattr('lang', 'equalto', 'es') | first %}
           <div class="list-item" onclick='editEducation({{ e.id }})' style="cursor: pointer;">
             <div class="item-info">
               <h3>{{ e.institution }}</h3>
-              <p>{{ e.degree_es or '' }} • {{ e.start_date }} - {{ e.end_date or 'Present' }}</p>
+              <p>{{ trans.title if trans else '' }} • {{ e.start_date or '' }} - {{ e.end_date or 'Present' }}</p>
             </div>
             <div class="item-actions">
               <button class="action-btn delete"
@@ -128,9 +132,10 @@
         </div>
         <div class="item-list">
           {% for c in certifications %}
+          {% set trans = c.translations | selectattr('lang', 'equalto', 'es') | first %}
           <div class="list-item" onclick='editCertification({{ c.id }})' style="cursor: pointer;">
             <div class="item-info">
-              <h3>{{ c.slug }}</h3>
+              <h3>{{ trans.title if trans else c.slug }}</h3>
               <p>{{ c.issuer or '' }} • {{ c.issue_date or '' }}</p>
             </div>
             <div class="item-actions">
@@ -152,7 +157,7 @@
       </div>
       <div class="item-list">
         {% for category, items in skills|groupby('category') %}
-        <details open class="category-group">
+        <details class="category-group">
           <summary
             style="margin: 1.5rem 0 0.5rem; color: var(--accent); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; outline: none; user-select: none;">
             {{ category or 'Uncategorized' }} <span style="font-size: 0.8em; opacity: 0.7; margin-left: 0.5rem;">({{
@@ -160,9 +165,10 @@
           </summary>
           <div class="list-group">
             {% for s in items %}
+            {% set trans = s.translations | selectattr('lang', 'equalto', 'es') | first %}
             <div class="list-item" onclick='editSkill({{ s.id }})' style="cursor: pointer;">
               <div class="item-info">
-                <h3>{{ s.name }}</h3>
+                <h3>{{ trans.name if trans else s.slug }}</h3>
                 <p>{{ s.proficiency }}%</p>
               </div>
               <div class="item-actions">
