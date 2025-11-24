@@ -1,6 +1,6 @@
 // src/components/FullScreenLoader.jsx
 import React from "react";
-import "../app.css";
+import "../App.css";
 
 const FullScreenLoader = ({ message = "Cargando..." }) => {
   return (
