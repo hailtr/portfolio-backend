@@ -22,7 +22,6 @@ from backend.services.cloudinary_service import cloudinary_service
 from backend.services.cache_service import invalidate_entities_cache
 import json
 import os
-from googletrans import Translator
 import cloudinary.api
 from auth.decorators import requires_login, requires_role
 
@@ -614,23 +613,6 @@ def delete_item(type, id):
 # UTILITY ENDPOINTS
 # ==========================================
 
-@admin_bp.route("/admin/translate", methods=["POST"])
-@requires_login
-@requires_role("admin")
-def translate_text():
-    data = request.get_json()
-    text = data.get("text")
-    target_lang = data.get("target_lang")
-    
-    if not text or not target_lang:
-        return jsonify({"error": "Missing text or target_lang"}), 400
-        
-    try:
-        translator = Translator()
-        result = translator.translate(text, dest=target_lang)
-        return jsonify({"success": True, "translated": result.text}), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
 
 
 @admin_bp.route("/admin/upload-image", methods=["POST"])
