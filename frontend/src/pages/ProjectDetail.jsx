@@ -13,7 +13,7 @@ const ProjectDetail = ({ language }) => {
     loading,
     error,
   } = useCachedFetch(
-    `${API_BASE_URL}/projects/${slug}?lang=${language}`,
+    `${API_BASE_URL}/api/projects/${slug}?lang=${language}`,
     `project_${slug}_${language}`
   );
 
