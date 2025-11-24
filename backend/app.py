@@ -115,6 +115,13 @@ logger.info(
 # Make limiter available to routes
 rate_limit.init_limiter(limiter)
 
+# Import all models so SQLAlchemy knows about them
+# This is critical for relationships to work properly
+from backend.models.project import Project
+from backend.models.project_url import ProjectURL
+from backend.models.analytics import ProjectAnalytics, ProjectEvent
+from backend.models.user import User
+
 logger.info("Registering blueprints")
 app.register_blueprint(api_bp)
 app.register_blueprint(admin_bp)

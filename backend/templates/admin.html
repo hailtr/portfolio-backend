@@ -15,10 +15,8 @@
   <div class="sidebar">
     <div class="logo"><i class="fas fa-rocket"></i> Admin Panel</div>
     <div class="nav-item active" onclick="switchView('projects')"><i class="fas fa-project-diagram"></i> Projects</div>
-    <div class="nav-item" onclick="switchView('experience')"><i class="fas fa-briefcase"></i> Experience</div>
-    <div class="nav-item" onclick="switchView('education')"><i class="fas fa-graduation-cap"></i> Education</div>
+    <div class="nav-item" onclick="switchView('resume')"><i class="fas fa-file-alt"></i> Resume</div>
     <div class="nav-item" onclick="switchView('skills')"><i class="fas fa-code"></i> Skills</div>
-    <div class="nav-item" onclick="switchView('certifications')"><i class="fas fa-certificate"></i> Certifications</div>
     <div class="nav-item" onclick="switchView('profile')"><i class="fas fa-user"></i> Profile</div>
     <div style="margin-top: auto;">
       <a href="/admin/backup" class="nav-item" style="color: var(--success); text-decoration: none;" download>
@@ -36,67 +34,113 @@
         <button class="btn btn-primary" onclick="openModal('project')"><i class="fas fa-plus"></i> Add Project</button>
       </div>
       <div class="item-list">
-        {% for p in projects %}
-        <div class="list-item">
-          <div class="item-info">
-            <h3>{{ p.title_es or p.slug }}</h3>
-            <p>{{ p.category or '' }}</p>
+        {% for category, items in projects|groupby('category') %}
+        <details open class="category-group">
+          <summary
+            style="margin: 1.5rem 0 0.5rem; color: var(--accent); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; outline: none; user-select: none;">
+            {{ category or 'Uncategorized' }} <span style="font-size: 0.8em; opacity: 0.7; margin-left: 0.5rem;">({{
+              items|length }})</span>
+          </summary>
+          <div class="list-group">
+            {% for p in items %}
+            <div class="list-item" onclick='editProject({{ p.id }})'
+              style="cursor: pointer; transition: transform 0.2s, border-color 0.2s;">
+              <div class="item-info">
+                <h3>{{ p.title_es or p.slug }}</h3>
+                <p>{{ p.category or '' }}</p>
+              </div>
+              <div class="item-actions">
+                <button class="action-btn delete"
+                  onclick="event.stopPropagation(); deleteItem('project', {{ p.id }})"><i
+                    class="fas fa-trash"></i></button>
+              </div>
+            </div>
+            {% endfor %}
           </div>
-          <div class="item-actions">
-            <button class="action-btn" onclick='editProject({{ p.id }})'><i class="fas fa-edit"></i></button>
-            <button class="action-btn delete" onclick="deleteItem('project', {{ p.id }})"><i
-                class="fas fa-trash"></i></button>
-          </div>
-        </div>
+        </details>
         {% endfor %}
       </div>
     </div>
 
-    <!-- Experience View -->
-    <div id="view-experience" class="view-section hidden">
+    <!-- Resume View (Experience, Education, Certifications) -->
+    <div id="view-resume" class="view-section hidden">
       <div class="header">
-        <h2>Experience</h2>
-        <button class="btn btn-primary" onclick="openModal('experience')"><i class="fas fa-plus"></i> Add
-          Experience</button>
+        <h2>Resume</h2>
       </div>
-      <div class="item-list">
-        {% for e in experiences %}
-        <div class="list-item">
-          <div class="item-info">
-            <h3>{{ e.company }}</h3>
-            <p>{{ e.role_es or '' }} • {{ e.start_date }} - {{ e.end_date or 'Present' }}</p>
-          </div>
-          <div class="item-actions">
-            <button class="action-btn" onclick='editExperience({{ e.id }})'><i class="fas fa-edit"></i></button>
-            <button class="action-btn delete" onclick="deleteItem('experience', {{ e.id }})"><i
-                class="fas fa-trash"></i></button>
-          </div>
-        </div>
-        {% endfor %}
-      </div>
-    </div>
 
-    <!-- Education View -->
-    <div id="view-education" class="view-section hidden">
-      <div class="header">
-        <h2>Education</h2>
-        <button class="btn btn-primary" onclick="openModal('education')"><i class="fas fa-plus"></i> Add
-          Education</button>
+      <div class="tabs">
+        <div class="tab active" onclick="switchResumeTab(this, 'resume-experience')">Experience</div>
+        <div class="tab" onclick="switchResumeTab(this, 'resume-education')">Education</div>
+        <div class="tab" onclick="switchResumeTab(this, 'resume-certifications')">Certifications</div>
       </div>
-      <div class="item-list">
-        {% for e in education %}
-        <div class="list-item">
-          <div class="item-info">
-            <h3>{{ e.institution }}</h3>
-            <p>{{ e.degree_es or '' }} • {{ e.start_date }} - {{ e.end_date or 'Present' }}</p>
-          </div>
-          <div class="item-actions">
-            <button class="action-btn" onclick='editEducation({{ e.id }})'><i class="fas fa-edit"></i></button>
-            <button class="action-btn delete" onclick="deleteItem('education', {{ e.id }})"><i
-                class="fas fa-trash"></i></button>
-          </div>
+
+      <!-- Experience Sub-View -->
+      <div id="resume-experience" class="resume-tab-content">
+        <div class="header" style="margin-bottom: 1rem;">
+          <h3>Experience History</h3>
+          <button class="btn btn-primary" onclick="openModal('experience')"><i class="fas fa-plus"></i> Add</button>
         </div>
-        {% endfor %}
+        <div class="item-list">
+          {% for e in experiences %}
+          <div class="list-item" onclick='editExperience({{ e.id }})' style="cursor: pointer;">
+            <div class="item-info">
+              <h3>{{ e.company }}</h3>
+              <p>{{ e.role_es or '' }} • {{ e.start_date }} - {{ e.end_date or 'Present' }}</p>
+            </div>
+            <div class="item-actions">
+              <button class="action-btn delete"
+                onclick="event.stopPropagation(); deleteItem('experience', {{ e.id }})"><i
+                  class="fas fa-trash"></i></button>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Education Sub-View -->
+      <div id="resume-education" class="resume-tab-content hidden">
+        <div class="header" style="margin-bottom: 1rem;">
+          <h3>Education History</h3>
+          <button class="btn btn-primary" onclick="openModal('education')"><i class="fas fa-plus"></i> Add</button>
+        </div>
+        <div class="item-list">
+          {% for e in education %}
+          <div class="list-item" onclick='editEducation({{ e.id }})' style="cursor: pointer;">
+            <div class="item-info">
+              <h3>{{ e.institution }}</h3>
+              <p>{{ e.degree_es or '' }} • {{ e.start_date }} - {{ e.end_date or 'Present' }}</p>
+            </div>
+            <div class="item-actions">
+              <button class="action-btn delete"
+                onclick="event.stopPropagation(); deleteItem('education', {{ e.id }})"><i
+                  class="fas fa-trash"></i></button>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Certifications Sub-View -->
+      <div id="resume-certifications" class="resume-tab-content hidden">
+        <div class="header" style="margin-bottom: 1rem;">
+          <h3>Certifications</h3>
+          <button class="btn btn-primary" onclick="openModal('certification')"><i class="fas fa-plus"></i> Add</button>
+        </div>
+        <div class="item-list">
+          {% for c in certifications %}
+          <div class="list-item" onclick='editCertification({{ c.id }})' style="cursor: pointer;">
+            <div class="item-info">
+              <h3>{{ c.slug }}</h3>
+              <p>{{ c.issuer or '' }} • {{ c.issue_date or '' }}</p>
+            </div>
+            <div class="item-actions">
+              <button class="action-btn delete"
+                onclick="event.stopPropagation(); deleteItem('certification', {{ c.id }})"><i
+                  class="fas fa-trash"></i></button>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
       </div>
     </div>
 
@@ -107,42 +151,28 @@
         <button class="btn btn-primary" onclick="openModal('skill')"><i class="fas fa-plus"></i> Add Skill</button>
       </div>
       <div class="item-list">
-        {% for s in skills %}
-        <div class="list-item">
-          <div class="item-info">
-            <h3>{{ s.name }}</h3>
-            <p>{{ s.category or '' }} • {{ s.proficiency }}%</p>
+        {% for category, items in skills|groupby('category') %}
+        <details open class="category-group">
+          <summary
+            style="margin: 1.5rem 0 0.5rem; color: var(--accent); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; outline: none; user-select: none;">
+            {{ category or 'Uncategorized' }} <span style="font-size: 0.8em; opacity: 0.7; margin-left: 0.5rem;">({{
+              items|length }})</span>
+          </summary>
+          <div class="list-group">
+            {% for s in items %}
+            <div class="list-item" onclick='editSkill({{ s.id }})' style="cursor: pointer;">
+              <div class="item-info">
+                <h3>{{ s.name }}</h3>
+                <p>{{ s.proficiency }}%</p>
+              </div>
+              <div class="item-actions">
+                <button class="action-btn delete" onclick="event.stopPropagation(); deleteItem('skill', {{ s.id }})"><i
+                    class="fas fa-trash"></i></button>
+              </div>
+            </div>
+            {% endfor %}
           </div>
-          <div class="item-actions">
-            <button class="action-btn" onclick='editSkill({{ s.id }})'><i class="fas fa-edit"></i></button>
-            <button class="action-btn delete" onclick="deleteItem('skill', {{ s.id }})"><i
-                class="fas fa-trash"></i></button>
-          </div>
-        </div>
-        {% endfor %}
-      </div>
-    </div>
-
-    <!-- Certifications View -->
-    <div id="view-certifications" class="view-section hidden">
-      <div class="header">
-        <h2>Certifications</h2>
-        <button class="btn btn-primary" onclick="openModal('certification')"><i class="fas fa-plus"></i> Add
-          Certification</button>
-      </div>
-      <div class="item-list">
-        {% for c in certifications %}
-        <div class="list-item">
-          <div class="item-info">
-            <h3>{{ c.slug }}</h3>
-            <p>{{ c.issuer or '' }} • {{ c.issue_date or '' }}</p>
-          </div>
-          <div class="item-actions">
-            <button class="action-btn" onclick='editCertification({{ c.id }})'><i class="fas fa-edit"></i></button>
-            <button class="action-btn delete" onclick="deleteItem('certification', {{ c.id }})"><i
-                class="fas fa-trash"></i></button>
-          </div>
-        </div>
+        </details>
         {% endfor %}
       </div>
     </div>

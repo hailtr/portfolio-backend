@@ -27,6 +27,16 @@ function switchTab(tabEl, contentId) {
   container.querySelector(`#${contentId}`).classList.remove('hidden');
 }
 
+function switchResumeTab(tabEl, contentId) {
+  const parent = tabEl.parentElement;
+  parent.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  tabEl.classList.add('active');
+
+  const container = parent.parentElement;
+  container.querySelectorAll('.resume-tab-content').forEach(c => c.classList.add('hidden'));
+  container.querySelector(`#${contentId}`).classList.remove('hidden');
+}
+
 // Modal Logic
 function openModal(type, data = null) {
   currentType = type;
@@ -61,26 +71,37 @@ function getFormTemplate(type, data) {
   if (type === 'project') {
     const images = d.images || [];
     // Image preview generation
-    let imagePreviews = '<div class="image-grid" id="image-preview-container">';
-    images.forEach((img, idx) => {
-      imagePreviews += `
-            <div class="image-item">
-                <img src="${img.url}" alt="Preview">
-                <div class="image-remove" onclick="removeImage(${idx})"><i class="fas fa-times"></i></div>
-            </div>
-        `;
-    });
-    imagePreviews += '</div>';
+    // Images handled in the template literal below
 
-    // Parse URLs if stored as JSON
-    let urls = {};
-    if (d.url) {
+
+    // Handle URLs
+    const urls = d.urls || [];
+    // Backward compatibility for old single URL format if urls is empty
+    if (urls.length === 0 && d.url) {
       try {
-        urls = typeof d.url === 'string' ? JSON.parse(d.url) : d.url;
+        const parsed = typeof d.url === 'string' ? JSON.parse(d.url) : d.url;
+        if (parsed.github) urls.push({ url_type: 'github', url: parsed.github });
+        if (parsed.live) urls.push({ url_type: 'live', url: parsed.live });
       } catch {
-        urls = { live: d.url }; // Fallback for old single URL format
+        urls.push({ url_type: 'live', url: d.url });
       }
     }
+
+    let urlRows = '';
+    urls.forEach((u, idx) => {
+      urlRows += `
+        <div class="url-row" style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+            <select class="form-control" style="width: 120px;" onchange="updateUrlType(this)">
+                <option value="live" ${u.url_type === 'live' ? 'selected' : ''}>Live</option>
+                <option value="github" ${u.url_type === 'github' ? 'selected' : ''}>GitHub</option>
+                <option value="demo" ${u.url_type === 'demo' ? 'selected' : ''}>Demo</option>
+                <option value="article" ${u.url_type === 'article' ? 'selected' : ''}>Article</option>
+            </select>
+            <input type="text" class="form-control" value="${u.url}" placeholder="https://..." onchange="updateUrlValue(this)">
+            <button type="button" class="btn" style="background: var(--danger); padding: 0 0.5rem;" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
+        </div>
+      `;
+    });
 
     typeFields = `
                 <div class="form-group">
@@ -97,26 +118,51 @@ function getFormTemplate(type, data) {
                     <input type="text" class="form-control" name="tags" value="${(d.tags || []).map(t => t.name).join(', ')}">
                 </div>
                 <div class="form-group">
-                    <label class="form-label" style="font-weight: 600; margin-top: 1rem;">URLS</label>
+                    <label class="form-label" style="font-weight: 600; margin-top: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                        URLS
+                        <button type="button" class="btn btn-sm" style="font-size: 0.8rem; padding: 0.2rem 0.5rem;" onclick="addUrlRow()">+ Add URL</button>
+                    </label>
+                    <div id="url-container">
+                        ${urlRows}
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">GitHub Repository</label>
-                    <input type="url" class="form-control" name="url_github" value="${urls.github || ''}" placeholder="https://github.com/username/repo">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Live Demo</label>
-                    <input type="url" class="form-control" name="url_live" value="${urls.live || ''}" placeholder="https://example.com">
-                </div>
                 <div class="form-group">
                     <label class="form-label">Images</label>
-                    ${imagePreviews}
-                    <div style="margin-top: 1rem;">
-                        <label class="btn" style="background: var(--bg-card); border: 1px dashed var(--border); width: 100%; justify-content: center;">
-                            <i class="fas fa-cloud-upload-alt"></i> Upload Image
-                            <input type="file" hidden onchange="uploadImage(this)">
-                        </label>
+                    <div id="image-container" style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1rem;">
+                        ${images.map((img, idx) => `
+                            <div class="image-row" style="display: flex; gap: 1rem; padding: 1rem; background: var(--bg-main); border: 1px solid var(--border); border-radius: 0.5rem; align-items: start;">
+                                <div style="width: 100px; height: 100px; flex-shrink: 0;">
+                                    <img src="${img.url}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 0.25rem;">
+                                </div>
+                                <div style="flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                                    <input type="hidden" class="img-url" value="${img.url}">
+                                    <input type="hidden" class="img-type" value="${img.type || 'image'}">
+                                    <div style="grid-column: 1 / -1;">
+                                        <label style="font-size: 0.8rem;">Alt Text</label>
+                                        <input type="text" class="form-control img-alt" value="${img.alt_text || ''}" placeholder="Alt text">
+                                    </div>
+                                    <div>
+                                        <label style="font-size: 0.8rem;">Width</label>
+                                        <input type="number" class="form-control img-width" value="${img.width || ''}" placeholder="Width">
+                                    </div>
+                                    <div>
+                                        <label style="font-size: 0.8rem;">Height</label>
+                                        <input type="number" class="form-control img-height" value="${img.height || ''}" placeholder="Height">
+                                    </div>
+                                    <div style="grid-column: 1 / -1; display: flex; align-items: center; gap: 0.5rem;">
+                                        <input type="checkbox" class="img-featured" id="feat-${idx}" ${img.is_featured ? 'checked' : ''}>
+                                        <label for="feat-${idx}" style="font-size: 0.9rem; cursor: pointer;">Featured Image</label>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn" style="background: var(--danger); padding: 0.5rem;" onclick="this.closest('.image-row').remove()"><i class="fas fa-times"></i></button>
+                            </div>
+                        `).join('')}
                     </div>
-                    <input type="hidden" name="images" id="images-input" value='${JSON.stringify(images).replace(/'/g, "&#39;")}'>
+                    <label class="btn" style="background: var(--bg-card); border: 1px dashed var(--border); width: 100%; justify-content: center;">
+                        <i class="fas fa-cloud-upload-alt"></i> Upload Image
+                        <input type="file" hidden onchange="uploadImage(this)">
+                    </label>
                 </div>
             `;
   } else if (type === 'experience') {
@@ -261,11 +307,38 @@ async function uploadImage(input) {
     const data = await res.json();
 
     if (data.success) {
-      const imagesInput = document.getElementById('images-input');
-      const images = JSON.parse(imagesInput.value || '[]');
-      images.push({ url: data.url, type: 'image', caption: '' });
-      imagesInput.value = JSON.stringify(images);
-      renderImagePreviews(images);
+      const container = document.getElementById('image-container');
+      const div = document.createElement('div');
+      div.className = 'image-row';
+      div.style.cssText = 'display: flex; gap: 1rem; padding: 1rem; background: var(--bg-main); border: 1px solid var(--border); border-radius: 0.5rem; align-items: start;';
+      const idx = container.children.length;
+      div.innerHTML = `
+            <div style="width: 100px; height: 100px; flex-shrink: 0;">
+                <img src="${data.url}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 0.25rem;">
+            </div>
+            <div style="flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                <input type="hidden" class="img-url" value="${data.url}">
+                <input type="hidden" class="img-type" value="image">
+                <div style="grid-column: 1 / -1;">
+                    <label style="font-size: 0.8rem;">Alt Text</label>
+                    <input type="text" class="form-control img-alt" placeholder="Alt text">
+                </div>
+                <div>
+                    <label style="font-size: 0.8rem;">Width</label>
+                    <input type="number" class="form-control img-width" value="${data.width || ''}" placeholder="Width">
+                </div>
+                <div>
+                    <label style="font-size: 0.8rem;">Height</label>
+                    <input type="number" class="form-control img-height" value="${data.height || ''}" placeholder="Height">
+                </div>
+                <div style="grid-column: 1 / -1; display: flex; align-items: center; gap: 0.5rem;">
+                    <input type="checkbox" class="img-featured" id="feat-new-${Date.now()}">
+                    <label for="feat-new-${Date.now()}" style="font-size: 0.9rem; cursor: pointer;">Featured Image</label>
+                </div>
+            </div>
+            <button type="button" class="btn" style="background: var(--danger); padding: 0.5rem;" onclick="this.closest('.image-row').remove()"><i class="fas fa-times"></i></button>
+      `;
+      container.appendChild(div);
       showToast('Image uploaded', 'success');
     } else {
       showToast('Upload failed: ' + (data.error || 'Unknown error'), 'error');
@@ -274,32 +347,35 @@ async function uploadImage(input) {
     showToast('Error uploading: ' + e.message, 'error');
   } finally {
     btn.innerHTML = originalText;
-    // Re-attach event listener if needed, though inline onchange should persist
     const newInput = btn.querySelector('input');
     if (newInput) newInput.onchange = function () { uploadImage(this); };
   }
 }
 
+// removeImage and renderImagePreviews are no longer needed
 function removeImage(index) {
-  const imagesInput = document.getElementById('images-input');
-  const images = JSON.parse(imagesInput.value || '[]');
-  images.splice(index, 1);
-  imagesInput.value = JSON.stringify(images);
-  renderImagePreviews(images);
+  // Deprecated
+}
+function renderImagePreviews(images) {
+  // Deprecated
 }
 
-function renderImagePreviews(images) {
-  const container = document.getElementById('image-preview-container');
-  let html = '';
-  images.forEach((img, idx) => {
-    html += `
-            <div class="image-item">
-                <img src="${img.url}" alt="Preview">
-                <div class="image-remove" onclick="removeImage(${idx})"><i class="fas fa-times"></i></div>
-            </div>
-        `;
-  });
-  container.innerHTML = html;
+function addUrlRow() {
+  const container = document.getElementById('url-container');
+  const div = document.createElement('div');
+  div.className = 'url-row';
+  div.style.cssText = 'display: flex; gap: 0.5rem; margin-bottom: 0.5rem;';
+  div.innerHTML = `
+        <select class="form-control" style="width: 120px;">
+            <option value="live">Live</option>
+            <option value="github">GitHub</option>
+            <option value="demo">Demo</option>
+            <option value="article">Article</option>
+        </select>
+        <input type="text" class="form-control" placeholder="https://..." >
+        <button type="button" class="btn" style="background: var(--danger); padding: 0 0.5rem;" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
+    `;
+  container.appendChild(div);
 }
 
 // Data variables - populated by inline script in HTML
@@ -330,14 +406,36 @@ async function saveItem() {
     catch { data.images = []; }
   }
 
-  // Combine URL fields into JSON object
-  if (data.url_github || data.url_live) {
-    data.url = JSON.stringify({
-      github: data.url_github || null,
-      live: data.url_live || null
+  // Collect URLs
+  if (currentType === 'project') {
+    const urlRows = document.querySelectorAll('#url-container .url-row');
+    const urls = [];
+    urlRows.forEach((row, idx) => {
+      const type = row.querySelector('select').value;
+      const url = row.querySelector('input').value;
+      if (url) {
+        urls.push({ type, url, order: idx });
+      }
     });
-    delete data.url_github;
-    delete data.url_live;
+    data.urls = urls;
+  }
+
+  // Collect Images
+  if (currentType === 'project') {
+    const imgRows = document.querySelectorAll('#image-container .image-row');
+    const images = [];
+    imgRows.forEach((row, idx) => {
+      images.push({
+        url: row.querySelector('.img-url').value,
+        type: row.querySelector('.img-type').value,
+        alt_text: row.querySelector('.img-alt').value,
+        width: row.querySelector('.img-width').value ? parseInt(row.querySelector('.img-width').value) : null,
+        height: row.querySelector('.img-height').value ? parseInt(row.querySelector('.img-height').value) : null,
+        is_featured: row.querySelector('.img-featured').checked,
+        order: idx
+      });
+    });
+    data.images = images;
   }
 
   if (currentId) data.id = currentId;

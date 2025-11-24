@@ -70,6 +70,9 @@ def admin_home():
                     
                 if hasattr(obj, 'courses'):
                     d['courses'] = [c.name for c in sorted(obj.courses, key=lambda x: x.order)]
+
+                if hasattr(obj, 'urls'):
+                    d['urls'] = [{c.name: getattr(u, c.name) for c in u.__table__.columns} for u in sorted(obj.urls, key=lambda x: x.order)]
                     
                 return d
 
@@ -307,6 +310,33 @@ def save_project():
         db.session.commit()
         invalidate_entities_cache()
         return jsonify({"success": True, "id": project.id, "slug": project.slug}), 200
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
+
+@admin_bp.route("/admin/delete/project/<int:project_id>", methods=["DELETE", "POST"])
+@requires_login
+@requires_role("admin")
+def delete_project(project_id):
+    """Delete a project and all related data (URLs, images, translations, tags)"""
+    try:
+        project = Project.query.get_or_404(project_id)
+        
+        # Cascade delete will handle:
+        # - ProjectURL entries
+        # - ProjectImage entries
+        # - ProjectTranslation entries
+        # - ProjectAnalytics
+        # - ProjectEvent entries
+        # Tags are many-to-many, so they won't be deleted
+        
+        db.session.delete(project)
+        db.session.commit()
+        invalidate_entities_cache()
+        
+        return jsonify({"success": True, "message": f"Project '{project.slug}' deleted"}), 200
         
     except Exception as e:
         db.session.rollback()
