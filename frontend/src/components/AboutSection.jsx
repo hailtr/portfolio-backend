@@ -26,10 +26,16 @@ const AboutSection = ({ language }) => {
   const t = translations[language] || translations.es;
 
   useEffect(() => {
+    const abortController = new AbortController();
+    let isMounted = true;
+
     // Fetch work experience
-    fetch(`${API_BASE_URL}/experience?lang=${language}`)
+    fetch(`${API_BASE_URL}/experience?lang=${language}`, {
+      signal: abortController.signal
+    })
       .then((res) => res.json())
       .then((data) => {
+        if (!isMounted) return; // Prevent setState on unmounted component
         const formatted = data.map((item) => ({
           company: item.company,
           role: item.title,
@@ -42,12 +48,18 @@ const AboutSection = ({ language }) => {
         }));
         setExperienceData(formatted);
       })
-      .catch((err) => console.error("Error fetching experience:", err));
+      .catch((err) => {
+        if (err.name === 'AbortError') return; // Ignore abort errors
+        console.error("Error fetching experience:", err);
+      });
 
     // Fetch education
-    fetch(`${API_BASE_URL}/education?lang=${language}`)
+    fetch(`${API_BASE_URL}/education?lang=${language}`, {
+      signal: abortController.signal
+    })
       .then((res) => res.json())
       .then((data) => {
+        if (!isMounted) return; // Prevent setState on unmounted component
         const formatted = data.map((item) => {
           // Format date
           let dateStr = "";
@@ -80,9 +92,16 @@ const AboutSection = ({ language }) => {
         setLoading(false);
       })
       .catch((err) => {
+        if (err.name === 'AbortError') return; // Ignore abort errors
         console.error("Error fetching education:", err);
-        setLoading(false);
+        if (isMounted) setLoading(false);
       });
+
+    // Cleanup function
+    return () => {
+      isMounted = false;
+      abortController.abort();
+    };
   }, [language]);
 
   return (

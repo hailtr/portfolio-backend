@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { motion, useScroll, useSpring } from "framer-motion";
 import Navbar from "./components/Navbar";
@@ -25,12 +25,21 @@ function App() {
     restDelta: 0.001,
   });
 
+  // DEBUG: Track renders
+  console.log('[App] Rendering...', { language, pathname: location.pathname });
+
+  // Memoize URL to prevent re-fetching on every render
+  const projectsUrl = useMemo(
+    () => `${API_BASE_URL}/projects?lang=${language}`,
+    [language]
+  );
+
   const {
     data: projectsData,
     loading,
     error,
   } = useCachedFetch(
-    `${API_BASE_URL}/projects?lang=${language}`,
+    projectsUrl,
     `home_projects_${language}`,
   );
 

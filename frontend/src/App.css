@@ -6,13 +6,11 @@
   --main-lightblue: #c0d0ef;
   --accent-cyan: #00d9ff;
   --accent-cyan-glow: rgba(0, 217, 255, 0.3);
-  --gradient: linear-gradient(
-    135deg,
-    var(--main-lightblue),
-    var(--main-blue),
-    var(--main-lightdarkblue),
-    var(--main-darkblue)
-  );
+  --gradient: linear-gradient(135deg,
+      var(--main-lightblue),
+      var(--main-blue),
+      var(--main-lightdarkblue),
+      var(--main-darkblue));
 
   /* Spacing system */
   --space-xs: 0.5rem;
@@ -38,12 +36,12 @@
   /* Glass effects */
   --glass-bg: rgba(255, 255, 255, 0.03);
   --glass-border: rgba(255, 255, 255, 0.1);
-  --glass-blur: 20px;
+  --glass-blur: 0px;
+  /* TEMPORARILY DISABLED FOR PERFORMANCE TESTING - was 20px */
 }
 
 .filter-white {
-  filter: invert(100%) sepia(0%) saturate(4167%) hue-rotate(179deg)
-    brightness(110%) contrast(101%);
+  filter: invert(100%) sepia(0%) saturate(4167%) hue-rotate(179deg) brightness(110%) contrast(101%);
 }
 
 html {
@@ -322,6 +320,7 @@ main.visible {
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -350,11 +349,9 @@ main.visible {
   height: 28rem;
   border-radius: 50%;
   padding: 3px;
-  background: linear-gradient(
-    135deg,
-    rgba(0, 217, 255, 0.3),
-    rgba(102, 141, 192, 0.3)
-  );
+  background: linear-gradient(135deg,
+      rgba(0, 217, 255, 0.3),
+      rgba(102, 141, 192, 0.3));
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -395,11 +392,9 @@ main.visible {
 
 .profile-greating h2 .name {
   display: block;
-  background: linear-gradient(
-    135deg,
-    var(--accent-cyan) 0%,
-    var(--main-blue) 100%
-  );
+  background: linear-gradient(135deg,
+      var(--accent-cyan) 0%,
+      var(--main-blue) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -655,11 +650,9 @@ main.visible {
 }
 
 .relative-skill:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(0, 217, 255, 0.15),
-    rgba(102, 141, 192, 0.15)
-  );
+  background: linear-gradient(135deg,
+      rgba(0, 217, 255, 0.15),
+      rgba(102, 141, 192, 0.15));
   border-color: rgba(0, 217, 255, 0.4);
   box-shadow:
     0 4px 12px rgba(0, 217, 255, 0.2),
@@ -946,11 +939,9 @@ main.visible {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(0, 217, 255, 0.1),
-    rgba(102, 141, 192, 0.1)
-  );
+  background: linear-gradient(135deg,
+      rgba(0, 217, 255, 0.1),
+      rgba(102, 141, 192, 0.1));
   opacity: 0;
   transition: opacity 0.3s ease;
 }
@@ -1140,7 +1131,7 @@ main.visible {
   min-height: 280px;
   z-index: 50;
   background: rgba(0, 0, 0, 0.95);
-  backdrop-filter: blur(25px);
+  /* backdrop-filter: blur(25px); REMOVED FOR PERFORMANCE */
   box-shadow:
     0 20px 60px rgba(0, 0, 0, 0.8),
     0 0 80px rgba(0, 217, 255, 0.2);
@@ -1491,18 +1482,21 @@ main.visible {
   opacity: 0.15;
   pointer-events: none;
   animation: float 20s ease-in-out infinite;
-  contain: layout;
-  will-change: transform;
+  contain: layout style paint;
+  transform: translateZ(0);
 }
 
 @keyframes float {
+
   0%,
   100% {
     transform: translate(0, 0) scale(1);
   }
+
   33% {
     transform: translate(30px, -30px) scale(1.1);
   }
+
   66% {
     transform: translate(-20px, 20px) scale(0.9);
   }
@@ -1604,6 +1598,7 @@ main.visible {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);

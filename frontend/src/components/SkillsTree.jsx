@@ -1,6 +1,7 @@
+import { memo } from "react";
 import { getIconConfig } from "../utils/iconUtils";
 
-const SkillsTree = ({ language }) => {
+const SkillsTree = memo(({ language }) => {
   const translations = {
     es: {
       languages: "Lenguajes",
@@ -138,6 +139,8 @@ const SkillsTree = ({ language }) => {
       ))}
     </div>
   );
-};
+});
+
+SkillsTree.displayName = 'SkillsTree';
 
 export default SkillsTree;
