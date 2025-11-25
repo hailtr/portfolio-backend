@@ -36,8 +36,10 @@
   /* Glass effects */
   --glass-bg: rgba(255, 255, 255, 0.03);
   --glass-border: rgba(255, 255, 255, 0.1);
-  --glass-blur: 0px;
-  /* TEMPORARILY DISABLED FOR PERFORMANCE TESTING - was 20px */
+  --glass-blur: 20px;
+  /* For overlays (navbar, modals, hover states) */
+  --glass-blur-static: 0px;
+  /* For static cards - NO BLUR for performance */
 }
 
 .filter-white {
@@ -521,7 +523,8 @@ main.visible {
 
 .skill-category {
   background: var(--glass-bg);
-  backdrop-filter: blur(var(--glass-blur));
+  backdrop-filter: blur(var(--glass-blur-static));
+  /* PERFORMANCE: No blur on static cards */
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);
   padding: var(--space-lg);
@@ -665,7 +668,8 @@ main.visible {
 .education-card,
 .experience-card {
   background: var(--glass-bg);
-  backdrop-filter: blur(var(--glass-blur));
+  backdrop-filter: blur(var(--glass-blur-static));
+  /* PERFORMANCE: No blur on static cards */
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);
   display: flex;
