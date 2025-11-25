@@ -61,23 +61,47 @@ const AboutSection = ({ language }) => {
       .then((data) => {
         if (!isMounted) return; // Prevent setState on unmounted component
         const formatted = data.map((item) => {
+          // Format date helper inside the map to use it immediately
+          const formatDate = (dateString) => {
+            if (!dateString) return "";
+            try {
+              const date = new Date(dateString);
+
+              // Check if valid date
+              if (isNaN(date.getTime())) {
+                console.warn("Invalid date:", dateString);
+                return dateString;
+              }
+
+              // Format: "01/2024" (MM/YYYY) using UTC to avoid timezone shifts
+              return new Intl.DateTimeFormat(language === 'es' ? 'es-ES' : 'en-US', {
+                month: '2-digit',
+                year: 'numeric',
+                timeZone: 'UTC'
+              }).format(date);
+            } catch (e) {
+              console.error("Format error:", e);
+              return dateString;
+            }
+          };
+
           // Format date
           let dateStr = "";
           if (item.current) {
             dateStr = item.startDate
-              ? `${item.startDate} - ${language === "es" ? "Presente" : "Present"}`
+              ? `${formatDate(item.startDate)} - ${language === "es" ? "Presente" : "Present"}`
               : language === "es"
                 ? "Presente"
                 : "Present";
           } else if (item.endDate && item.startDate) {
             // Both dates: show range
-            dateStr = `${item.startDate} - ${item.endDate}`;
+            dateStr = `${formatDate(item.startDate)} - ${formatDate(item.endDate)}`;
           } else if (item.endDate) {
-            // Only end date (courses): show just the year
-            dateStr = item.endDate;
+            // Only end date (courses): show just the date
+            dateStr = formatDate(item.endDate);
           } else if (item.startDate) {
             // Only start date
-            dateStr = item.startDate;
+            dateStr = formatDate(item.startDate);
           }
 
           return {

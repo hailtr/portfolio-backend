@@ -82,7 +82,10 @@ const ProfileSection = ({ language }) => {
               <Typewriter
                 options={{
                   strings: [
-                    profile.role,
+                    // Translate role if needed
+                    language === "es" && profile.role === "Data Engineer"
+                      ? "Ingeniero de Datos"
+                      : profile.role,
                     language === "es" ? "Experto en Python" : "Python Expert",
                     language === "es"
                       ? "Arquitecto Cloud"

@@ -197,12 +197,12 @@ def get_experience():
             result.append({
                 "id": e.id,
                 "slug": e.slug,
-                "company": e.company,
+                "company": trans.title,  # Title holds Company Name in DB
                 "location": e.location,
                 "startDate": e.start_date,
                 "endDate": e.end_date,
                 "current": e.current,
-                "title": trans.title,  # Job title
+                "title": trans.subtitle,  # Subtitle holds Job Role in DB
                 "description": trans.description,
                 "tags": [t.name for t in e.tags]
             })
