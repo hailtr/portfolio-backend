@@ -1,4 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import API_BASE_URL from "../config";
 import { useCachedFetch } from "../hooks/useCachedFetch";
 import FullScreenLoader from "../components/FullScreenLoader";
@@ -7,6 +8,7 @@ import "../projectDetail.css";
 const ProjectDetail = ({ language }) => {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const [zoomedImage, setZoomedImage] = useState(null);
 
   const {
     data: project,
@@ -64,7 +66,11 @@ const ProjectDetail = ({ language }) => {
         {imageUrls.length > 0 && (
           <div className="pd-gallery">
             {imageUrls.map((img, idx) => (
-              <div key={idx} className="pd-image-frame">
+              <div
+                key={idx}
+                className="pd-image-frame"
+                onClick={() => setZoomedImage(img)}
+              >
                 <img src={img} alt={`Screenshot ${idx}`} />
               </div>
             ))}
@@ -81,15 +87,39 @@ const ProjectDetail = ({ language }) => {
                 </span>
               ))}
             </div>
-            {project.url && (
-              <a
-                href={project.url}
-                target="_blank"
-                rel="noreferrer"
-                className="pd-cta-btn"
-              >
-                Live Demo ↗
-              </a>
+
+            {/* URLs Section */}
+            {(project.urls?.length > 0 || project.url) && (
+              <div className="pd-urls-section">
+                <h3>{language === "es" ? "Enlaces" : "Links"}</h3>
+                <div className="pd-urls">
+                  {/* New format: urls array */}
+                  {project.urls?.map((urlItem, i) => (
+                    <a
+                      key={i}
+                      href={urlItem.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="pd-url-link"
+                      title={urlItem.label || urlItem.type}
+                    >
+                      {urlItem.label || urlItem.type} ↗
+                    </a>
+                  ))}
+
+                  {/* Backward compatibility: single url field */}
+                  {project.url && !project.urls?.length && (
+                    <a
+                      href={project.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="pd-url-link"
+                    >
+                      {language === "es" ? "Ver Proyecto" : "View Project"} ↗
+                    </a>
+                  )}
+                </div>
+              </div>
             )}
           </aside>
 
@@ -99,6 +129,29 @@ const ProjectDetail = ({ language }) => {
           />
         </div>
       </div>
+
+      {/* Image Zoom Modal */}
+      {zoomedImage && (
+        <div
+          className="pd-image-modal"
+          onClick={() => setZoomedImage(null)}
+        >
+          <button
+            className="pd-modal-close"
+            onClick={(e) => {
+              e.stopPropagation();
+              setZoomedImage(null);
+            }}
+          >
+            ×
+          </button>
+          <img
+            src={zoomedImage}
+            alt="Zoomed view"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
     </div>
   );
 };

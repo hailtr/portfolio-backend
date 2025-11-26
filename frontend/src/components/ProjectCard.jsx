@@ -16,6 +16,12 @@ const ProjectCard = ({ project, language, debugExpanded }) => {
     return tmp.textContent || tmp.innerText || "";
   };
 
+  // Find featured image, fallback to first image, then desktop_image
+  const featuredImage = project.images?.find(img => img.is_featured)?.url
+    || project.images?.[0]?.url
+    || project.desktop_image
+    || "/placeholder.jpg";
+
   return (
     <div
       className={`job-card ${debugExpanded ? "debug-expanded" : ""}`}
@@ -36,7 +42,7 @@ const ProjectCard = ({ project, language, debugExpanded }) => {
             />
           ) : (
             <img
-              src={project.desktop_image || "/placeholder.jpg"}
+              src={featuredImage}
               alt={project.title}
               className="job-media-preview"
               onError={(e) => {

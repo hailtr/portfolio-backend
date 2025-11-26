@@ -164,6 +164,29 @@ def admin_check():
 @requires_login
 @requires_role("admin")
 def save_project():
+    # Retry logic for database connection issues (e.g., sleeping database)
+    max_retries = 3
+    retry_delay = 1  # seconds
+    
+    for attempt in range(max_retries):
+        try:
+            # Test database connection before proceeding
+            db.session.execute(text("SELECT 1"))
+            db.session.commit()
+            break  # Connection successful, proceed
+        except Exception as e:
+            current_app.logger.warning(
+                f"Database connection attempt {attempt + 1}/{max_retries} failed: {e}"
+            )
+            db.session.rollback()
+            if attempt < max_retries - 1:
+                import time
+                time.sleep(retry_delay * (attempt + 1))  # Exponential backoff
+            else:
+                return jsonify({
+                    "error": "Database connection failed after multiple retries. Please try again."
+                }), 503
+    
     try:
         data = request.json
         project_id = data.get("id")

@@ -3,11 +3,11 @@ const Footer = ({ language }) => {
 
   const translations = {
     es: {
-      credit: `© ${currentYear} Rafael Ortiz - última actualización: ${currentYear}`,
+      credit: `© Rafael Ortiz | 2023 - ${currentYear}`,
       disclaimer: "Portafolio en desarrollo continuo",
     },
     en: {
-      credit: `© ${currentYear} Rafael Ortiz - Built with React`,
+      credit: `© Rafael Ortiz | 2023 - ${currentYear}`,
       disclaimer: "Portfolio under continuous development",
     },
   };
