@@ -29,9 +29,9 @@ const ProjectsSection = ({ language, projects }) => {
 
   const filterMap = {
     all: "all",
-    projects: "proyectos",
-    jobs: "trabajo",
-    learning: "aprendizaje",
+    projects: "project",
+    jobs: "work",
+    learning: "study",
   };
 
   const filteredProjects =
@@ -64,22 +64,22 @@ const ProjectsSection = ({ language, projects }) => {
                   {t.all}
                 </button>
                 <button
-                  data-filter="proyectos"
-                  className={`glass animated-glass round-border ${filter === "proyectos" ? "active" : ""}`}
+                  data-filter="project"
+                  className={`glass animated-glass round-border ${filter === "project" ? "active" : ""}`}
                   onClick={() => handleFilterChange("projects")}
                 >
                   {t.projects}
                 </button>
                 <button
-                  data-filter="trabajo"
-                  className={`glass animated-glass round-border ${filter === "trabajo" ? "active" : ""}`}
+                  data-filter="work"
+                  className={`glass animated-glass round-border ${filter === "work" ? "active" : ""}`}
                   onClick={() => handleFilterChange("jobs")}
                 >
                   {t.jobs}
                 </button>
                 <button
-                  data-filter="aprendizaje"
-                  className={`glass animated-glass round-border ${filter === "aprendizaje" ? "active" : ""}`}
+                  data-filter="study"
+                  className={`glass animated-glass round-border ${filter === "study" ? "active" : ""}`}
                   onClick={() => handleFilterChange("learning")}
                 >
                   {t.learning}
@@ -91,12 +91,14 @@ const ProjectsSection = ({ language, projects }) => {
               key={filter} // Force re-mount when filter changes
               className="experience-gallery"
               initial="hidden"
-              animate="visible" // Changed from whileInView to animate
+              animate="visible"
               variants={{
-                hidden: {},
+                hidden: { opacity: 0 }, // Parent needs actual animation property
                 visible: {
+                  opacity: 1, // This triggers the state change
                   transition: {
                     staggerChildren: 0.1,
+                    duration: 0.2, // Quick fade for parent
                   },
                 },
               }}
