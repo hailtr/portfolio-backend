@@ -20,6 +20,8 @@ from backend.models.certification import Certification, CertificationTranslation
 from backend.models.tag import Tag
 from backend.services.cloudinary_service import cloudinary_service
 from backend.services.cache_service import invalidate_entities_cache
+from backend.services.github_service import GitHubService
+from backend.services.ai_service import AIProjectGenerator
 import json
 import os
 import cloudinary.api
@@ -846,3 +848,35 @@ def browse_cloudinary(project_slug=None):
         
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
+
+
+@admin_bp.route("/admin/ai/import-github", methods=["POST"])
+@requires_login
+@requires_role("admin")
+def import_github_project():
+    """Import project content from GitHub using AI"""
+    try:
+        data = request.json
+        github_url = data.get('github_url')
+        
+        if not github_url:
+            return jsonify({"error": "GitHub URL is required"}), 400
+        
+        # 1. Fetch Repo Content
+        github_service = GitHubService()
+        repo_context = github_service.get_repo_content(github_url)
+        
+        model_name = data.get('model_name')
+        
+        # 2. Analyze with AI
+        ai_service = AIProjectGenerator()
+        generated_data = ai_service.analyze_github_repo(repo_context, repo_url=github_url, model_name=model_name)
+        
+        return jsonify({
+            "success": True,
+            "data": generated_data
+        }), 200
+        
+    except Exception as e:
+        current_app.logger.error(f"GitHub Import failed: {str(e)}")
+        return jsonify({"error": str(e)}), 500

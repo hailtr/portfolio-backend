@@ -261,7 +261,7 @@ function getFormTemplate(type, data) {
                 </div>
                 <div class="form-group">
                     <label class="form-label">Description (ES)</label>
-                    <textarea class="form-control" name="description_es">${es.description || ''}</textarea>
+                    <textarea class="form-control" name="description_es" rows="15">${es.description || ''}</textarea>
                 </div>
             </div>
 
@@ -276,7 +276,7 @@ function getFormTemplate(type, data) {
                 </div>
                 <div class="form-group">
                     <label class="form-label">Description (EN)</label>
-                    <textarea class="form-control" name="description_en">${en.description || ''}</textarea>
+                    <textarea class="form-control" name="description_en" rows="15">${en.description || ''}</textarea>
                 </div>
             </div>
   `;
@@ -320,7 +320,7 @@ async function uploadImage(input) {
             </div>
             <div style="flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
                 <input type="hidden" class="img-url" value="${data.url}">
-                <input type="hidden" class="img-type" value="image">
+                <input type="hidden" class="img-type" value="${data.format === 'gif' ? 'gif' : 'image'}">
                 <div style="grid-column: 1 / -1;">
                     <label style="font-size: 0.8rem;">Alt Text</label>
                     <input type="text" class="form-control img-alt" placeholder="Alt text">
@@ -532,4 +532,156 @@ function showToast(msg, type) {
   toast.innerText = msg;
   toast.className = `toast show ${type}`;
   setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+
+// GitHub Import Logic
+function openGitHubImport() {
+  document.getElementById('github-modal').classList.add('active');
+  document.getElementById('github-url-input').value = '';
+  document.getElementById('github-error').style.display = 'none';
+  document.getElementById('github-loading').style.display = 'none';
+}
+
+function closeGitHubModal() {
+  document.getElementById('github-modal').classList.remove('active');
+}
+
+async function startGitHubImport() {
+  console.log("Starting GitHub Import...");
+  const urlInput = document.getElementById('github-url-input');
+  const modelSelect = document.getElementById('github-model-select');
+  const errorDiv = document.getElementById('github-error');
+  const loadingDiv = document.getElementById('github-loading');
+  const statusLog = document.getElementById('github-status-log');
+  const url = urlInput.value.trim();
+
+  // Safe access to model value
+  const modelName = modelSelect ? modelSelect.value : 'gemini-2.0-flash';
+
+  if (!url) {
+    errorDiv.innerText = 'Please enter a GitHub URL';
+    errorDiv.style.display = 'block';
+    return;
+  }
+
+  // Reset UI
+  errorDiv.style.display = 'none';
+  loadingDiv.style.display = 'block';
+  if (statusLog) statusLog.innerHTML = ''; // Clear previous logs
+  urlInput.disabled = true;
+  if (modelSelect) modelSelect.disabled = true;
+
+  // Helper to add status logs with typing effect
+  const addLog = async (message) => {
+    if (!statusLog) return; // Skip if element missing
+    const p = document.createElement('div');
+    p.style.marginBottom = '4px';
+    p.innerHTML = `<span style="color: var(--primary)">></span> ${message}`;
+    statusLog.appendChild(p);
+    statusLog.scrollTop = statusLog.scrollHeight;
+    // Simple delay to simulate processing steps if they were real-time events
+    await new Promise(r => setTimeout(r, 500));
+  };
+
+  try {
+    await addLog("Initializing AI Agent...");
+    await addLog(`Selected Model: ${modelName}`);
+    await addLog("Connecting to GitHub API...");
+
+    // Simulate progress for better UX (since the backend call is monolithic)
+    const progressInterval = setInterval(() => {
+      const messages = [
+        "Fetching repository structure...",
+        "Reading README.md...",
+        "Analyzing code patterns...",
+        "Identifying tech stack...",
+        "Extracting media assets...",
+        "Generating project metadata...",
+        "Translating content (EN/ES)...",
+        "Creating Mermaid diagrams..."
+      ];
+      const msg = messages[Math.floor(Math.random() * messages.length)];
+      addLog(msg);
+    }, 2500);
+
+    const response = await fetch('/admin/ai/import-github', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        github_url: url,
+        model_name: modelName
+      })
+    });
+
+    clearInterval(progressInterval);
+    await addLog("Processing complete. Finalizing...");
+
+    const result = await response.json();
+
+    if (result.success) {
+      closeGitHubModal();
+
+      const data = result.data;
+
+      // Map AI data to form structure
+      const projectData = {
+        category: data.category,
+        tags: (data.tags || []).map(t => ({ name: t })),
+        urls: (data.urls || []).map((u, i) => ({ url_type: u.type, url: u.url, order: i })),
+        translations: [
+          {
+            lang: 'en',
+            title: data.title,
+            subtitle: data.subtitle,
+            description: data.translations.en.description
+          },
+          {
+            lang: 'es',
+            title: data.title, // Use English title as fallback
+            subtitle: data.translations.es.subtitle || data.subtitle,
+            description: data.translations.es.description
+          }
+        ],
+        images: []
+      };
+
+      // Handle Media
+      if (data.media) {
+        if (data.media.gif_url) {
+          projectData.images.push({
+            url: data.media.gif_url,
+            type: 'gif',
+            alt_text: 'Project Demo',
+            is_featured: false,
+            width: null, height: null
+          });
+        }
+        if (data.media.image_url) {
+          projectData.images.push({
+            url: data.media.image_url,
+            type: 'image',
+            alt_text: 'Project Screenshot',
+            is_featured: true,
+            width: null, height: null
+          });
+        }
+      }
+
+      // Open the project modal with this data
+      openModal('project', projectData);
+
+      showToast('Project analyzed successfully!', 'success');
+
+    } else {
+      throw new Error(result.error || 'Unknown error');
+    }
+  } catch (e) {
+    errorDiv.innerText = 'Import failed: ' + e.message;
+    errorDiv.style.display = 'block';
+  } finally {
+    loadingDiv.style.display = 'none';
+    urlInput.disabled = false;
+    if (modelSelect) modelSelect.disabled = false;
+  }
 }
