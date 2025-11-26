@@ -36,10 +36,8 @@
   /* Glass effects */
   --glass-bg: rgba(255, 255, 255, 0.03);
   --glass-border: rgba(255, 255, 255, 0.1);
-  --glass-blur: 20px;
-  /* For overlays (navbar, modals, hover states) */
-  --glass-blur-static: 0px;
-  /* For static cards - NO BLUR for performance */
+  --glass-blur: 0px;
+  /* TEMPORARILY DISABLED FOR PERFORMANCE TESTING - was 20px */
 }
 
 .filter-white {
@@ -523,8 +521,7 @@ main.visible {
 
 .skill-category {
   background: var(--glass-bg);
-  backdrop-filter: blur(var(--glass-blur-static));
-  /* PERFORMANCE: No blur on static cards */
+  backdrop-filter: blur(var(--glass-blur));
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);
   padding: var(--space-lg);
@@ -668,8 +665,7 @@ main.visible {
 .education-card,
 .experience-card {
   background: var(--glass-bg);
-  backdrop-filter: blur(var(--glass-blur-static));
-  /* PERFORMANCE: No blur on static cards */
+  backdrop-filter: blur(var(--glass-blur));
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);
   display: flex;
@@ -1127,6 +1123,95 @@ main.visible {
   overflow: hidden;
   display: flex;
   flex-direction: column;
+}
+
+/* On hover: expand downward only, image stays in place */
+.job-card:hover .job-card-inner {
+  height: auto;
+  min-height: 280px;
+  z-index: 50;
+  background: rgba(0, 0, 0, 0.95);
+  /* backdrop-filter: blur(25px); REMOVED FOR PERFORMANCE */
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.8),
+    0 0 80px rgba(0, 217, 255, 0.2);
+  border-color: rgba(0, 217, 255, 0.5);
+}
+
+/* Remove bottom shadow/border effect - clean bottom edge */
+.job-card:hover .job-card-hover-info {
+  box-shadow: none;
+  border-bottom: none;
+  border-radius: 0;
+}
+
+.job-card-media-container {
+  width: 100%;
+  height: 280px;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  position: relative;
+  background: rgba(0, 0, 0, 0.3);
+  transition: border-radius 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.job-card:hover .job-card-media-container {
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.job-media-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.3s ease;
+  display: block;
+}
+
+.job-card:hover .job-media-preview {
+  transform: scale(1.05);
+}
+
+.job-card-hover-info {
+  flex: 0 0 auto;
+  width: 100%;
+  max-height: 0;
+  padding: 0 var(--space-md);
+  background: rgba(0, 0, 0, 0.98);
+  backdrop-filter: blur(25px);
+  opacity: 0;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+}
+
+.job-card:hover .job-card-hover-info,
+.job-card.debug-expanded .job-card-hover-info {
+  max-height: 500px;
+  padding: var(--space-md) var(--space-md) var(--space-xs);
+  opacity: 1;
+}
+
+.job-card.debug-expanded .job-card-inner {
+  height: auto;
+  min-height: 280px;
+  z-index: 50;
+  background: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(25px);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.8),
+    0 0 80px rgba(0, 217, 255, 0.2);
+  border-color: rgba(0, 217, 255, 0.5);
+}
+
+.job-card-hover-info h3 {
+  margin: 0 0 var(--space-xs);
+  font-size: clamp(1.6rem, 2vw, 1.9rem);
+  font-weight: 700;
+  color: #ffffff;
   letter-spacing: -0.01em;
   line-height: 1.2;
 }

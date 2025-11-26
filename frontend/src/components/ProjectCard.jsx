@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { getHeroImageUrl } from "../utils/cloudinary";
 
 const ProjectCard = ({ project, language, debugExpanded }) => {
   const navigate = useNavigate();
@@ -17,10 +18,13 @@ const ProjectCard = ({ project, language, debugExpanded }) => {
   };
 
   // Find featured image, fallback to first image, then desktop_image
-  const featuredImage = project.images?.find(img => img.is_featured)?.url
+  const rawImageUrl = project.images?.find(img => img.is_featured)?.url
     || project.images?.[0]?.url
     || project.desktop_image
     || "/placeholder.jpg";
+
+  // Transform for hero display (3:2 aspect ratio, smart cropping)
+  const featuredImage = getHeroImageUrl(rawImageUrl);
 
   return (
     <div

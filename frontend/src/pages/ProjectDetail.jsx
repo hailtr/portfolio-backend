@@ -3,6 +3,7 @@ import { useState } from "react";
 import API_BASE_URL from "../config";
 import { useCachedFetch } from "../hooks/useCachedFetch";
 import FullScreenLoader from "../components/FullScreenLoader";
+import { getDetailImageUrl, getZoomImageUrl } from "../utils/cloudinary";
 import "../projectDetail.css";
 
 const ProjectDetail = ({ language }) => {
@@ -46,8 +47,8 @@ const ProjectDetail = ({ language }) => {
   // Images are already in the correct format [{url, type, caption}]
   let images = project.images || [];
 
-  // Extract URLs for display
-  const imageUrls = images.map(img => img.url);
+  // Extract URLs for display - transform for detail gallery
+  const imageUrls = images.map(img => getDetailImageUrl(img.url));
 
   return (
     <div className="pd-wrapper">
@@ -69,7 +70,7 @@ const ProjectDetail = ({ language }) => {
               <div
                 key={idx}
                 className="pd-image-frame"
-                onClick={() => setZoomedImage(img)}
+                onClick={() => setZoomedImage(getZoomImageUrl(images[idx].url))}
               >
                 <img src={img} alt={`Screenshot ${idx}`} />
               </div>

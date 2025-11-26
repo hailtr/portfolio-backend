@@ -88,10 +88,10 @@ const ProjectsSection = ({ language, projects }) => {
             </div>
 
             <motion.div
+              key={filter} // Force re-mount when filter changes
               className="experience-gallery"
               initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.1 }}
+              animate="visible" // Changed from whileInView to animate
               variants={{
                 hidden: {},
                 visible: {
