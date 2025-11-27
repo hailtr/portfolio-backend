@@ -176,6 +176,7 @@ The application features a clean separation between frontend and backend, with P
 - **Caching & Performance** - Redis caching layer with fallback to in-memory cache
 - **Rate Limiting** - API protection with configurable rate limits
 - **Health Monitoring** - Comprehensive health check endpoints for services
+- **AI-Powered GitHub Import** - Automatic project generation from GitHub repositories using Google Gemini API
 
 ### Future Enhancements
 
@@ -247,6 +248,7 @@ pip install -r requirements.txt
 # Copy environment file
 Copy-Item env.example .env
 # Edit .env with your database and API keys
+# Required: GEMINI_API_KEY=...
 
 # Run the application
 python run.py
@@ -480,7 +482,7 @@ portfolio-backend/
 │   ├── app.py           # Main Flask app
 │   ├── models/          # SQLAlchemy models
 │   ├── routes/          # API routes (api, admin, cv, index)
-│   ├── services/        # Business logic (cache, PDF, Cloudinary)
+│   ├── services/        # Business logic (cache, PDF, Cloudinary, AI)
 │   ├── templates/       # HTML templates for CV and admin
 │   └── utils/           # Utilities (rate limiting, etc.)
 ├── frontend/            # React application
@@ -520,6 +522,7 @@ See [docs/API.md](docs/API.md) for complete API endpoint documentation.
 | Authentication | Google OAuth                         | Admin access control                   |
 | Deployment     | Railway (backend), Vercel (frontend) | Hosting and CI/CD                      |
 | Styling        | CSS Modules                          | Component-based styling                |
+| AI             | Google Gemini API                    | Automated content generation           |
 
 ## Contributing
 

@@ -44,7 +44,7 @@ CORS(
     app,
     resources={
         r"/api/*": {
-            "origins": cors_origins,
+            "origins": "*",  # Allow all origins for public API to avoid CORS issues
             "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
             "allow_headers": ["Content-Type", "Authorization"],
             "expose_headers": ["Content-Type"],
