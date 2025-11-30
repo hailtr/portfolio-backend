@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ lang }}">
+
 <head>
   <meta charset="UTF-8">
   <title>CV - Rafael Ortiz</title>
@@ -24,6 +25,7 @@
       border: 1px solid var(--primary-color);
       transition: all 0.3s ease;
     }
+
     .page-navigation button {
       background: rgba(255, 255, 255, 0.1);
       border: 2px solid var(--primary-color);
@@ -35,17 +37,20 @@
       font-weight: 600;
       transition: all 0.3s ease;
     }
+
     .page-navigation button:hover {
       background: var(--primary-color);
       color: white;
       transform: translateY(-2px);
       box-shadow: 0 4px 12px var(--glow-primary);
     }
+
     .page-navigation button.active {
       background: var(--primary-color);
       color: white;
       border-color: var(--primary-color);
     }
+
     .page-navigation button:disabled {
       opacity: 0.5;
       cursor: not-allowed;
@@ -56,27 +61,33 @@
       position: relative;
       min-height: 100vh;
     }
+
     .cv-page {
       transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
     }
+
     .cv-page.hidden {
       display: none;
     }
+
     @media print {
       .page-navigation {
         display: none !important;
       }
+
       .cv-page {
         display: block !important;
       }
+
       .cv-page.hidden {
         display: block !important;
       }
     }
   </style>
 </head>
+
 <body class="cv-mode">
-  <button id="download-pdf" onclick="window.location.href='{{ url_for('cv.cv_pdf', lang=lang) }}'">
+  <button id="download-pdf" onclick="downloadPdf()">
     {% if lang == 'es' %}Descargar PDF{% else %}Download PDF{% endif %}
   </button>
 
@@ -99,6 +110,7 @@
       letter-spacing: 0.5px;
       box-shadow: 0 4px 12px var(--glow-primary);
     }
+
     #download-pdf:hover {
       background: var(--accent-color);
       border-color: var(--accent-color);
@@ -108,7 +120,8 @@
   </style>
 
   <div class="page-navigation">
-    <button onclick="showPage(1)" id="page-btn-1" class="active">{% if lang == 'es' %}Página 1{% else %}Page 1{% endif %}</button>
+    <button onclick="showPage(1)" id="page-btn-1" class="active">{% if lang == 'es' %}Página 1{% else %}Page 1{% endif
+      %}</button>
     <button onclick="showPage(2)" id="page-btn-2">{% if lang == 'es' %}Página 2{% else %}Page 2{% endif %}</button>
   </div>
 
@@ -119,12 +132,14 @@
       <header class="resume-header page-1-header">
         <div class="header-centered">
           <div class="profile-pic-centered">
-            {% if cv_data.basics.image and (cv_data.basics.image.startswith('http://') or cv_data.basics.image.startswith('https://')) %}
+            {% if cv_data.basics.image and (cv_data.basics.image.startswith('http://') or
+            cv_data.basics.image.startswith('https://')) %}
             <img src="{{ cv_data.basics.image }}" alt="Foto de perfil" class="profile-img">
             {% elif profile_img_abs_path %}
             <img src="{{ profile_img_abs_path }}" alt="Foto de perfil" class="profile-img">
             {% else %}
-            <img src="{{ url_for('static', filename='images/profilepicture.jpg') }}" alt="Foto de perfil" class="profile-img">
+            <img src="{{ url_for('static', filename='images/profilepicture.jpg') }}" alt="Foto de perfil"
+              class="profile-img">
             {% endif %}
           </div>
           <div class="profile-info-centered">
@@ -132,13 +147,18 @@
             <h2 style="font-size: 0.85em; line-height: 1.2;">{{ cv_data.basics.label }}</h2>
           </div>
           <div class="contact-line-centered">
-            {{ cv_data.basics.email }} • {{ cv_data.basics.phone }} • {{ cv_data.basics.location.city }}, {{ cv_data.basics.location.region }}
+            {{ cv_data.basics.email }} • {{ cv_data.basics.phone }} • {{ cv_data.basics.location.city }}, {{
+            cv_data.basics.location.region }}
             {% if cv_data.basics.profiles %}
-              {% for profile in cv_data.basics.profiles %}
-                {% if profile.network == 'LinkedIn' %} <br>• <a href="{{ profile.url }}" target="_blank">{{ profile.url }}</a>{% endif %}
-                {% if profile.network == 'GitHub' %} <br>• <a href="{{ profile.url }}" target="_blank">{{ profile.url }}</a>{% endif %}
-                {% if profile.network == 'Website' %} <br>• <b>{% if lang == 'es' %}Portafolio (ver proyectos):{% else %}Portfolio (view projects):{% endif %} <a href="{{ profile.url }}" target="_blank">{{ profile.url }}</a>{% endif %}</b>
-              {% endfor %}
+            {% for profile in cv_data.basics.profiles %}
+            {% if profile.network == 'LinkedIn' %} <br>• <a href="{{ profile.url }}" target="_blank">{{ profile.url
+              }}</a>{% endif %}
+            {% if profile.network == 'GitHub' %} <br>• <a href="{{ profile.url }}" target="_blank">{{ profile.url
+              }}</a>{% endif %}
+            {% if profile.network == 'Website' %} <br>• <b>{% if lang == 'es' %}Portafolio (ver proyectos):{% else
+              %}Portfolio (view projects):{% endif %} <a href="{{ profile.url }}" target="_blank">{{ profile.url
+                }}</a>{% endif %}</b>
+            {% endfor %}
             {% endif %}
           </div>
         </div>
@@ -188,7 +208,8 @@
               {{ edu.startDate }} - {{ edu.endDate if edu.endDate else ('Presente' if lang == 'es' else 'Present') }}
             </h5>
           </div>
-          <h4>{{ edu.studyType }}{% if edu.area %} {% if lang == 'es' %}en{% else %}in{% endif %} {{ edu.area }}{% endif %}{% if edu.location %} - {{ edu.location }}{% endif %}</h4>
+          <h4>{{ edu.studyType }}{% if edu.area %} {% if lang == 'es' %}en{% else %}in{% endif %} {{ edu.area }}{% endif
+            %}{% if edu.location %} - {{ edu.location }}{% endif %}</h4>
           {% if edu.gpa %}
           <h5>GPA {{ edu.gpa }}</h5>
           {% endif %}
@@ -367,6 +388,10 @@
   </div>
 
   <script>
+    function downloadPdf() {
+      window.location.href = "{{ url_for('cv.cv_pdf', lang=lang) }}";
+    }
+
     // Theme Switcher with localStorage persistence
     function setTheme(themeName) {
       // Set theme on html element
@@ -383,7 +408,7 @@
     }
 
     // Draggable Theme Switcher
-    (function() {
+    (function () {
       const themeSwitcher = document.querySelector('.theme-switcher');
       let isDragging = false;
       let currentX;
@@ -490,4 +515,5 @@
     showPage(1);
   </script>
 </body>
+
 </html>

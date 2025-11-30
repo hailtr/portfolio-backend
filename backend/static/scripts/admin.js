@@ -520,7 +520,8 @@ async function saveProfile() {
     if (res.ok) {
       showToast('Profile saved', 'success');
     } else {
-      showToast('Error saving profile', 'error');
+      const err = await res.json();
+      showToast(err.error || 'Error saving profile', 'error');
     }
   } catch (e) {
     showToast(e.message, 'error');

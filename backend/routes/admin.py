@@ -583,6 +583,11 @@ def save_profile():
         profile.social_links = data.get("social") # JSON
         
         # Translations
+        # Explicitly delete existing translations to avoid unique constraint violations
+        if profile.id:
+            ProfileTranslation.query.filter_by(profile_id=profile.id).delete()
+            db.session.flush()
+            
         profile.translations = []
         for lang in ["es", "en"]:
             t = ProfileTranslation(
@@ -598,8 +603,11 @@ def save_profile():
         return jsonify({"success": True}), 200
         
     except Exception as e:
+        import traceback
+        error_details = traceback.format_exc()
+        current_app.logger.error(f"Error saving profile: {e}\n{error_details}")
         db.session.rollback()
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": f"Error saving profile: {str(e)}"}), 500
 
 
 # ==========================================
