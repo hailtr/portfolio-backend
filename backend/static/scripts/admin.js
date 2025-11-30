@@ -504,6 +504,11 @@ async function saveProfile() {
 
   try {
     data.location = JSON.parse(data.location);
+    // Add phone to location object
+    if (data.phone) {
+      data.location.phone = data.phone;
+      delete data.phone; // Remove from top-level data
+    }
     data.social = JSON.parse(data.social);
   } catch (e) {
     showToast('Invalid JSON in location or social links', 'error');

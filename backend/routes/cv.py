@@ -16,6 +16,19 @@ import os
 
 cv_bp = Blueprint("cv", __name__)
 
+def format_date(date_obj, lang="es"):
+    """Format date based on language"""
+    if not date_obj:
+        return ""
+    
+    if lang == "es":
+        # Spanish format: 01/2024
+        return date_obj.strftime("%m/%Y")
+    else:
+        # English format: Jan 2024
+        return date_obj.strftime("%b %Y")
+
+
 def build_cv_from_models(lang="es"):
     """Build JSON Resume format from database models"""
     from sqlalchemy.orm import joinedload
@@ -123,8 +136,8 @@ def build_cv_from_models(lang="es"):
                 "company": trans.title,  # Using title as Company Name based on user preference
                 "position": trans.subtitle,  # Using subtitle as Role
                 "url": "",  # Experience model doesn't have URL explicitly
-                "startDate": exp.start_date.strftime("%Y-%m-%d") if exp.start_date else "",
-                "endDate": exp.end_date.strftime("%Y-%m-%d") if exp.end_date else "",
+                "startDate": format_date(exp.start_date, lang),
+                "endDate": format_date(exp.end_date, lang),
                 "summary": summary,
                 "highlights": highlights
             })
@@ -145,8 +158,8 @@ def build_cv_from_models(lang="es"):
                 "institution": edu.institution,
                 "area": trans.subtitle, # Field of Study
                 "studyType": trans.title, # Degree
-                "startDate": edu.start_date.strftime("%Y-%m-%d") if edu.start_date else "",
-                "endDate": edu.end_date.strftime("%Y-%m-%d") if edu.end_date else "",
+                "startDate": format_date(edu.start_date, lang),
+                "endDate": format_date(edu.end_date, lang),
                 "location": edu.location,
                 "courses": course_names
             })
@@ -189,7 +202,7 @@ def build_cv_from_models(lang="es"):
 
             cv_data["awards"].append({
                 "title": trans.title,
-                "date": cert.issue_date.strftime("%Y-%m-%d") if cert.issue_date else "",
+                "date": format_date(cert.issue_date, lang),
                 "awarder": cert.issuer,
                 "summary": trans.description,
                 "link": cert.credential_url
