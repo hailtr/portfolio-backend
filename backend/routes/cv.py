@@ -7,8 +7,9 @@ from backend import db
 from backend.models.profile import Profile
 from backend.models.experience import Experience
 from backend.models.education import Education
-from backend.models.skill import Skill
+from backend.models.skill import Skill, SkillCategory
 from backend.models.certification import Certification
+from backend.models.project import Project
 from backend.services.pdf_service import PDFService
 from sqlalchemy import desc
 import json
@@ -64,9 +65,16 @@ def build_cv_from_models(lang="es"):
         profiles_list = []
         for network, url in social_data.items():
             if url:
+                # Create display URL (strip protocol for cleaner look, or keep full if requested)
+                # User requested "github -> https://github.com/hailtr", so we'll keep it descriptive but maybe clean
+                # Let's strip https:// for aesthetics but keep the path
+                display_url = url.replace("https://", "").replace("http://", "").replace("www.", "")
+                if display_url.endswith("/"):
+                    display_url = display_url[:-1]
+                
                 profiles_list.append({
                     "network": network.capitalize(),
-                    "username": "",
+                    "username": display_url, # Using username field for the display text
                     "url": url
                 })
 
@@ -100,7 +108,8 @@ def build_cv_from_models(lang="es"):
         }
 
         # 2. Fetch Experience with eager loading
-        experiences = Experience.query.options(joinedload(Experience.translations)).order_by(desc(Experience.start_date)).all()
+        # Limit to 3 most recent items as requested
+        experiences = Experience.query.options(joinedload(Experience.translations)).order_by(desc(Experience.start_date)).limit(3).all()
         for exp in experiences:
             trans = next((t for t in exp.translations if t.lang == lang), None)
             if not trans: continue
@@ -142,6 +151,33 @@ def build_cv_from_models(lang="es"):
                 "highlights": highlights
             })
 
+        # Fetch Featured Project
+        featured_project = Project.query.filter_by(is_featured_cv=True).first()
+        if featured_project:
+            p_trans = next((t for t in featured_project.translations if t.lang == lang), None)
+            if p_trans:
+                # Get image (featured or first)
+                image_url = None
+                if featured_project.images:
+                    featured_img = next((img for img in featured_project.images if img.is_featured), featured_project.images[0])
+                    image_url = featured_img.url
+
+                # Get live URL
+                project_url = ""
+                if featured_project.urls:
+                    live_url = next((u for u in featured_project.urls if u.url_type == 'live'), None)
+                    if live_url:
+                        project_url = live_url.url
+                
+                cv_data["featured_project"] = {
+                    "title": p_trans.title,
+                    "subtitle": p_trans.subtitle,
+                    "description": p_trans.cv_description or p_trans.description, # Use CV description if available
+                    "image": image_url,
+                    "url": project_url,
+                    "tech_stack": [t.name for t in featured_project.tags]
+                }
+
         # 3. Fetch Education with eager loading
         educations = Education.query.options(
             joinedload(Education.translations),
@@ -165,33 +201,46 @@ def build_cv_from_models(lang="es"):
             })
 
         # 4. Fetch Skills with eager loading
-        skills = Skill.query.options(joinedload(Skill.translations)).order_by(Skill.order).all()
+        # Filter by visibility
+        skills = Skill.query.filter_by(is_visible_cv=True).options(
+            joinedload(Skill.translations),
+            joinedload(Skill.skill_category).joinedload(SkillCategory.translations)
+        ).order_by(Skill.order).all()
+        
         skills_by_category = {}
         
-        # Helper for category names
-        category_map = {
-            "languages": "Lenguajes" if lang == "es" else "Languages",
-            "frameworks": "Frameworks",
-            "tools": "Herramientas" if lang == "es" else "Tools",
-            "databases": "Bases de Datos" if lang == "es" else "Databases",
-            "cloud": "Cloud",
-            "other": "Otros" if lang == "es" else "Other"
-        }
-
         for skill in skills:
+            # Get skill name
             trans = next((t for t in skill.translations if t.lang == lang), None)
             name = trans.name if trans else skill.slug
             
-            cat = skill.category.lower() if skill.category else "other"
-            if cat not in skills_by_category:
-                skills_by_category[cat] = []
+            # Get category
+            if skill.skill_category:
+                cat_obj = skill.skill_category
+                cat_trans = next((t for t in cat_obj.translations if t.lang == lang), None)
+                cat_name = cat_trans.name if cat_trans else cat_obj.slug
+                cat_order = cat_obj.order
+            else:
+                # Fallback for uncategorized or legacy
+                cat_name = "Other" if lang == "en" else "Otros"
+                cat_order = 999
             
-            skills_by_category[cat].append(name)
+            if cat_name not in skills_by_category:
+                skills_by_category[cat_name] = {"keywords": [], "order": cat_order}
+            
+            skills_by_category[cat_name]["keywords"].append(name)
 
-        for cat, keywords in skills_by_category.items():
+        # Sort categories by order
+        sorted_categories = sorted(skills_by_category.items(), key=lambda x: x[1]["order"])
+
+        for cat_name, data in sorted_categories:
+            # Skip "Other" category as requested
+            if cat_name in ["Other", "Otros"]:
+                continue
+                
             cv_data["skills"].append({
-                "name": category_map.get(cat, cat.capitalize()),
-                "keywords": keywords
+                "name": cat_name,
+                "keywords": data["keywords"]
             })
 
         # 5. Fetch Certifications (Awards) with eager loading

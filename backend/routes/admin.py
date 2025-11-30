@@ -14,7 +14,7 @@ from backend.models.project import Project, ProjectImage, ProjectTranslation
 from backend.models.project_url import ProjectURL
 from backend.models.experience import Experience, ExperienceTranslation
 from backend.models.education import Education, EducationTranslation, Course
-from backend.models.skill import Skill, SkillTranslation
+from backend.models.skill import Skill, SkillTranslation, SkillCategory, SkillCategoryTranslation
 from backend.models.profile import Profile, ProfileTranslation
 from backend.models.certification import Certification, CertificationTranslation
 from backend.models.tag import Tag
@@ -70,6 +70,10 @@ def admin_home():
                 joinedload(Certification.translations)
             ).order_by(desc(Certification.issue_date)).all()
             
+            skill_categories_data = SkillCategory.query.options(
+                joinedload(SkillCategory.translations)
+            ).order_by(SkillCategory.order).all()
+            
             profile_data = Profile.query.options(
                 joinedload(Profile.translations)
             ).first()
@@ -105,6 +109,7 @@ def admin_home():
             experiences = [serialize(e) for e in experiences_data]
             education = [serialize(e) for e in education_data]
             skills = [serialize(s) for s in skills_data]
+            skill_categories = [serialize(sc) for sc in skill_categories_data]
             certifications = [serialize(c) for c in certifications_data]
             profile = serialize(profile_data) if profile_data else {}
 
@@ -114,6 +119,7 @@ def admin_home():
                 experiences=experiences,
                 education=education,
                 skills=skills,
+                skill_categories=skill_categories,
                 certifications=certifications,
                 profile=profile
             )
@@ -236,6 +242,7 @@ def save_project():
         
         project.slug = slug
         project.category = category
+        project.is_featured_cv = data.get("is_featured_cv", False)
         
         # Handle URLs - NEW: Use ProjectURL model
         # Delete existing URLs if updating
@@ -317,6 +324,7 @@ def save_project():
                 title=data.get(f"title_{lang}"),
                 subtitle=data.get(f"subtitle_{lang}"),
                 description=data.get(f"description_{lang}"),
+                cv_description=data.get(f"cv_description_{lang}"),
                 summary=data.get(f"summary_{lang}"),
                 content=content
             )
@@ -413,14 +421,18 @@ def save_experience():
         exp.current = data.get("current", False)
         
         # Translations
-        exp.translations = []
         for lang in ["es", "en"]:
-            t = ExperienceTranslation(
-                lang=lang,
-                title=data.get(f"title_{lang}"), # Role
-                description=data.get(f"description_{lang}")
-            )
-            exp.translations.append(t)
+            translation = next((t for t in exp.translations if t.lang == lang), None)
+            if translation:
+                translation.title = data.get(f"title_{lang}")
+                translation.description = data.get(f"description_{lang}")
+            else:
+                t = ExperienceTranslation(
+                    lang=lang,
+                    title=data.get(f"title_{lang}"), # Role
+                    description=data.get(f"description_{lang}")
+                )
+                exp.translations.append(t)
             
         # Tags (Skills)
         exp.tags = []
@@ -462,15 +474,20 @@ def save_education():
         edu.current = data.get("current", False)
         
         # Translations
-        edu.translations = []
         for lang in ["es", "en"]:
-            t = EducationTranslation(
-                lang=lang,
-                title=data.get(f"title_{lang}"), # Degree
-                subtitle=data.get(f"subtitle_{lang}"), # Field
-                description=data.get(f"description_{lang}")
-            )
-            edu.translations.append(t)
+            translation = next((t for t in edu.translations if t.lang == lang), None)
+            if translation:
+                translation.title = data.get(f"title_{lang}")
+                translation.subtitle = data.get(f"subtitle_{lang}")
+                translation.description = data.get(f"description_{lang}")
+            else:
+                t = EducationTranslation(
+                    lang=lang,
+                    title=data.get(f"title_{lang}"), # Degree
+                    subtitle=data.get(f"subtitle_{lang}"), # Field
+                    description=data.get(f"description_{lang}")
+                )
+                edu.translations.append(t)
             
         # Courses
         edu.courses = []
@@ -501,25 +518,89 @@ def save_skill():
             skill = Skill()
             db.session.add(skill)
             
-        skill.slug = data.get("slug")
+        # Handle slug
+        slug = data.get("slug")
+        if not slug:
+            # If no slug provided, try to generate from name
+            name = data.get("name_en") or data.get("name_es")
+            if name:
+                import re
+                import unicodedata
+                def slugify(value):
+                    value = str(value)
+                    value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
+                    value = re.sub(r'[^\w\s-]', '', value).lower()
+                    return re.sub(r'[-\s]+', '-', value).strip('-')
+                slug = slugify(name)
+            elif not skill.slug:
+                # Fallback for new skills without name (shouldn't happen with validation)
+                import time
+                slug = f"skill-{int(time.time())}"
+        
+        if slug:
+            skill.slug = slug
         skill.icon_url = data.get("icon_url")
         skill.proficiency = data.get("proficiency", 50)
-        skill.category = data.get("category")
+        skill.category_id = data.get("category_id")
+        skill.is_visible_cv = data.get("is_visible_cv", True)
+        skill.is_visible_portfolio = data.get("is_visible_portfolio", True)
         skill.order = data.get("order", 0)
         
         # Translations
-        skill.translations = []
         for lang in ["es", "en"]:
-            t = SkillTranslation(
-                lang=lang,
-                name=data.get(f"name_{lang}", skill.slug),
-                description=data.get(f"description_{lang}")
-            )
-            skill.translations.append(t)
+            translation = next((t for t in skill.translations if t.lang == lang), None)
+            if translation:
+                translation.name = data.get(f"name_{lang}", skill.slug)
+                translation.description = data.get(f"description_{lang}")
+            else:
+                t = SkillTranslation(
+                    lang=lang,
+                    name=data.get(f"name_{lang}", skill.slug),
+                    description=data.get(f"description_{lang}")
+                )
+                skill.translations.append(t)
             
         db.session.commit()
         invalidate_entities_cache()
         return jsonify({"success": True, "id": skill.id}), 200
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
+
+@admin_bp.route("/admin/save/skill-category", methods=["POST"])
+@requires_login
+@requires_role("admin")
+def save_skill_category():
+    try:
+        data = request.json
+        cat_id = data.get("id")
+        
+        if cat_id:
+            cat = SkillCategory.query.get_or_404(cat_id)
+        else:
+            cat = SkillCategory()
+            db.session.add(cat)
+            
+        cat.slug = data.get("slug")
+        cat.order = data.get("order", 0)
+        
+        # Translations
+        for lang in ["es", "en"]:
+            translation = next((t for t in cat.translations if t.lang == lang), None)
+            if translation:
+                translation.name = data.get(f"name_{lang}", cat.slug)
+            else:
+                t = SkillCategoryTranslation(
+                    lang=lang,
+                    name=data.get(f"name_{lang}", cat.slug)
+                )
+                cat.translations.append(t)
+            
+        db.session.commit()
+        invalidate_entities_cache()
+        return jsonify({"success": True, "id": cat.id}), 200
         
     except Exception as e:
         db.session.rollback()
@@ -547,14 +628,18 @@ def save_certification():
         cert.credential_url = data.get("url")
         
         # Translations
-        cert.translations = []
         for lang in ["es", "en"]:
-            t = CertificationTranslation(
-                lang=lang,
-                title=data.get(f"title_{lang}"),
-                description=data.get(f"description_{lang}")
-            )
-            cert.translations.append(t)
+            translation = next((t for t in cert.translations if t.lang == lang), None)
+            if translation:
+                translation.title = data.get(f"title_{lang}")
+                translation.description = data.get(f"description_{lang}")
+            else:
+                t = CertificationTranslation(
+                    lang=lang,
+                    title=data.get(f"title_{lang}"),
+                    description=data.get(f"description_{lang}")
+                )
+                cert.translations.append(t)
             
         db.session.commit()
         invalidate_entities_cache()
@@ -629,8 +714,12 @@ def delete_item(type, id):
             item = Skill.query.get_or_404(id)
         elif type == "certification":
             item = Certification.query.get_or_404(id)
-        else:
-            return jsonify({"error": "Invalid type"}), 400
+        elif type == "skill-category":
+            item = SkillCategory.query.get_or_404(id)
+            # Unlink skills before deleting category
+            for skill in item.skills:
+                skill.category_id = None
+                db.session.add(skill)
             
         db.session.delete(item)
         db.session.commit()

@@ -3,516 +3,235 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>CV - Rafael Ortiz</title>
+  <title>CV - {{ cv_data.basics.name }}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="{{ url_for('static', filename='styles/cv.css') }}">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <style>
-    /* Page navigation for HTML view */
-    .page-navigation {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 1000;
-      display: flex;
-      gap: 10px;
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(10px);
-      padding: 10px 20px;
-      border-radius: 25px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-      border: 1px solid var(--primary-color);
-      transition: all 0.3s ease;
-    }
-
-    .page-navigation button {
-      background: rgba(255, 255, 255, 0.1);
-      border: 2px solid var(--primary-color);
-      color: var(--primary-color);
-      padding: 8px 15px;
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 12px;
-      font-weight: 600;
-      transition: all 0.3s ease;
-    }
-
-    .page-navigation button:hover {
-      background: var(--primary-color);
-      color: white;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px var(--glow-primary);
-    }
-
-    .page-navigation button.active {
-      background: var(--primary-color);
-      color: white;
-      border-color: var(--primary-color);
-    }
-
-    .page-navigation button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    /* Page transition animation */
-    .cv-pages-container {
-      position: relative;
-      min-height: 100vh;
-    }
-
-    .cv-page {
-      transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
-    }
-
-    .cv-page.hidden {
-      display: none;
-    }
-
-    @media print {
-      .page-navigation {
-        display: none !important;
-      }
-
-      .cv-page {
-        display: block !important;
-      }
-
-      .cv-page.hidden {
-        display: block !important;
-      }
-    }
-  </style>
 </head>
 
 <body class="cv-mode">
-  <button id="download-pdf" onclick="downloadPdf()">
-    {% if lang == 'es' %}Descargar PDF{% else %}Download PDF{% endif %}
-  </button>
-
-  <style>
-    #download-pdf {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      padding: 12px 24px;
-      background: var(--primary-color);
-      color: white;
-      border: 2px solid var(--primary-color);
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 12px;
-      font-weight: 600;
-      z-index: 1001;
-      transition: all 0.3s ease;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      box-shadow: 0 4px 12px var(--glow-primary);
-    }
-
-    #download-pdf:hover {
-      background: var(--accent-color);
-      border-color: var(--accent-color);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px var(--glow-primary);
-    }
-  </style>
-
-  <div class="page-navigation">
-    <button onclick="showPage(1)" id="page-btn-1" class="active">{% if lang == 'es' %}Página 1{% else %}Page 1{% endif
-      %}</button>
-    <button onclick="showPage(2)" id="page-btn-2">{% if lang == 'es' %}Página 2{% else %}Page 2{% endif %}</button>
-  </div>
-
-  <div class="cv-pages-container">
-    <!-- PAGE 1: Single-column layout -->
-    <main id="page-1" class="cv-page page page-1">
-      <!-- Header: Centered photo, name, role, and contact -->
-      <header class="resume-header page-1-header">
-        <div class="header-centered">
-          <div class="profile-pic-centered">
-            {% if cv_data.basics.image and (cv_data.basics.image.startswith('http://') or
-            cv_data.basics.image.startswith('https://')) %}
-            <img src="{{ cv_data.basics.image }}" alt="Foto de perfil" class="profile-img">
-            {% elif profile_img_abs_path %}
-            <img src="{{ profile_img_abs_path }}" alt="Foto de perfil" class="profile-img">
-            {% else %}
-            <img src="{{ url_for('static', filename='images/profilepicture.jpg') }}" alt="Foto de perfil"
-              class="profile-img">
-            {% endif %}
-          </div>
-          <div class="profile-info-centered">
-            <h1>{{ cv_data.basics.name }}</h1>
-            <h2 style="font-size: 0.85em; line-height: 1.2;">{{ cv_data.basics.label }}</h2>
-          </div>
-          <div class="contact-line-centered">
-            {{ cv_data.basics.email }} • {{ cv_data.basics.phone }} • {{ cv_data.basics.location.city }}, {{
-            cv_data.basics.location.region }}
-            {% if cv_data.basics.profiles %}
-            {% for profile in cv_data.basics.profiles %}
-            {% if profile.network == 'LinkedIn' %} <br>• <a href="{{ profile.url }}" target="_blank">{{ profile.url
-              }}</a>{% endif %}
-            {% if profile.network == 'GitHub' %} <br>• <a href="{{ profile.url }}" target="_blank">{{ profile.url
-              }}</a>{% endif %}
-            {% if profile.network == 'Website' %} <br>• <b>{% if lang == 'es' %}Portafolio (ver proyectos):{% else
-              %}Portfolio (view projects):{% endif %} <a href="{{ profile.url }}" target="_blank">{{ profile.url
-                }}</a>{% endif %}</b>
-            {% endfor %}
-            {% endif %}
-          </div>
+  <div class="cv-container">
+    <!-- Sidebar (Left Column) -->
+    <aside class="cv-sidebar">
+      <div class="profile-section">
+        <div class="profile-photo">
+          {% if cv_data.basics.image and (cv_data.basics.image.startswith('http://') or
+          cv_data.basics.image.startswith('https://')) %}
+          <img src="{{ cv_data.basics.image }}" alt="Profile Photo">
+          {% elif profile_img_abs_path %}
+          <img src="{{ profile_img_abs_path }}" alt="Profile Photo">
+          {% else %}
+          <img src="{{ url_for('static', filename='images/profilepicture.jpg') }}" alt="Profile Photo">
+          {% endif %}
         </div>
-      </header>
-
-      <!-- Summary: Full width -->
-      <div class="container summary-container">
-        <div class="title">
-          <h3>{% if lang == 'es' %}Resumen Profesional{% else %}Professional Summary{% endif %}</h3>
-          <div class="keyline"></div>
-        </div>
-        <p class="summary">{{ cv_data.basics.summary|safe }}</p>
+        <h1 class="name">{{ cv_data.basics.name }}</h1>
+        <h2 class="role">{{ cv_data.basics.label }}</h2>
       </div>
 
-      <!-- Skills: Full width, inline keywords -->
-      {% if cv_data.skills %}
-      <div class="container skills-container">
-        <div class="title">
-          <h3>{% if lang == 'es' %}Habilidades Técnicas{% else %}Technical Skills{% endif %}</h3>
-          <div class="keyline"></div>
+      <div class="contact-section">
+        <div class="contact-item">
+          <i class="fas fa-envelope"></i>
+          <span>{{ cv_data.basics.email }}</span>
         </div>
-        {% for skill in cv_data.skills %}
-        <div class="skill-group">
-          <h4 class="skill-category">{{ skill.name }}</h4>
-          <span class="skill-keywords-inline">
-            {% for keyword in skill.keywords %}
-            {{ keyword }}{% if not loop.last %} • {% endif %}
-            {% endfor %}
-          </span>
+        <div class="contact-item">
+          <i class="fas fa-phone"></i>
+          <span>{{ cv_data.basics.phone }}</span>
         </div>
-        {% endfor %}
-      </div>
-      {% endif %}
+        <div class="contact-item">
+          <i class="fas fa-map-marker-alt"></i>
+          <span>{{ cv_data.basics.location.city }}, {{ cv_data.basics.location.region }}</span>
+        </div>
 
-      <!-- Education: Full width -->
-      {% if cv_data.education %}
-      <div class="container education-container">
-        <div class="title">
-          <h3>{% if lang == 'es' %}Educación{% else %}Education{% endif %}</h3>
-          <div class="keyline"></div>
-        </div>
-        {% for edu in cv_data.education %}
-        <section class="item">
-          <div class="section-header clearfix">
-            <h3 class="bold pull-left">{{ edu.institution }}</h3>
-            <h5 class="italic pull-right">
-              {{ edu.startDate }} - {{ edu.endDate if edu.endDate else ('Presente' if lang == 'es' else 'Present') }}
-            </h5>
-          </div>
-          <h4>{{ edu.studyType }}{% if edu.area %} {% if lang == 'es' %}en{% else %}in{% endif %} {{ edu.area }}{% endif
-            %}{% if edu.location %} - {{ edu.location }}{% endif %}</h4>
-          {% if edu.gpa %}
-          <h5>GPA {{ edu.gpa }}</h5>
-          {% endif %}
-          {% if edu.specialization %}
-          <h5 class="specialization">{{ edu.specialization }}</h5>
-          {% endif %}
-          {% if edu.courses %}
-          <ul class="two-column">
-            {% for course in edu.courses %}
-            <li>{{ course }}</li>
-            {% endfor %}
-          </ul>
-          {% endif %}
-        </section>
-        {% endfor %}
-      </div>
-      {% endif %}
-
-      <!-- Languages: Compact single line at bottom -->
-      {% if cv_data.languages %}
-      <div class="container languages-container-compact">
-        <p class="languages-inline-compact">
-          <strong>{% if lang == 'es' %}Idiomas:{% else %}Languages:{% endif %}</strong>
-          {% for lang_item in cv_data.languages %}
-          {{ lang_item.language }} ({{ lang_item.fluency }}){% if not loop.last %} • {% endif %}
+        {% if cv_data.basics.profiles %}
+        <div class="social-links">
+          {% for profile in cv_data.basics.profiles %}
+          <a href="{{ profile.url }}" target="_blank" class="social-link">
+            {% if profile.network == 'LinkedIn' %}<i class="fab fa-linkedin"></i>
+            {% elif profile.network == 'GitHub' %}<i class="fab fa-github"></i>
+            {% elif profile.network == 'Website' %}<i class="fas fa-globe"></i>
+            {% else %}<i class="fas fa-link"></i>{% endif %}
+            <span>{{ profile.username }}</span>
+          </a>
           {% endfor %}
-        </p>
+        </div>
+        {% endif %}
+
+        <!-- QR Code -->
+        {% set portfolio_url = '' %}
+        {% for profile in cv_data.basics.profiles %}
+        {% if profile.network == 'Website' %}
+        {% set portfolio_url = profile.url %}
+        {% endif %}
+        {% endfor %}
+
+        {% if not portfolio_url and cv_data.basics.profiles %}
+        {% set portfolio_url = cv_data.basics.profiles[0].url %}
+        {% endif %}
+
+        {% if portfolio_url %}
+        <div class="qr-section" style="text-align: center; margin-top: 30px; margin-bottom: 20px;">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ portfolio_url }}&color=2d3748"
+            alt="Portfolio QR" style="width: 100px; height: 100px; opacity: 0.9;">
+          <p style="font-size: 10px; color: #718096; margin-top: 8px; font-weight: 500;">
+            {% if lang == 'es' %}Escanea para ver web{% else %}Scan for web version{% endif %}
+          </p>
+        </div>
+        {% endif %}
+      </div>
+
+      {% if cv_data.skills %}
+      <div class="sidebar-section">
+        <h3 class="section-title">{% if lang == 'es' %}Habilidades{% else %}Skills{% endif %}</h3>
+        <div class="skills-list">
+          {% for skill in cv_data.skills %}
+          <div class="skill-category">
+            <h4>{{ skill.name }}</h4>
+            <div class="skill-tags">
+              {% for keyword in skill.keywords %}
+              <span class="skill-tag">{{ keyword }}</span>
+              {% endfor %}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
       </div>
       {% endif %}
-    </main>
 
-    <!-- PAGE 2+: Single-column layout (Experience, Awards, etc.) -->
-    <main id="page-2" class="cv-page page page-2 hidden">
-      <div class="resume-content page-2-content single-column">
-        {% if cv_data.work %}
-        <div class="container work-container">
-          <div class="title">
-            <h3>{% if lang == 'es' %}Experiencia{% else %}Experience{% endif %}</h3>
-            <div class="keyline"></div>
-          </div>
-          {% for job in cv_data.work %}
-          <section class="item">
-            <div class="section-header clearfix">
-              <h3 class="bold pull-left">
-                <a href="{{ job.url }}" target="_blank">{{ job.company }} <i class="fa fa-external-link"></i></a>
-              </h3>
-              <h5 class="italic pull-right">
-                {{ job.startDate }} - {{ job.endDate if job.endDate else ('Presente' if lang == 'es' else 'Present') }}
-              </h5>
+      <!-- Education (Moved to Sidebar) -->
+      {% if cv_data.education %}
+      <div class="sidebar-section">
+        <h3 class="section-title">{% if lang == 'es' %}Educación{% else %}Education{% endif %}</h3>
+        <div class="education-list">
+          {% for edu in cv_data.education %}
+          <div class="education-item" style="margin-bottom: 15px;">
+            <h4 class="institution" style="font-size: 14px;">{{ edu.institution }}</h4>
+            <div class="degree" style="font-size: 13px;">
+              {{ edu.studyType }} {% if edu.area %}{% if lang == 'es' %}en{% else %}in{% endif %} {{ edu.area }}{% endif
+              %}
             </div>
-            <h4>{{ job.position }}</h4>
-            <p class="summary">{{ job.summary|safe }}</p>
+            <div class="date" style="margin-top: 2px;">{{ edu.startDate }} - {{ edu.endDate if edu.endDate else
+              ('Presente' if lang == 'es' else 'Present') }}</div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Certifications (Moved to Sidebar) -->
+      {% if cv_data.awards %}
+      <div class="sidebar-section">
+        <h3 class="section-title">{% if lang == 'es' %}Certificaciones{% else %}Certifications{% endif %}</h3>
+        <div class="education-list">
+          {% for award in cv_data.awards %}
+          <div class="education-item" style="margin-bottom: 15px;">
+            <h4 class="institution" style="font-size: 14px;">
+              {% if award.link %}
+              <a href="{{ award.link }}" target="_blank" style="text-decoration: none; color: inherit;">{{ award.title
+                }}</a>
+              {% else %}
+              {{ award.title }}
+              {% endif %}
+            </h4>
+            <div class="degree" style="font-size: 13px;">{{ award.awarder }}</div>
+            <div class="date" style="margin-top: 2px;">{{ award.date }}</div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      {% if cv_data.languages %}
+      <div class="sidebar-section">
+        <h3 class="section-title">{% if lang == 'es' %}Idiomas{% else %}Languages{% endif %}</h3>
+        <div class="languages-list">
+          {% for lang_item in cv_data.languages %}
+          <div class="language-item">
+            <span class="lang-name">{{ lang_item.language }}</span>
+            <span class="lang-fluency">{{ lang_item.fluency }}</span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+    </aside>
+
+    <!-- Main Content (Right Column) -->
+    <main class="cv-main">
+      <!-- Summary -->
+      <section class="main-section">
+        <h3 class="section-title">{% if lang == 'es' %}Perfil Profesional{% else %}Professional Profile{% endif %}</h3>
+        <p class="summary-text">{{ cv_data.basics.summary|safe }}</p>
+      </section>
+
+      <!-- Featured Project -->
+      {% if cv_data.featured_project %}
+      <section class="main-section">
+        <h3 class="section-title">{% if lang == 'es' %}Proyecto Destacado{% else %}Featured Project{% endif %}</h3>
+        <div class="timeline-item">
+          <div class="timeline-header">
+            <h4 class="position">{{ cv_data.featured_project.title }}</h4>
+            <span class="date">{% if lang == 'es' %}Destacado{% else %}Featured{% endif %}</span>
+          </div>
+          {% if cv_data.featured_project.url %}
+          <div class="company-name">
+            <a href="{{ cv_data.featured_project.url }}" target="_blank">{{ cv_data.featured_project.subtitle or 'View
+              Project' }} <i class="fas fa-external-link-alt" style="font-size: 0.7em;"></i></a>
+          </div>
+          {% elif cv_data.featured_project.subtitle %}
+          <div class="company-name">
+            {{ cv_data.featured_project.subtitle }}
+          </div>
+          {% endif %}
+
+          <p class="job-summary">{{ cv_data.featured_project.description|safe }}</p>
+        </div>
+      </section>
+      {% endif %}
+
+      <!-- Experience -->
+      {% if cv_data.work %}
+      <section class="main-section">
+        <h3 class="section-title">{% if lang == 'es' %}Experiencia Laboral{% else %}Work Experience{% endif %}
+        </h3>
+        <div class="timeline">
+          {% for job in cv_data.work %}
+          <div class="timeline-item">
+            <div class="timeline-header">
+              <h4 class="position">{{ job.position }}</h4>
+              <span class="date">{{ job.startDate }} - {{ job.endDate if job.endDate else ('Presente' if lang ==
+                'es' else 'Present') }}</span>
+            </div>
+            <div class="company-name">
+              <a href="{{ job.url }}" target="_blank">{{ job.company }}</a>
+            </div>
+            <p class="job-summary">{{ job.summary|safe }}</p>
             {% if job.highlights %}
-            <ul style="text-align: justify;">
+            <ul class="job-highlights">
               {% for highlight in job.highlights %}
               <li>{{ highlight|safe }}</li>
               {% endfor %}
             </ul>
             {% endif %}
-          </section>
-          {% endfor %}
-        </div>
-        {% endif %}
-
-        {% if cv_data.awards %}
-        <div class="container awards-container">
-          <div class="title">
-            <h3>{% if lang == 'es' %}Premios{% else %}Awards{% endif %}</h3>
-            <div class="keyline"></div>
           </div>
-          {% for award in cv_data.awards %}
-          <section class="item">
-            <div class="section-header clearfix">
-              <h3 class="bold pull-left">
-                <a href="{{ award.link }}" target="_blank">{{ award.title }} <i class="fa fa-external-link"></i></a>
-              </h3>
-              <h5 class="italic pull-right">{{ award.date if award.date else '' }}</h5>
-            </div>
-            <h5 class="awarder">{{ award.awarder }}</h5>
-            <p class="summary">{{ award.summary|safe }}</p>
-          </section>
           {% endfor %}
         </div>
-        {% endif %}
+      </section>
+      {% endif %}
 
-        {% if cv_data.volunteer %}
-        <div class="container volunteer-container">
-          <div class="title">
-            <h3>{% if lang == 'es' %}Voluntariado{% else %}Volunteer{% endif %}</h3>
-            <div class="keyline"></div>
-          </div>
-          {% for vol in cv_data.volunteer %}
-          <section class="item">
-            <div class="section-header clearfix">
-              <h3 class="bold pull-left">
-                <a href="{{ vol.url }}" target="_blank">{{ vol.organization }} <i class="fa fa-external-link"></i></a>
-              </h3>
-              <h5 class="italic pull-right">
-                {{ vol.startDate }} - {{ vol.endDate if vol.endDate else ('Presente' if lang == 'es' else 'Present') }}
-              </h5>
-            </div>
-            <h5>{{ vol.position }}</h5>
-            <p class="summary">{{ vol.summary|safe }}</p>
-            {% if vol.highlights %}
-            <ul>
-              {% for highlight in vol.highlights %}
-              <li>{{ highlight|safe }}</li>
-              {% endfor %}
-            </ul>
-            {% endif %}
-          </section>
-          {% endfor %}
-        </div>
-        {% endif %}
-
-        {% if cv_data.publications %}
-        <div class="container publications-container">
-          <div class="title">
-            <h3>{% if lang == 'es' %}Publicaciones{% else %}Publications{% endif %}</h3>
-            <div class="keyline"></div>
-          </div>
-          {% for pub in cv_data.publications %}
-          <section class="item">
-            <div class="section-header clearfix">
-              <h3 class="bold pull-left">
-                <a href="{{ pub.url }}" target="_blank">{{ pub.name }} <i class="fa fa-external-link"></i></a>
-              </h3>
-              <h5 class="italic pull-right">{{ pub.releaseDate if pub.releaseDate else '' }}</h5>
-            </div>
-            <h5 class="awarder">{{ pub.publisher }}</h5>
-            <p class="summary">{{ pub.summary|safe }}</p>
-          </section>
-          {% endfor %}
-        </div>
-        {% endif %}
-
-        {% if cv_data.references %}
-        <div class="container references-container">
-          <div class="title">
-            <h3>{% if lang == 'es' %}Referencias{% else %}References{% endif %}</h3>
-            <div class="keyline"></div>
-          </div>
-          {% for ref in cv_data.references %}
-          <section class="item clearfix">
-            <i class="fa fa-quote-left pull-left" aria-hidden="true"></i>
-            <blockquote>{{ ref.reference }}</blockquote>
-            <h5 class="pull-right"> — {{ ref.name }}</h5>
-          </section>
-          {% endfor %}
-        </div>
-        {% endif %}
-      </div>
     </main>
   </div>
 
-  <!-- Theme Switcher -->
-  <div class="theme-switcher">
-    <h4>Theme</h4>
-    <div class="theme-buttons">
-      <button class="theme-btn active" data-theme="emerald" onclick="setTheme('emerald')">
-        Emerald Tech
-      </button>
-      <button class="theme-btn" data-theme="cyberpunk" onclick="setTheme('cyberpunk')">
-        Cyberpunk Teal
-      </button>
-      <button class="theme-btn" data-theme="matrix" onclick="setTheme('matrix')">
-        Matrix Green
-      </button>
-      <button class="theme-btn" data-theme="github" onclick="setTheme('github')">
-        GitHub Dark
-      </button>
-      <button class="theme-btn" data-theme="sunset" onclick="setTheme('sunset')">
-        Sunset Coral
-      </button>
-    </div>
-  </div>
+  <button id="download-pdf" onclick="downloadPdf()">
+    <i class="fas fa-download"></i> PDF
+  </button>
 
   <script>
     function downloadPdf() {
       window.location.href = "{{ url_for('cv.cv_pdf', lang=lang) }}";
     }
-
-    // Theme Switcher with localStorage persistence
-    function setTheme(themeName) {
-      // Set theme on html element
-      document.documentElement.setAttribute('data-theme', themeName);
-
-      // Save to localStorage
-      localStorage.setItem('cv-theme', themeName);
-
-      // Update active button
-      document.querySelectorAll('.theme-btn').forEach(btn => {
-        btn.classList.remove('active');
-      });
-      document.querySelector(`.theme-btn[data-theme="${themeName}"]`).classList.add('active');
-    }
-
-    // Draggable Theme Switcher
-    (function () {
-      const themeSwitcher = document.querySelector('.theme-switcher');
-      let isDragging = false;
-      let currentX;
-      let currentY;
-      let initialX;
-      let initialY;
-      let xOffset = 0;
-      let yOffset = 0;
-
-      // Load saved position
-      const savedPosition = localStorage.getItem('theme-switcher-position');
-      if (savedPosition) {
-        const { x, y } = JSON.parse(savedPosition);
-        xOffset = x;
-        yOffset = y;
-        themeSwitcher.style.transform = `translate(${x}px, ${y}px)`;
-      }
-
-      themeSwitcher.addEventListener('mousedown', dragStart);
-      document.addEventListener('mousemove', drag);
-      document.addEventListener('mouseup', dragEnd);
-
-      // Touch events for mobile
-      themeSwitcher.addEventListener('touchstart', dragStart);
-      document.addEventListener('touchmove', drag);
-      document.addEventListener('touchend', dragEnd);
-
-      function dragStart(e) {
-        if (e.type === 'touchstart') {
-          initialX = e.touches[0].clientX - xOffset;
-          initialY = e.touches[0].clientY - yOffset;
-        } else {
-          initialX = e.clientX - xOffset;
-          initialY = e.clientY - yOffset;
-        }
-
-        if (e.target === themeSwitcher || e.target === themeSwitcher.querySelector('h4')) {
-          isDragging = true;
-          themeSwitcher.classList.add('dragging');
-        }
-      }
-
-      function drag(e) {
-        if (isDragging) {
-          e.preventDefault();
-
-          if (e.type === 'touchmove') {
-            currentX = e.touches[0].clientX - initialX;
-            currentY = e.touches[0].clientY - initialY;
-          } else {
-            currentX = e.clientX - initialX;
-            currentY = e.clientY - initialY;
-          }
-
-          xOffset = currentX;
-          yOffset = currentY;
-
-          themeSwitcher.style.transform = `translate(${currentX}px, ${currentY}px)`;
-        }
-      }
-
-      function dragEnd(e) {
-        if (isDragging) {
-          initialX = currentX;
-          initialY = currentY;
-          isDragging = false;
-          themeSwitcher.classList.remove('dragging');
-
-          // Save position
-          localStorage.setItem('theme-switcher-position', JSON.stringify({ x: xOffset, y: yOffset }));
-        }
-      }
-    })();
-
-    // Load saved theme on page load
-    window.addEventListener('DOMContentLoaded', () => {
-      const savedTheme = localStorage.getItem('cv-theme') || 'emerald';
-      if (savedTheme !== 'emerald') {
-        setTheme(savedTheme);
-      }
-    });
-
-    // Page navigation
-    function showPage(pageNum) {
-      // Hide all pages
-      document.querySelectorAll('.cv-page').forEach(page => {
-        page.classList.add('hidden');
-      });
-
-      // Show selected page
-      document.getElementById(`page-${pageNum}`).classList.remove('hidden');
-
-      // Update button states
-      document.querySelectorAll('.page-navigation button').forEach(btn => {
-        btn.classList.remove('active');
-      });
-      document.getElementById(`page-btn-${pageNum}`).classList.add('active');
-
-      // Scroll to top
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    // Initialize: show page 1
-    showPage(1);
   </script>
 </body>
 

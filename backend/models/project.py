@@ -9,6 +9,7 @@ class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     slug = db.Column(db.String(64), unique=True, nullable=False)
     category = db.Column(db.String(64))
+    is_featured_cv = db.Column(db.Boolean, default=False)
     # url field removed - now using urls relationship
     created_at = db.Column(db.DateTime, server_default=func.now())  # Fixed deprecation
     updated_at = db.Column(
@@ -91,6 +92,7 @@ class ProjectTranslation(db.Model):
     title = db.Column(db.String(128))
     subtitle = db.Column(db.String(256))
     description = db.Column(db.Text)
+    cv_description = db.Column(db.Text) # New field for CV-specific description
     summary = db.Column(db.Text)
     content = db.Column(db.JSON)
     created_at = db.Column(db.DateTime, server_default=func.now())  # Added timestamp

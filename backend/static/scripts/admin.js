@@ -66,6 +66,7 @@ function getFormTemplate(type, data) {
   let commonFields = ''; // Slug is now always auto-generated
 
   let typeFields = '';
+  let translationFields = '';
 
 
   if (type === 'project') {
@@ -112,6 +113,10 @@ function getFormTemplate(type, data) {
                         <option value="work" ${(d.category || '').toLowerCase() === 'work' ? 'selected' : ''}>Work</option>
                         <option value="study" ${(d.category || '').toLowerCase() === 'study' ? 'selected' : ''}>Study</option>
                     </select>
+                </div>
+                <div class="form-group" style="display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem;">
+                    <input type="checkbox" name="is_featured_cv" ${d.is_featured_cv ? 'checked' : ''}>
+                    <label class="form-label" style="margin-bottom: 0; cursor: pointer;">Featured in CV</label>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Tags (comma separated)</label>
@@ -209,10 +214,20 @@ function getFormTemplate(type, data) {
         </div>
     `;
   } else if (type === 'skill') {
+    const categories = window.skill_categories || [];
+    const options = categories.map(c => {
+      const trans = c.translations.find(t => t.lang === 'es');
+      const name = trans ? trans.name : c.slug;
+      return `<option value="${c.id}" ${d.category_id === c.id ? 'selected' : ''}>${name}</option>`;
+    }).join('');
+
     typeFields = `
                 <div class="form-group">
                     <label class="form-label">Category</label>
-                    <input type="text" class="form-control" name="category" value="${d.category || ''}">
+                    <select class="form-control" name="category_id">
+                        <option value="">Select Category...</option>
+                        ${options}
+                    </select>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Proficiency (0-100)</label>
@@ -222,7 +237,50 @@ function getFormTemplate(type, data) {
                     <label class="form-label">Icon URL</label>
                     <input type="text" class="form-control" name="icon_url" value="${d.icon_url || ''}">
                 </div>
+                <div class="form-group" style="display: flex; gap: 1rem; margin-top: 1rem;">
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        <input type="checkbox" name="is_visible_cv" ${d.is_visible_cv !== false ? 'checked' : ''}>
+                        Visible in CV
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        <input type="checkbox" name="is_visible_portfolio" ${d.is_visible_portfolio !== false ? 'checked' : ''}>
+                        Visible in Portfolio
+                    </label>
+                </div>
             `;
+  } else if (type === 'skill-category') {
+    typeFields = `
+        <div class="form-group">
+            <label class="form-label">Slug (ID)</label>
+            <input type="text" class="form-control" name="slug" value="${d.slug || ''}" ${d.id ? 'readonly' : ''}>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Order</label>
+            <input type="number" class="form-control" name="order" value="${d.order || 0}">
+        </div>
+      `;
+
+    translationFields = `
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab(this, 'trans-es')">Spanish</div>
+                <div class="tab" onclick="switchTab(this, 'trans-en')">English</div>
+            </div>
+            
+            <div id="trans-es" class="tab-content">
+                <div class="form-group">
+                    <label class="form-label">Name (ES) <span style="color:var(--danger)">*</span></label>
+                    <input type="text" class="form-control" name="name_es" value="${(es.name || '').replace(/"/g, '&quot;')}" required>
+                </div>
+            </div>
+
+            <div id="trans-en" class="tab-content hidden">
+                <div class="form-group">
+                    <label class="form-label">Name (EN) <span style="color:var(--danger)">*</span></label>
+                    <input type="text" class="form-control" name="name_en" value="${(en.name || '').replace(/"/g, '&quot;')}" required>
+                </div>
+            </div>
+      `;
+    return `<form id="edit-form">${commonFields}${typeFields}${translationFields}</form>`;
   } else if (type === 'certification') {
     typeFields = `
         <div class="form-group">
@@ -244,7 +302,7 @@ function getFormTemplate(type, data) {
     `;
   }
 
-  let translationFields = `
+  translationFields = `
             <div class="tabs">
                 <div class="tab active" onclick="switchTab(this, 'trans-es')">Spanish</div>
                 <div class="tab" onclick="switchTab(this, 'trans-en')">English</div>
@@ -253,7 +311,7 @@ function getFormTemplate(type, data) {
             <div id="trans-es" class="tab-content">
                 <div class="form-group">
                     <label class="form-label">${type === 'experience' ? 'Company Name (ES)' : type === 'education' ? 'Degree (ES)' : 'Title/Name (ES)'} <span style="color:var(--danger)">*</span></label>
-                    <input type="text" class="form-control" name="title_es" value="${(es.title || es.name || '').replace(/"/g, '&quot;')}" required>
+                    <input type="text" class="form-control" name="${type === 'skill' ? 'name_es' : 'title_es'}" value="${(es.title || es.name || '').replace(/"/g, '&quot;')}" required>
                 </div>
                 <div class="form-group">
                     <label class="form-label">${type === 'experience' ? 'Role (ES)' : type === 'education' ? 'Field of Study (ES)' : 'Subtitle (ES)'}</label>
@@ -263,12 +321,18 @@ function getFormTemplate(type, data) {
                     <label class="form-label">Description (ES)</label>
                     <textarea class="form-control" name="description_es" rows="15">${es.description || ''}</textarea>
                 </div>
+                ${type === 'project' ? `
+                <div class="form-group">
+                    <label class="form-label">CV Description (ES) <span style="font-size:0.8em; color:var(--accent)">(Optional - Overrides main description in CV)</span></label>
+                    <textarea class="form-control" name="cv_description_es" rows="5">${es.cv_description || ''}</textarea>
+                </div>
+                ` : ''}
             </div>
 
             <div id="trans-en" class="tab-content hidden">
                 <div class="form-group">
                     <label class="form-label">${type === 'experience' ? 'Company Name (EN)' : type === 'education' ? 'Degree (EN)' : 'Title/Name (EN)'} <span style="color:var(--danger)">*</span></label>
-                    <input type="text" class="form-control" name="title_en" value="${(en.title || en.name || '').replace(/"/g, '&quot;')}" required>
+                    <input type="text" class="form-control" name="${type === 'skill' ? 'name_en' : 'title_en'}" value="${(en.title || en.name || '').replace(/"/g, '&quot;')}" required>
                 </div>
                 <div class="form-group">
                     <label class="form-label">${type === 'experience' ? 'Role (EN)' : type === 'education' ? 'Field of Study (EN)' : 'Subtitle (EN)'}</label>
@@ -278,6 +342,12 @@ function getFormTemplate(type, data) {
                     <label class="form-label">Description (EN)</label>
                     <textarea class="form-control" name="description_en" rows="15">${en.description || ''}</textarea>
                 </div>
+                ${type === 'project' ? `
+                <div class="form-group">
+                    <label class="form-label">CV Description (EN) <span style="font-size:0.8em; color:var(--accent)">(Optional - Overrides main description in CV)</span></label>
+                    <textarea class="form-control" name="cv_description_en" rows="5">${en.cv_description || ''}</textarea>
+                </div>
+                ` : ''}
             </div>
   `;
 
@@ -385,21 +455,28 @@ const projects = window.projects || [];
 const experiences = window.experiences || [];
 const education = window.education || [];
 const skills = window.skills || [];
+const skill_categories = window.skill_categories || [];
 const certifications = window.certifications || [];
 
-function editProject(id) { openModal('project', projects.find(p => p.id === id)); }
+function editProject(id) { openModal('project', projects.find(p => p.id == id)); }
 
 
-function editExperience(id) { openModal('experience', experiences.find(e => e.id === id)); }
-function editEducation(id) { openModal('education', education.find(e => e.id === id)); }
-function editSkill(id) { openModal('skill', skills.find(s => s.id === id)); }
-function editCertification(id) { openModal('certification', certifications.find(c => c.id === id)); }
+function editExperience(id) { openModal('experience', experiences.find(e => e.id == id)); }
+function editEducation(id) { openModal('education', education.find(e => e.id == id)); }
+function editSkill(id) { openModal('skill', skills.find(s => s.id == id)); }
+function editSkillCategory(id) { openModal('skill-category', skill_categories.find(c => c.id == id)); }
+function editCertification(id) { openModal('certification', certifications.find(c => c.id == id)); }
 
 // API Actions
 async function saveItem() {
   const form = document.getElementById('edit-form');
   const formData = new FormData(form);
   const data = Object.fromEntries(formData.entries());
+
+  // Fix checkboxes to be boolean
+  form.querySelectorAll('input[type="checkbox"][name]').forEach(cb => {
+    data[cb.name] = cb.checked;
+  });
 
   // Process specific fields
   if (data.tags) data.tags = data.tags.split(',').map(t => t.trim());

@@ -49,7 +49,7 @@
           <div class="list-group">
             {% for p in items %}
             {% set trans = p.translations | selectattr('lang', 'equalto', 'es') | first %}
-            <div class="list-item" onclick='editProject({{ p.id }})'
+            <div class="list-item" onclick="editProject(this.dataset.id)" data-id="{{ p.id }}"
               style="cursor: pointer; transition: transform 0.2s, border-color 0.2s;">
               <div class="item-info">
                 <h3>{{ trans.title if trans else p.slug }}</h3>
@@ -57,7 +57,7 @@
               </div>
               <div class="item-actions">
                 <button class="action-btn delete"
-                  onclick="event.stopPropagation(); deleteItem('project', {{ p.id }})"><i
+                  onclick="event.stopPropagation(); deleteItem('project', this.closest('.list-item').dataset.id)"><i
                     class="fas fa-trash"></i></button>
               </div>
             </div>
@@ -89,7 +89,8 @@
         <div class="item-list">
           {% for e in experiences %}
           {% set trans = e.translations | selectattr('lang', 'equalto', 'es') | first %}
-          <div class="list-item" onclick='editExperience({{ e.id }})' style="cursor: pointer;">
+          <div class="list-item" onclick="editExperience(this.dataset.id)" data-id="{{ e.id }}"
+            style="cursor: pointer;">
             <div class="item-info">
               <h3>{{ trans.title if trans else 'No Company' }}</h3>
               <p>{{ trans.subtitle if trans else 'No Role' }} • {{ e.start_date or '' }} - {{ e.end_date or 'Present' }}
@@ -97,7 +98,7 @@
             </div>
             <div class="item-actions">
               <button class="action-btn delete"
-                onclick="event.stopPropagation(); deleteItem('experience', {{ e.id }})"><i
+                onclick="event.stopPropagation(); deleteItem('experience', this.closest('.list-item').dataset.id)"><i
                   class="fas fa-trash"></i></button>
             </div>
           </div>
@@ -114,14 +115,14 @@
         <div class="item-list">
           {% for e in education %}
           {% set trans = e.translations | selectattr('lang', 'equalto', 'es') | first %}
-          <div class="list-item" onclick='editEducation({{ e.id }})' style="cursor: pointer;">
+          <div class="list-item" onclick="editEducation(this.dataset.id)" data-id="{{ e.id }}" style="cursor: pointer;">
             <div class="item-info">
               <h3>{{ e.institution }}</h3>
               <p>{{ trans.title if trans else '' }} • {{ e.start_date or '' }} - {{ e.end_date or 'Present' }}</p>
             </div>
             <div class="item-actions">
               <button class="action-btn delete"
-                onclick="event.stopPropagation(); deleteItem('education', {{ e.id }})"><i
+                onclick="event.stopPropagation(); deleteItem('education', this.closest('.list-item').dataset.id)"><i
                   class="fas fa-trash"></i></button>
             </div>
           </div>
@@ -138,14 +139,15 @@
         <div class="item-list">
           {% for c in certifications %}
           {% set trans = c.translations | selectattr('lang', 'equalto', 'es') | first %}
-          <div class="list-item" onclick='editCertification({{ c.id }})' style="cursor: pointer;">
+          <div class="list-item" onclick="editCertification(this.dataset.id)" data-id="{{ c.id }}"
+            style="cursor: pointer;">
             <div class="item-info">
               <h3>{{ trans.title if trans else c.slug }}</h3>
               <p>{{ c.issuer or '' }} • {{ c.issue_date or '' }}</p>
             </div>
             <div class="item-actions">
               <button class="action-btn delete"
-                onclick="event.stopPropagation(); deleteItem('certification', {{ c.id }})"><i
+                onclick="event.stopPropagation(); deleteItem('certification', this.closest('.list-item').dataset.id)"><i
                   class="fas fa-trash"></i></button>
             </div>
           </div>
@@ -158,27 +160,46 @@
     <div id="view-skills" class="view-section hidden">
       <div class="header">
         <h2>Skills</h2>
-        <button class="btn btn-primary" onclick="openModal('skill')"><i class="fas fa-plus"></i> Add
-          Skill</button>
+        <div style="display: flex; gap: 1rem;">
+          <button class="btn" style="background: #24292e; color: white;" onclick="openModal('skill-category')"><i
+              class="fas fa-list"></i> Manage Categories</button>
+          <button class="btn btn-primary" onclick="openModal('skill')"><i class="fas fa-plus"></i> Add
+            Skill</button>
+        </div>
       </div>
       <div class="item-list">
-        {% for category, items in skills|groupby('category') %}
-        <details class="category-group">
+        {% for category in skill_categories %}
+        <details class="category-group" open>
           <summary
             style="margin: 1.5rem 0 0.5rem; color: var(--accent); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; outline: none; user-select: none;">
-            {{ category or 'Uncategorized' }} <span style="font-size: 0.8em; opacity: 0.7; margin-left: 0.5rem;">({{
-              items|length }})</span>
+            {% set trans = category.translations | selectattr('lang', 'equalto', 'es') | first %}
+            {{ trans.name if trans else category.slug }}
+            <button class="action-btn" style="margin-left: 0.5rem; font-size: 0.8em; padding: 0.2rem;"
+              onclick="event.preventDefault(); event.stopPropagation(); editSkillCategory(this.dataset.id)"
+              data-id="{{ category.id }}"><i class="fas fa-edit"></i></button>
+            <button class="action-btn delete" style="margin-left: 0.2rem; font-size: 0.8em; padding: 0.2rem;"
+              onclick="event.preventDefault(); event.stopPropagation(); deleteItem('skill-category', this.dataset.id)"
+              data-id="{{ category.id }}"><i class="fas fa-trash"></i></button>
           </summary>
           <div class="list-group">
-            {% for s in items %}
+            {% for s in skills if s.category_id == category.id %}
             {% set trans = s.translations | selectattr('lang', 'equalto', 'es') | first %}
-            <div class="list-item" onclick='editSkill({{ s.id }})' style="cursor: pointer;">
+            <div class="list-item" onclick="editSkill(this.dataset.id)" data-id="{{ s.id }}" style="cursor: pointer;">
               <div class="item-info">
                 <h3>{{ trans.name if trans else s.slug }}</h3>
-                <p>{{ s.proficiency }}%</p>
+                <p>
+                  {{ s.proficiency }}%
+                  {% if not s.is_visible_cv %}<span
+                    style="color: var(--danger); font-size: 0.8em; margin-left: 0.5rem;">(Hidden in
+                    CV)</span>{% endif %}
+                  {% if not s.is_visible_portfolio %}<span
+                    style="color: var(--danger); font-size: 0.8em; margin-left: 0.5rem;">(Hidden in
+                    Portfolio)</span>{% endif %}
+                </p>
               </div>
               <div class="item-actions">
-                <button class="action-btn delete" onclick="event.stopPropagation(); deleteItem('skill', {{ s.id }})"><i
+                <button class="action-btn delete"
+                  onclick="event.stopPropagation(); deleteItem('skill', this.closest('.list-item').dataset.id)"><i
                     class="fas fa-trash"></i></button>
               </div>
             </div>
@@ -186,6 +207,32 @@
           </div>
         </details>
         {% endfor %}
+
+        <!-- Uncategorized -->
+        {% if skills | selectattr('category_id', 'none') | list | length > 0 %}
+        <details class="category-group" open>
+          <summary
+            style="margin: 1.5rem 0 0.5rem; color: var(--accent); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; outline: none; user-select: none;">
+            Uncategorized
+          </summary>
+          <div class="list-group">
+            {% for s in skills if not s.category_id %}
+            {% set trans = s.translations | selectattr('lang', 'equalto', 'es') | first %}
+            <div class="list-item" onclick="editSkill(this.dataset.id)" data-id="{{ s.id }}" style="cursor: pointer;">
+              <div class="item-info">
+                <h3>{{ trans.name if trans else s.slug }}</h3>
+                <p>{{ s.proficiency }}%</p>
+              </div>
+              <div class="item-actions">
+                <button class="action-btn delete"
+                  onclick="event.stopPropagation(); deleteItem('skill', this.closest('.list-item').dataset.id)"><i
+                    class="fas fa-trash"></i></button>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </details>
+        {% endif %}
       </div>
     </div>
 
@@ -341,12 +388,20 @@
   <div id="toast" class="toast">Action successful</div>
 
   <!-- Initialize data from server -->
+  <script id="data-projects" type="application/json">{{ projects | tojson | safe }}</script>
+  <script id="data-experiences" type="application/json">{{ experiences | tojson | safe }}</script>
+  <script id="data-education" type="application/json">{{ education | tojson | safe }}</script>
+  <script id="data-skills" type="application/json">{{ skills | tojson | safe }}</script>
+  <script id="data-skill-categories" type="application/json">{{ skill_categories | tojson | safe }}</script>
+  <script id="data-certifications" type="application/json">{{ certifications | tojson | safe }}</script>
+
   <script>
-    window.projects = {{ projects | tojson }};
-    window.experiences = {{ experiences | tojson }};
-    window.education = {{ education | tojson }};
-    window.skills = {{ skills | tojson }};
-    window.certifications = {{ certifications | tojson }};
+    window.projects = JSON.parse(document.getElementById('data-projects').textContent);
+    window.experiences = JSON.parse(document.getElementById('data-experiences').textContent);
+    window.education = JSON.parse(document.getElementById('data-education').textContent);
+    window.skills = JSON.parse(document.getElementById('data-skills').textContent);
+    window.skill_categories = JSON.parse(document.getElementById('data-skill-categories').textContent);
+    window.certifications = JSON.parse(document.getElementById('data-certifications').textContent);
   </script>
 
   <script src="{{ url_for('static', filename='scripts/admin.js') }}"></script>
