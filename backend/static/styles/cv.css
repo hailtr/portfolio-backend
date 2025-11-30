@@ -355,22 +355,77 @@ body {
     box-shadow: none;
     width: 100%;
     min-height: auto;
+    display: block;
+    /* Switch to block for print to allow breaking */
+  }
+
+  /* 
+     For print, we want the sidebar and main content to flow naturally.
+     Since grid items can be hard to break, we'll make them block elements.
+     However, to keep the 2-column look, we can float them or use inline-block.
+     But floating across pages is tricky.
+     
+     Better approach for WeasyPrint:
+     Keep grid but ensure rows don't break inside awkward places.
+     Actually, WeasyPrint handles grid better now, but let's try to be safe.
+     
+     If we want a continuous sidebar, that's hard. 
+     Let's try to just let them flow.
+  */
+
+  .cv-sidebar {
+    background-color: #f8fafc !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    /* In print, sidebar usually needs to be full height or repeat. 
+       For now, let's just let it be a column. */
+    float: left;
+    width: 32%;
+    min-height: 100vh;
+    /* Try to make it cover the page */
+    padding-bottom: 1000px;
+    /* Hack to extend background */
+    margin-bottom: -1000px;
+    overflow: hidden;
+  }
+
+  .cv-main {
+    float: right;
+    width: 68%;
+    padding: 20px 30px;
+    /* Adjust padding for print */
+  }
+
+  /* Clearfix for container */
+  .cv-container::after {
+    content: "";
+    display: table;
+    clear: both;
   }
 
   #download-pdf {
     display: none;
   }
 
-  .cv-sidebar {
-    background-color: #f8fafc !important;
-    /* Ensure background prints */
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-
   a {
     text-decoration: none;
     color: inherit;
+  }
+
+  /* Avoid breaking inside items */
+  .timeline-item,
+  .education-item,
+  .skill-category {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    page-break-after: avoid;
+    break-after: avoid;
   }
 }
 
