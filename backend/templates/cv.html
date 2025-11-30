@@ -170,7 +170,7 @@
           <h3>{% if lang == 'es' %}Resumen Profesional{% else %}Professional Summary{% endif %}</h3>
           <div class="keyline"></div>
         </div>
-        <p class="summary">{{ cv_data.basics.summary }}</p>
+        <p class="summary">{{ cv_data.basics.summary|safe }}</p>
       </div>
 
       <!-- Skills: Full width, inline keywords -->
@@ -289,7 +289,7 @@
               <h5 class="italic pull-right">{{ award.date if award.date else '' }}</h5>
             </div>
             <h5 class="awarder">{{ award.awarder }}</h5>
-            <p class="summary">{{ award.summary }}</p>
+            <p class="summary">{{ award.summary|safe }}</p>
           </section>
           {% endfor %}
         </div>
@@ -312,7 +312,7 @@
               </h5>
             </div>
             <h5>{{ vol.position }}</h5>
-            <p class="summary">{{ vol.summary }}</p>
+            <p class="summary">{{ vol.summary|safe }}</p>
             {% if vol.highlights %}
             <ul>
               {% for highlight in vol.highlights %}
@@ -340,7 +340,7 @@
               <h5 class="italic pull-right">{{ pub.releaseDate if pub.releaseDate else '' }}</h5>
             </div>
             <h5 class="awarder">{{ pub.publisher }}</h5>
-            <p class="summary">{{ pub.summary }}</p>
+            <p class="summary">{{ pub.summary|safe }}</p>
           </section>
           {% endfor %}
         </div>
