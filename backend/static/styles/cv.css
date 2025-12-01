@@ -356,30 +356,54 @@ body {
     print-color-adjust: exact;
     background-color: #edf2f7;
     font-size: 12px;
-    /* Reverted to standard size */
+  }
+
+  .cv-container {
+    margin: 0;
+    box-shadow: none;
+    width: 100%;
+    height: 297mm;
+    background: var(--white);
+    display: grid;
+    grid-template-columns: 30% 70%;
   }
 
   #download-pdf {
     display: none;
   }
 
+  /* Main content: use normal flow in print, not space-between */
   .cv-main {
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: space-between !important;
+    padding-right: 0 !important;
+    justify-content: flex-start !important;
+    /* Override space-between */
+    height: auto !important;
+    /* Let content determine height */
   }
 
+  /* Sidebar: use normal flow in print */
   .cv-sidebar {
     background-color: #f0f4f8 !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
+    justify-content: flex-start !important;
+    /* Override space-between */
+    height: auto !important;
+    /* Let content determine height */
+  }
+
+  /* Social links: force tight spacing */
+  .social-links {
+    gap: 0.2rem !important;
   }
 
   .social-link {
     margin: 0 !important;
     padding: 0 !important;
+    gap: 0.4rem !important;
   }
 
+  /* Skill tags: clean rendering */
   .skill-tags {
     border: none !important;
     background: none !important;
@@ -394,36 +418,10 @@ body {
     display: inline-block !important;
   }
 
-  /* Force exact box model for links */
+  /* Keep links inline for text flow */
   a {
-    display: block !important;
-    text-decoration: none !important;
-    color: inherit !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    line-height: inherit !important;
-  }
-
-  /* Ensure .social-link uses exact flex properties */
-  .social-link {
-    display: flex !important;
-    align-items: center !important;
-    gap: 0.6rem !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    line-height: 1 !important;
-  }
-
-  /* Force main content to have NO padding at boundaries */
-  .cv-main {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-  }
-
-  /* Override any browser defaults for flex items */
-  .cv-main>* {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
+    text-decoration: none;
+    color: inherit;
   }
 }
 
