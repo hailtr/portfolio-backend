@@ -368,7 +368,6 @@ body {
     background-color: #f0f4f8 !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
-    height: 100%;
   }
 
   .social-links {
