@@ -372,8 +372,6 @@ body {
   }
 
   .social-links {
-    margin-top: 0.6rem !important;
-    gap: 0.3rem !important;
     margin-left: 0 !important;
     padding-left: 0 !important;
   }
@@ -398,11 +396,6 @@ body {
   .language-item .lang-name,
   .language-item .lang-fluency {
     font-size: 0.85em !important;
-  }
-
-  .section-title {
-    font-size: 1em !important;
-    margin-bottom: 0.4rem !important;
   }
 
   a {
