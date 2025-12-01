@@ -21,7 +21,7 @@ body {
   background-color: #edf2f7;
   color: var(--text-color);
   line-height: 1.5;
-  font-size: 13px;
+  font-size: 12px;
   /* Base size */
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
@@ -381,8 +381,8 @@ body {
     justify-content: space-between !important;
     height: 100% !important;
     /* Fill container height */
-    padding-bottom: 0 !important;
-    /* Let flex handle spacing */
+    padding: 0 !important;
+    /* Remove ALL padding in print */
   }
 
   .cv-sidebar {
@@ -394,6 +394,8 @@ body {
     justify-content: space-between !important;
     height: 100% !important;
     /* Fill container height */
+    padding: 0.5rem !important;
+    /* Reduce sidebar padding in print */
   }
 
   /* Ensure last element doesn't have extra margin that breaks distribution */
@@ -403,8 +405,14 @@ body {
   }
 
   .social-links {
-    margin-left: 0 !important;
-    padding-left: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    gap: 0.2rem !important;
+  }
+
+  .social-link {
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
   .skill-tags {
