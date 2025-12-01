@@ -49,14 +49,14 @@ body {
 /* Sidebar */
 .cv-sidebar {
   background-color: var(--sidebar-bg);
-  padding: 30px 20px;
+  padding: 10px 5px;
   border-right: 1px solid var(--border-color);
   color: var(--sidebar-text);
 }
 
 .profile-section {
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
 }
 
 .profile-photo {
@@ -95,7 +95,7 @@ body {
 
 .contact-section,
 .sidebar-section {
-  margin-bottom: 25px;
+  margin-bottom: 10px;
   text-align: left;
 }
 
@@ -211,11 +211,11 @@ body {
 
 /* Main Content */
 .cv-main {
-  padding: 30px 30px;
+  padding: 10px 10px;
 }
 
 .main-section {
-  margin-bottom: 25px;
+  margin-bottom: 10px;
 }
 
 .summary-text {
@@ -228,7 +228,7 @@ body {
 .timeline {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 5px;
 }
 
 .timeline-item {
@@ -397,6 +397,15 @@ body {
   .social-links {
     margin-top: 8px !important;
     gap: 4px !important;
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+  }
+
+  .skill-tags {
+    border: none !important;
+    background: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
   }
 
   .skill-tag {
@@ -404,6 +413,21 @@ body {
     box-shadow: none !important;
     /* Ensure no shadow in print */
     background: var(--white) !important;
+    display: inline-block !important;
+  }
+
+  /* Reduce font sizes for sidebar items in print to fit content */
+  .education-item .institution,
+  .education-item .degree,
+  .education-item .date,
+  .language-item .lang-name,
+  .language-item .lang-fluency {
+    font-size: 9px !important;
+  }
+
+  .section-title {
+    font-size: 11px !important;
+    margin-bottom: 6px !important;
   }
 
   a {

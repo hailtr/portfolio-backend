@@ -67,7 +67,14 @@ class PDFService:
         # Load CSS if it exists
         css = None
         if os.path.exists(css_path):
-            css = CSS(filename=css_path)
+            with open(css_path, 'r', encoding='utf-8') as f:
+                css_content = f.read()
+            
+            # Prepend font import to CSS content to ensure WeasyPrint loads it
+            font_import = "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');\n"
+            css_content = font_import + css_content
+            
+            css = CSS(string=css_content)
 
         # Generate PDF bytes
         pdf_bytes = BytesIO()

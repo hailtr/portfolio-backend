@@ -77,20 +77,19 @@
         </div>
       </div>
       {% endif %}
-
       <!-- Education (Moved to Sidebar) -->
       {% if cv_data.education %}
       <div class="sidebar-section">
         <h3 class="section-title">{% if lang == 'es' %}Educación{% else %}Education{% endif %}</h3>
         <div class="education-list">
           {% for edu in cv_data.education %}
-          <div class="education-item" style="margin-bottom: 15px;">
-            <h4 class="institution" style="font-size: 14px;">{{ edu.institution }}</h4>
-            <div class="degree" style="font-size: 13px;">
+          <div class="education-item">
+            <h4 class="institution">{{ edu.institution }}</h4>
+            <div class="degree">
               {{ edu.studyType }} {% if edu.area %}{% if lang == 'es' %}en{% else %}in{% endif %} {{ edu.area }}{% endif
               %}
             </div>
-            <div class="date" style="margin-top: 2px;">{{ edu.startDate }} - {{ edu.endDate if edu.endDate else
+            <div class="date">{{ edu.startDate }} - {{ edu.endDate if edu.endDate else
               ('Presente' if lang == 'es' else 'Present') }}</div>
           </div>
           {% endfor %}
@@ -104,8 +103,8 @@
         <h3 class="section-title">{% if lang == 'es' %}Certificaciones{% else %}Certifications{% endif %}</h3>
         <div class="education-list">
           {% for award in cv_data.awards %}
-          <div class="education-item" style="margin-bottom: 15px;">
-            <h4 class="institution" style="font-size: 14px;">
+          <div class="education-item">
+            <h4 class="institution">
               {% if award.link %}
               <a href="{{ award.link }}" target="_blank" style="text-decoration: none; color: inherit;">{{ award.title
                 }}</a>
@@ -113,8 +112,8 @@
               {{ award.title }}
               {% endif %}
             </h4>
-            <div class="degree" style="font-size: 13px;">{{ award.awarder }}</div>
-            <div class="date" style="margin-top: 2px;">{{ award.date }}</div>
+            <div class="degree">{{ award.awarder }}</div>
+            <div class="date">{{ award.date }}</div>
           </div>
           {% endfor %}
         </div>
