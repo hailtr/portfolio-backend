@@ -14,6 +14,7 @@ from backend.services.pdf_service import PDFService
 from sqlalchemy import desc
 import json
 import os
+import io
 
 cv_bp = Blueprint("cv", __name__)
 
