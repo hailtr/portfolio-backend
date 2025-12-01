@@ -17,6 +17,39 @@ import os
 
 cv_bp = Blueprint("cv", __name__)
 
+@cv_bp.route('/cv/guide')
+def cv_guide():
+    """Render the static CV guide with placeholder content."""
+    return render_template('cv_guide.html')
+
+@cv_bp.route('/cv/guide/pdf')
+def cv_guide_pdf():
+    """Generate PDF for the CV guide."""
+    try:
+        # Render the guide HTML
+        html_content = render_template('cv_guide.html')
+        
+        # Use PDFService to convert HTML to PDF
+        # We can reuse generate_cv_pdf logic but we need to pass raw HTML or modify service
+        # Since PDFService.generate_cv_pdf expects data, let's use the underlying HTML to PDF conversion
+        # We'll instantiate PDFService to get access to WeasyPrint configuration if needed, 
+        # or just use WeasyPrint directly here for simplicity as it's a guide.
+        # However, better to use the service if it exposes a method for raw HTML.
+        # Let's check PDFService. If not, we'll use WeasyPrint directly here.
+        from weasyprint import HTML
+        
+        pdf_bytes = HTML(string=html_content).write_pdf()
+        
+        return send_file(
+            io.BytesIO(pdf_bytes),
+            mimetype='application/pdf',
+            as_attachment=True,
+            download_name='CV_Guide_Template.pdf'
+        )
+    except Exception as e:
+        import traceback
+        return jsonify({"error": str(e), "traceback": traceback.format_exc()}), 500
+
 def format_date(date_obj, lang="es"):
     """Format date based on language"""
     if not date_obj:
@@ -327,27 +360,7 @@ def cv_pdf():
         )
     except Exception as e:
         import traceback
-        return render_template(
-            "error.html",
-            error="Error generating PDF",
-            details=traceback.format_exc()
-        ), 500
-
-
-@cv_bp.route("/cv/debug", methods=["GET"])
-def cv_debug():
-    """Debug endpoint to view raw CV data as JSON"""
-    try:
-        lang = request.args.get("lang", "es")
-        cv_data = build_cv_from_models(lang)
-        return jsonify(cv_data), 200
-    except Exception as e:
-        import traceback
-        return jsonify({
-            "error": str(e),
-            "traceback": traceback.format_exc()
-        }), 500
-
+        return render_template("error.html"), 500
 
 @cv_bp.route("/cv/inspect", methods=["GET"])
 def cv_inspect():

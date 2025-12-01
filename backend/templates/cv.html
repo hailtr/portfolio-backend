@@ -58,28 +58,6 @@
           {% endfor %}
         </div>
         {% endif %}
-
-        <!-- QR Code -->
-        {% set portfolio_url = '' %}
-        {% for profile in cv_data.basics.profiles %}
-        {% if profile.network == 'Website' %}
-        {% set portfolio_url = profile.url %}
-        {% endif %}
-        {% endfor %}
-
-        {% if not portfolio_url and cv_data.basics.profiles %}
-        {% set portfolio_url = cv_data.basics.profiles[0].url %}
-        {% endif %}
-
-        {% if portfolio_url %}
-        <div class="qr-section" style="text-align: center; margin-top: 30px; margin-bottom: 20px;">
-          <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ portfolio_url }}&color=2d3748"
-            alt="Portfolio QR" style="width: 100px; height: 100px; opacity: 0.9;">
-          <p style="font-size: 10px; color: #718096; margin-top: 8px; font-weight: 500;">
-            {% if lang == 'es' %}Escanea para ver web{% else %}Scan for web version{% endif %}
-          </p>
-        </div>
-        {% endif %}
       </div>
 
       {% if cv_data.skills %}

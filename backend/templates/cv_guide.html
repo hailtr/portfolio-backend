@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>CV Guide - Single Page Limit</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/cv.css') }}">
+</head>
+
+<body class="cv-mode">
+    <div class="cv-container">
+        <!-- Sidebar -->
+        <aside class="cv-sidebar">
+            <div class="profile-section">
+                <div class="profile-photo">
+                    <img src="https://via.placeholder.com/150" alt="Profile Photo">
+                </div>
+                <h1 class="name">Your Name Here</h1>
+                <h2 class="role">Full Stack Developer</h2>
+            </div>
+
+            <div class="contact-section">
+                <div class="contact-item"><i class="fas fa-envelope"></i> <span>email@example.com</span></div>
+                <div class="contact-item"><i class="fas fa-phone"></i> <span>+1 234 567 890</span></div>
+                <div class="contact-item"><i class="fas fa-map-marker-alt"></i> <span>City, Country</span></div>
+                <div class="social-links">
+                    <a href="#" class="social-link"><i class="fab fa-linkedin"></i>
+                        <span>linkedin.com/in/username</span></a>
+                    <a href="#" class="social-link"><i class="fab fa-github"></i> <span>github.com/username</span></a>
+                    <a href="#" class="social-link"><i class="fas fa-globe"></i> <span>portfolio.com</span></a>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3 class="section-title">Skills</h3>
+                <div class="skills-list">
+                    <div class="skill-category">
+                        <h4>Backend (Max 4-5 items)</h4>
+                        <div class="skill-tags">
+                            <span class="skill-tag">Python</span>
+                            <span class="skill-tag">Django</span>
+                            <span class="skill-tag">PostgreSQL</span>
+                            <span class="skill-tag">Docker</span>
+                        </div>
+                    </div>
+                    <div class="skill-category">
+                        <h4>Frontend (Max 4-5 items)</h4>
+                        <div class="skill-tags">
+                            <span class="skill-tag">JavaScript</span>
+                            <span class="skill-tag">React</span>
+                            <span class="skill-tag">HTML5</span>
+                            <span class="skill-tag">CSS3</span>
+                        </div>
+                    </div>
+                    <div class="skill-category">
+                        <h4>DevOps (Max 3 items)</h4>
+                        <div class="skill-tags">
+                            <span class="skill-tag">AWS</span>
+                            <span class="skill-tag">CI/CD</span>
+                            <span class="skill-tag">Linux</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3 class="section-title">Education</h3>
+                <div class="education-list">
+                    <div class="education-item">
+                        <h4 class="institution">University Name</h4>
+                        <div class="degree">Bachelor of Science in CS</div>
+                        <div class="date">2018 - 2022</div>
+                    </div>
+                    <div class="education-item">
+                        <h4 class="institution">Other Institute</h4>
+                        <div class="degree">Full Stack Bootcamp</div>
+                        <div class="date">2023</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3 class="section-title">Languages</h3>
+                <div class="languages-list">
+                    <div class="language-item"><span class="lang-name">English</span><span
+                            class="lang-fluency">Advanced</span></div>
+                    <div class="language-item"><span class="lang-name">Spanish</span><span
+                            class="lang-fluency">Native</span></div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="cv-main">
+            <section class="main-section">
+                <h3 class="section-title">Professional Profile</h3>
+                <p class="summary-text">
+                    This is the ideal length for your professional summary. It should be around 300-400 characters. Keep
+                    it concise and focused on your key value proposition. Mention your years of experience, main tech
+                    stack, and what you bring to the table. If you write more than this paragraph, you risk pushing
+                    content to the next page.
+                </p>
+            </section>
+
+            <section class="main-section">
+                <h3 class="section-title">Featured Project</h3>
+                <div class="timeline-item">
+                    <div class="timeline-header">
+                        <h4 class="position">Project Name</h4>
+                        <span class="date">Featured</span>
+                    </div>
+                    <div class="company-name">Short Subtitle or Tech Stack</div>
+                    <p class="job-summary">
+                        A concise description of your best project. Explain what it does, the problem it solves, and the
+                        impact it had. Keep this to about 3-4 lines maximum. This is a great place to highlight your
+                        engineering skills.
+                    </p>
+                </div>
+            </section>
+
+            <section class="main-section">
+                <h3 class="section-title">Work Experience</h3>
+                <div class="timeline">
+                    <!-- Job 1 -->
+                    <div class="timeline-item">
+                        <div class="timeline-header">
+                            <h4 class="position">Senior Developer</h4>
+                            <span class="date">2023 - Present</span>
+                        </div>
+                        <div class="company-name">Tech Company A</div>
+                        <p class="job-summary">
+                            Brief overview of your role. Focus on high-level responsibilities.
+                        </p>
+                        <ul class="job-highlights">
+                            <li>Led a team of 5 developers to migrate legacy monolith to microservices.</li>
+                            <li>Improved system performance by 40% through database optimization.</li>
+                            <li>Implemented CI/CD pipelines reducing deployment time by 60%.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Job 2 -->
+                    <div class="timeline-item">
+                        <div class="timeline-header">
+                            <h4 class="position">Software Engineer</h4>
+                            <span class="date">2021 - 2023</span>
+                        </div>
+                        <div class="company-name">Startup B</div>
+                        <p class="job-summary">
+                            Developed core features for the main product using Python and React.
+                        </p>
+                        <ul class="job-highlights">
+                            <li>Designed and implemented RESTful APIs consumed by mobile apps.</li>
+                            <li>Collaborated with product team to define requirements and roadmap.</li>
+                            <li>Mentored junior developers and conducted code reviews.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Job 3 -->
+                    <div class="timeline-item">
+                        <div class="timeline-header">
+                            <h4 class="position">Junior Developer</h4>
+                            <span class="date">2019 - 2021</span>
+                        </div>
+                        <div class="company-name">Agency C</div>
+                        <p class="job-summary">
+                            Built responsive websites and web applications for various clients.
+                        </p>
+                        <ul class="job-highlights">
+                            <li>Implemented pixel-perfect UI designs using HTML, CSS, and JS.</li>
+                            <li>Maintained and updated existing client websites.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <button id="download-pdf" onclick="downloadPdf()">
+        <i class="fas fa-download"></i> PDF Guide
+    </button>
+
+    <script>
+        function downloadPdf() {
+            window.location.href = "{{ url_for('cv.cv_guide_pdf') }}";
+        }
+    </script>
+</body>
+
+</html>
