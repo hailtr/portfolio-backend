@@ -30,16 +30,30 @@ def cv_guide_pdf():
         # Render the guide HTML
         html_content = render_template('cv_guide.html')
         
-        # Use PDFService to convert HTML to PDF
-        # We can reuse generate_cv_pdf logic but we need to pass raw HTML or modify service
-        # Since PDFService.generate_cv_pdf expects data, let's use the underlying HTML to PDF conversion
-        # We'll instantiate PDFService to get access to WeasyPrint configuration if needed, 
-        # or just use WeasyPrint directly here for simplicity as it's a guide.
-        # However, better to use the service if it exposes a method for raw HTML.
-        # Let's check PDFService. If not, we'll use WeasyPrint directly here.
+        # Read the CSS file content
+        css_path = os.path.join(current_app.static_folder, 'styles', 'cv.css')
+        with open(css_path, 'r', encoding='utf-8') as f:
+            css_content = f.read()
+            
+        # Prepend font import to CSS content to ensure WeasyPrint loads it
+        font_import = "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');\n"
+        css_content = font_import + css_content
+            
+        # Inject CSS directly into HTML to ensure WeasyPrint sees it
+        # This replaces the link tag with the actual style content
+        html_content = html_content.replace(
+            '<link rel="stylesheet" href="/static/styles/cv.css">',
+            f'<style>{css_content}</style>'
+        )
+        # Also try to catch the url_for version if it rendered differently
+        # We'll just append the style to head if the replace didn't work perfectly
+        if '<style>' not in html_content:
+             html_content = html_content.replace('</head>', f'<style>{css_content}</style></head>')
+        
         from weasyprint import HTML
         
-        pdf_bytes = HTML(string=html_content).write_pdf()
+        # Use base_url to resolve other static assets if needed
+        pdf_bytes = HTML(string=html_content, base_url=request.url_root).write_pdf()
         
         return send_file(
             io.BytesIO(pdf_bytes),

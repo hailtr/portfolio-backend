@@ -365,7 +365,10 @@ body {
 
 @media print {
   body {
-    background: none;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    background-color: #edf2f7;
+    /* Maintain background color */
   }
 
   .cv-container {
@@ -375,6 +378,7 @@ body {
     height: 100%;
     min-height: 297mm;
     overflow: hidden;
+    background: var(--white);
   }
 
   #download-pdf {
@@ -382,10 +386,24 @@ body {
   }
 
   .cv-sidebar {
-    background-color: #f8fafc !important;
+    background-color: #f0f4f8 !important;
+    /* Ensure sidebar color matches live */
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
     height: 100%;
+  }
+
+  /* Force margins and spacing to match live version */
+  .social-links {
+    margin-top: 8px !important;
+    gap: 4px !important;
+  }
+
+  .skill-tag {
+    border: 1px solid var(--border-color) !important;
+    box-shadow: none !important;
+    /* Ensure no shadow in print */
+    background: var(--white) !important;
   }
 
   a {
