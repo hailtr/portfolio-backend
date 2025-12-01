@@ -359,18 +359,6 @@ body {
     /* Reverted to standard size */
   }
 
-  .cv-container {
-    margin: 0;
-    box-shadow: none;
-    width: 100%;
-    height: 297mm;
-    /* Fixed height for A4 distribution */
-    background: var(--white);
-    display: grid;
-    /* Force grid in print */
-    grid-template-columns: 30% 70%;
-  }
-
   #download-pdf {
     display: none;
   }
@@ -379,35 +367,12 @@ body {
     display: flex !important;
     flex-direction: column !important;
     justify-content: space-between !important;
-    height: 100% !important;
-    /* Fill container height */
-    padding: 0 !important;
-    /* Remove ALL padding in print */
   }
 
   .cv-sidebar {
     background-color: #f0f4f8 !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: space-between !important;
-    height: 100% !important;
-    /* Fill container height */
-    padding: 0.5rem !important;
-    /* Reduce sidebar padding in print */
-  }
-
-  /* Ensure last element doesn't have extra margin that breaks distribution */
-  .cv-main>*:last-child,
-  .cv-sidebar>*:last-child {
-    margin-bottom: 0 !important;
-  }
-
-  .social-links {
-    margin: 0 !important;
-    padding: 0 !important;
-    gap: 0.2rem !important;
   }
 
   .social-link {
@@ -429,32 +394,9 @@ body {
     display: inline-block !important;
   }
 
-  .education-item .institution,
-  .education-item .degree,
-  .education-item .date,
-  .language-item .lang-name,
-  .language-item .lang-fluency {
-    font-size: 0.85em !important;
-  }
-
   a {
     text-decoration: none;
     color: inherit;
-  }
-
-  .qr-section {
-    margin-top: 0.8rem;
-    margin-bottom: 0.4rem;
-  }
-
-  .qr-section img {
-    width: 4rem !important;
-    height: 4rem !important;
-  }
-
-  .qr-section p {
-    font-size: 0.7em !important;
-    margin-top: 0.3rem !important;
   }
 }
 
@@ -462,7 +404,6 @@ body {
 @media (max-width: 768px) {
   .cv-container {
     width: 100%;
-    margin: 0;
     box-shadow: none;
     grid-template-columns: 1fr;
     /* Stack columns */
@@ -470,13 +411,4 @@ body {
     min-height: auto;
   }
 
-  .cv-sidebar {
-    border-right: none;
-    border-bottom: 1px solid var(--border-color);
-    padding: 1.5rem;
-  }
-
-  .cv-main {
-    padding: 1.5rem;
-  }
 }
