@@ -347,13 +347,15 @@ body {
     print-color-adjust: exact;
     background-color: #edf2f7;
     font-size: 12px;
+    /* Reverted to standard size */
   }
 
   .cv-container {
     margin: 0;
     box-shadow: none;
     width: 100%;
-    min-height: 297mm;
+    height: 297mm;
+    /* Fixed height for A4 distribution */
     background: var(--white);
     display: grid;
     /* Force grid in print */
@@ -364,10 +366,31 @@ body {
     display: none;
   }
 
+  .cv-main {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    height: 100% !important;
+    /* Fill container height */
+    padding-bottom: 0 !important;
+    /* Let flex handle spacing */
+  }
+
   .cv-sidebar {
     background-color: #f0f4f8 !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    height: 100% !important;
+    /* Fill container height */
+  }
+
+  /* Ensure last element doesn't have extra margin that breaks distribution */
+  .cv-main>*:last-child,
+  .cv-sidebar>*:last-child {
+    margin-bottom: 0 !important;
   }
 
   .social-links {
