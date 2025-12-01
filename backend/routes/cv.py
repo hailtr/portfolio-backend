@@ -50,6 +50,13 @@ def cv_guide_pdf():
         if '<style>' not in html_content:
              html_content = html_content.replace('</head>', f'<style>{css_content}</style></head>')
         
+        # DEBUG: Save what WeasyPrint actually sees
+        import tempfile
+        debug_path = os.path.join(tempfile.gettempdir(), 'weasyprint_debug.html')
+        with open(debug_path, 'w', encoding='utf-8') as f:
+            f.write(html_content)
+        print(f"DEBUG: WeasyPrint HTML saved to {debug_path}")
+        
         from weasyprint import HTML
         
         # Use base_url to resolve other static assets if needed
