@@ -26,6 +26,9 @@ const ProjectCard = ({ project, language, debugExpanded }) => {
   // Transform for hero display (3:2 aspect ratio, smart cropping)
   const featuredImage = getHeroImageUrl(rawImageUrl);
 
+  // Check if preview_video is a GIF or actual video
+  const isGif = project.preview_video?.toLowerCase().endsWith('.gif');
+
   return (
     <div
       className={`job-card ${debugExpanded ? "debug-expanded" : ""}`}
@@ -36,14 +39,25 @@ const ProjectCard = ({ project, language, debugExpanded }) => {
       <div className="job-card-inner">
         <div className="job-card-media-container">
           {isHovered && project.preview_video ? (
-            <video
-              src={project.preview_video}
-              className="job-media-preview"
-              autoPlay
-              loop
-              muted
-              playsInline
-            />
+            isGif ? (
+              <img
+                src={project.preview_video}
+                alt={project.title}
+                className="job-media-preview"
+                onError={(e) => {
+                  e.target.src = "/placeholder.jpg";
+                }}
+              />
+            ) : (
+              <video
+                src={project.preview_video}
+                className="job-media-preview"
+                autoPlay
+                loop
+                muted
+                playsInline
+              />
+            )
           ) : (
             <img
               src={featuredImage}

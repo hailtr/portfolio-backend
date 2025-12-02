@@ -1,11 +1,17 @@
 """
-Import portfolio data from JSON template to database.
-Usage: python scripts/import_portfolio.py
+Import portfolio data from JSON to database.
+
+Usage:
+    python scripts/import_portfolio.py
+    python scripts/import_portfolio.py --file backend/data/new_projects.json
+    python scripts/import_portfolio.py --only projects,experience
+    python scripts/import_portfolio.py --file data.json --only projects
 """
 
 import json
 import sys
 import os
+import argparse
 from datetime import datetime
 
 # Add parent directory to path
@@ -266,13 +272,36 @@ def import_projects(data_list):
 
 def main():
     """Main import function"""
+    # Parse arguments
+    parser = argparse.ArgumentParser(description='Import portfolio data from JSON')
+    parser.add_argument(
+        '--file',
+        default='backend/data/import_template.json',
+        help='Path to JSON file to import (relative to project root)'
+    )
+    parser.add_argument(
+        '--only',
+        help='Comma-separated list of sections to import (e.g., "projects,experience")'
+    )
+    args = parser.parse_args()
+    
+    # Determine which sections to import
+    sections_to_import = None
+    if args.only:
+        sections_to_import = [s.strip() for s in args.only.split(',')]
+        print(f"📋 Importing only: {', '.join(sections_to_import)}\n")
+    
     # Load JSON file
     json_path = os.path.join(
         os.path.dirname(os.path.dirname(__file__)),
-        'backend', 'data', 'import_template.json'
+        args.file
     )
     
-    print(f"📂 Loading data from: {json_path}\\n")
+    if not os.path.exists(json_path):
+        print(f"❌ Error: File not found: {json_path}")
+        sys.exit(1)
+    
+    print(f"📂 Loading data from: {json_path}\n")
     
     with open(json_path, 'r', encoding='utf-8') as f:
         data = json.load(f)
@@ -280,38 +309,51 @@ def main():
     with app.app_context():
         try:
             # Import in order (respecting dependencies)
-            if 'profile' in data:
+            # Always import skill_categories first if skills are being imported
+            if sections_to_import and 'skills' in sections_to_import and 'skill_categories' in data:
+                if 'skill_categories' not in sections_to_import:
+                    print("📋 Auto-importing skill_categories (required for skills)\n")
+                    import_skill_categories(data['skill_categories'])
+            
+            # Profile
+            if (not sections_to_import or 'profile' in sections_to_import) and 'profile' in data:
                 import_profile(data['profile'])
             
-            if 'experience' in data:
+            # Experience
+            if (not sections_to_import or 'experience' in sections_to_import) and 'experience' in data:
                 import_experience(data['experience'])
             
-            if 'education' in data:
+            # Education
+            if (not sections_to_import or 'education' in sections_to_import) and 'education' in data:
                 import_education(data['education'])
             
-            if 'skill_categories' in data:
+            # Skill Categories
+            if (not sections_to_import or 'skill_categories' in sections_to_import) and 'skill_categories' in data:
                 import_skill_categories(data['skill_categories'])
             
-            if 'skills' in data:
+            # Skills
+            if (not sections_to_import or 'skills' in sections_to_import) and 'skills' in data:
                 import_skills(data['skills'])
             
-            if 'certifications' in data:
+            # Certifications
+            if (not sections_to_import or 'certifications' in sections_to_import) and 'certifications' in data:
                 import_certifications(data['certifications'])
             
-            if 'projects' in data:
+            # Projects
+            if (not sections_to_import or 'projects' in sections_to_import) and 'projects' in data:
                 import_projects(data['projects'])
             
             # Commit all changes
             db.session.commit()
-            print("\\n✅ Import completed successfully!\\n")
+            print("\n✅ Import completed successfully!\n")
             print("🌐 View your data:")
             print("   Profile: /api/profile")
             print("   Projects: /api/projects")
-            print("   CV: /cv\\n")
+            print("   CV: /cv\n")
             
         except Exception as e:
             db.session.rollback()
-            print(f"\\n❌ Import failed: {e}")
+            print(f"\n❌ Import failed: {e}")
             import traceback
             traceback.print_exc()
             sys.exit(1)

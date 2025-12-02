@@ -1,424 +1,83 @@
-{
-    "_README": "Portfolio Data Import Template - Rafael Ortiz",
-    "_VERSION": "2.0",
-    "_INSTRUCTIONS": "1. Fill out your data below. 2. Run: python scripts/import_portfolio.py",
-    "profile": {
-        "slug": "rafael-ortiz",
-        "name": "Rafael Ortiz",
-        "email": "lustigrfortiz@gmail.com",
-        "location": {
-            "city": "Caracas",
-            "region": "Distrito Capital",
-            "country": "Venezuela"
-        },
-        "avatar_url": "https://rfo-portfolio.vercel.app/static/images/profilepicture.jpg",
-        "social_links": {
-            "github": "https://github.com/hailtr",
-            "linkedin": "https://linkedin.com/in/rafaelortizaguilar",
-            "website": "https://rfo-portfolio.vercel.app"
-        },
-        "translations": {
-            "en": {
-                "role": "Data Platform Engineer",
-                "tagline": "Building scalable, container-native data infrastructures.",
-                "bio": "Pragmatic Data Engineer who transforms operational chaos into clean, reproducible software architectures. I don't just move data; I build Platforms. My approach is 'Engineering-First': designing container-native solutions with Docker, Python, and GCP to eliminate technical debt. Proven experience migrating legacy systems into high-performance pipelines (Batch/Streaming) leveraging Redpanda and dbt."
-            },
-            "es": {
-                "role": "Ingeniero de Plataforma de Datos",
-                "tagline": "Construyendo infraestructuras de datos escalables y nativas de contenedores.",
-                "bio": "Ingeniero de Datos pragmático que transforma el caos operativo en arquitecturas de software limpias y reproducibles. No solo muevo datos; construyo Plataformas. Mi enfoque es 'Engineering-First': diseño soluciones container-native con Docker, Python y GCP para eliminar deuda técnica. Experiencia real migrando sistemas legacy hacia pipelines de alto rendimiento usando Redpanda y dbt."
-            }
-        }
-    },
-    "experience": [
+{"projects":[  
         {
-            "slug": "honor-venezuela-data-engineer",
-            "company": "HONOR Venezuela",
-            "location": "Caracas, Venezuela",
-            "start_date": "2025-09",
-            "end_date": "2025-10",
-            "current": false,
-            "tags": [
-                "Python",
-                "Flask",
-                "PostgreSQL",
-                "Migration",
-                "API"
-            ],
-            "translations": {
-                "en": {
-                    "title": "HONOR Venezuela",
-                    "subtitle": "Data Engineer",
-                    "description": "Led the complete migration of data processes from Excel/WhatsApp to an engineered system with Database, REST API, and automated workflows.\n- Migrated monthly Excel operations to a real PostgreSQL database, building a complete system with Flask + SQLAlchemy and REST API.\n- Reduced manual data entry errors by ~90% by implementing multi-layer validation, data modeling, and automated ETL pipelines.\n- Created an audit and tracking system previously non-existent with workflow states and approval tracking.\n- Accelerated store creation from 1 week to minutes by automating bulk processes and developing CLI tools."
-                },
-                "es": {
-                    "title": "HONOR Venezuela",
-                    "subtitle": "Data Engineer",
-                    "description": "Migración completa de procesos de datos desde Excel/WhatsApp a sistema de ingeniería con base de datos, API REST y workflows automatizados.\n- Migré operaciones de Excel mensual a base de datos PostgreSQL real, construyendo sistema completo con Flask + SQLAlchemy y API REST.\n- Reduje errores de entrada manual en ~90% implementando validación multi-capa, data modeling y pipelines ETL automatizados.\n- Creé sistema de auditoría y seguimiento inexistente previamente con workflow states y approval tracking.\n- Aceleré creación de tiendas de 1 semana a minutos automatizando procesos bulk y desarrollando herramientas CLI."
-                }
-            }
-        },
-        {
-            "slug": "venepandi-data-engineer",
-            "company": "Venepandi C.A.",
-            "location": "Caracas, Venezuela",
-            "start_date": "2025-03",
-            "end_date": "2025-06",
-            "current": false,
-            "tags": [
-                "Python",
-                "AI",
-                "OCR",
-                "Automation",
-                "Whisper"
-            ],
-            "translations": {
-                "en": {
-                    "title": "Venepandi C.A.",
-                    "subtitle": "Data Engineer",
-                    "description": "Development of AI automation systems for unstructured data processing.\n- Designed and implemented an end-to-end automation system using OCR (Tesseract) and Whisper (OpenAI) to extract data from physical receipts and audios.\n- Built data pipeline to transform unstructured information into relational data integrating with reports.\n- Generated direct business impact: $5,000 USD/month in expense reduction through manual process automation."
-                },
-                "es": {
-                    "title": "Venepandi C.A.",
-                    "subtitle": "Data Engineer",
-                    "description": "Desarrollo de sistemas de automatización con IA para procesamiento de datos no estructurados.\n- Diseñé e implementé un sistema de automatización end-to-end utilizando OCR (Tesseract) y Whisper (OpenAI) para extraer datos desde recibos físicos y audios.\n- Construí pipeline de datos para transformar información no estructurada en datos relacionales integrables con reportes.\n- Generé impacto de negocio directo: $5,000 USD/mes en reducción de gastos mediante automatización de procesos manuales."
-                }
-            }
-        },
-        {
-            "slug": "thermogroup-data-engineer",
-            "company": "Thermogroup",
-            "location": "Caracas, Venezuela",
-            "start_date": "2024-02",
-            "end_date": "2024-12",
-            "current": false,
-            "tags": [
-                "Power BI",
-                "SQL",
-                "ETL",
-                "PostgreSQL"
-            ],
-            "translations": {
-                "en": {
-                    "title": "Thermogroup",
-                    "subtitle": "Data Engineer",
-                    "description": "Design and implementation of end-to-end data pipelines for operational monitoring.\n- Designed and implemented real-time monitoring system integrating ETL pipelines, data quality validation, and automated reporting.\n- Developed data transformation framework that reduced manual errors by 70%.\n- Built BI infrastructure with Power BI and PostgreSQL for continuous tracking of operational KPIs."
-                },
-                "es": {
-                    "title": "Thermogroup",
-                    "subtitle": "Data Engineer",
-                    "description": "Diseño e implementación de pipelines de datos end-to-end para monitoreo operativo.\n- Diseñé e implementé sistema de monitoreo en tiempo real integrando pipelines ETL, validación de calidad de datos y reporting automatizado.\n- Desarrollé framework de transformación de datos que redujo errores manuales en 70%.\n- Construí infraestructura de BI con Power BI y PostgreSQL para seguimiento continuo de KPIs operativos."
-                }
-            }
-        }
-    ],
-    "education": [
-        {
-            "slug": "iugt-tsu",
-            "institution": "Instituto Universitario de Gerencia y Tecnología",
-            "location": "Caracas, Venezuela",
-            "start_date": "2024-01",
-            "end_date": null,
-            "current": true,
-            "courses": [],
-            "translations": {
-                "en": {
-                    "title": "Higher Technical Degree in Informatics",
-                    "subtitle": "Computer Science",
-                    "description": "Focused on Software Engineering, Data Structures, and Database Management."
-                },
-                "es": {
-                    "title": "Técnico Superior Universitario en Informática",
-                    "subtitle": "Informática",
-                    "description": "Enfoque en Ingeniería de Software, Estructuras de Datos y Gestión de Bases de Datos."
-                }
-            }
-        }
-    ],
-    "skills": [
-        {
-            "slug": "gcp",
-            "icon_url": "",
-            "proficiency": 80,
-            "category_slug": "cloud-infrastructure",
-            "order": 1,
-            "is_visible_cv": true,
-            "translations": {
-                "en": { "name": "GCP (BigQuery, Cloud Run, Pub/Sub)", "description": "" },
-                "es": { "name": "GCP (BigQuery, Cloud Run, Pub/Sub)", "description": "" }
-            }
-        },
-        {
-            "slug": "docker",
-            "icon_url": "",
-            "proficiency": 95,
-            "category_slug": "cloud-infrastructure",
-            "order": 2,
-            "is_visible_cv": true,
-            "translations": {
-                "en": { "name": "Docker & Docker Compose", "description": "" },
-                "es": { "name": "Docker & Docker Compose", "description": "" }
-            }
-        },
-        {
-            "slug": "terraform",
-            "icon_url": "",
-            "proficiency": 70,
-            "category_slug": "cloud-infrastructure",
-            "order": 3,
-            "is_visible_cv": true,
-            "translations": {
-                "en": { "name": "Terraform (IaC)", "description": "" },
-                "es": { "name": "Terraform (IaC)", "description": "" }
-            }
-        },
-        {
-            "slug": "azure",
-            "icon_url": "",
-            "proficiency": 75,
-            "category_slug": "cloud-infrastructure",
-            "order": 4,
-            "is_visible_cv": true,
-            "translations": {
-                "en": { "name": "Azure (Fabric, Synapse)", "description": "" },
-                "es": { "name": "Azure (Fabric, Synapse)", "description": "" }
-            }
-        },
-        {
-            "slug": "linux",
-            "icon_url": "",
-            "proficiency": 85,
-            "category_slug": "cloud-infrastructure",
-            "order": 5,
-            "is_visible_cv": true,
-            "translations": {
-                "en": { "name": "Linux / Bash Shell", "description": "" },
-                "es": { "name": "Linux / Bash Shell", "description": "" }
-            }
-        },
-        {
-            "slug": "redpanda",
-            "icon_url": "",
-            "proficiency": 85,
-            "category_slug": "modern-data-stack",
-            "order": 1,
-            "is_visible_cv": true,
-            "translations": {
-                "en": { "name": "Redpanda (Kafka Protocol)", "description": "" },
-                "es": { "name": "Redpanda (Kafka Protocol)", "description": "" }
-            }
-        },
-        {
-            "slug": "dbt",
-            "icon_url": "",
-            "proficiency": 80,
-            "category_slug": "modern-data-stack",
-            "order": 2,
-            "is_visible_cv": true,
-            "translations": {
-                "en": { "name": "dbt (Data Build Tool)", "description": "" },
-                "es": { "name": "dbt (Data Build Tool)", "description": "" }
-            }
-        },
-        {
-            "slug": "postgresql",
-            "icon_url": "",
-            "proficiency": 90,
-            "category_slug": "modern-data-stack",
-            "order": 3,
-            "is_visible_cv": true,
-            "translations": {
-                "en": { "name": "PostgreSQL (Advanced)", "description": "" },
-                "es": { "name": "PostgreSQL (Avanzado)", "description": "" }
-            }
-        },
-        {
-            "slug": "airflow",
-            "icon_url": "",
-            "proficiency": 70,
-            "category_slug": "modern-data-stack",
-            "order": 4,
-            "is_visible_cv": true,
-            "translations": {
-                "en": { "name": "Airflow / Orchestration", "description": "" },
-                "es": { "name": "Airflow / Orchestration", "description": "" }
-            }
-        },
-        {
-            "slug": "redis",
-            "icon_url": "",
-            "proficiency": 75,
-            "category_slug": "modern-data-stack",
-            "order": 5,
-            "is_visible_cv": true,
-            "translations": {
-                "en": { "name": "Redis / Caching", "description": "" },
-                "es": { "name": "Redis / Caching", "description": "" }
-            }
-        },
-        {
-            "slug": "python",
-            "icon_url": "",
-            "proficiency": 95,
-            "category_slug": "core-engineering",
-            "order": 1,
-            "is_visible_cv": true,
-            "translations": {
-                "en": { "name": "Python (AsyncIO, Pandas, FastAPI)", "description": "" },
-                "es": { "name": "Python (AsyncIO, Pandas, FastAPI)", "description": "" }
-            }
-        },
-        {
-            "slug": "sql-modeling",
-            "icon_url": "",
-            "proficiency": 90,
-            "category_slug": "core-engineering",
-            "order": 2,
-            "is_visible_cv": true,
-            "translations": {
-                "en": { "name": "SQL (Advanced Modeling)", "description": "" },
-                "es": { "name": "SQL (Advanced Modeling)", "description": "" }
-            }
-        },
-        {
-            "slug": "git-cicd",
-            "icon_url": "",
-            "proficiency": 85,
-            "category_slug": "core-engineering",
-            "order": 3,
-            "is_visible_cv": true,
-            "translations": {
-                "en": { "name": "Git & CI/CD Pipelines", "description": "" },
-                "es": { "name": "Git & CI/CD Pipelines", "description": "" }
-            }
-        },
-        {
-            "slug": "rest-api",
-            "icon_url": "",
-            "proficiency": 90,
-            "category_slug": "core-engineering",
-            "order": 4,
-            "is_visible_cv": true,
-            "translations": {
-                "en": { "name": "REST API Design", "description": "" },
-                "es": { "name": "REST API Design", "description": "" }
-            }
-        },
-        {
-            "slug": "pytest",
-            "icon_url": "",
-            "proficiency": 80,
-            "category_slug": "core-engineering",
-            "order": 5,
-            "is_visible_cv": true,
-            "translations": {
-                "en": { "name": "Testing (Pytest)", "description": "" },
-                "es": { "name": "Pruebas (Pytest)", "description": "" }
-            }
-        }
-    ],
-    "skill_categories": [
-        {
-            "slug": "cloud-infrastructure",
-            "order": 1,
-            "translations": {
-                "en": { "name": "Cloud & Infrastructure" },
-                "es": { "name": "Nube & Infraestructura" }
-            }
-        },
-        {
-            "slug": "modern-data-stack",
-            "order": 2,
-            "translations": {
-                "en": { "name": "Modern Data Stack" },
-                "es": { "name": "Stack de Datos Moderno" }
-            }
-        },
-        {
-            "slug": "core-engineering",
-            "order": 3,
-            "translations": {
-                "en": { "name": "Core Engineering" },
-                "es": { "name": "Ingeniería de Software" }
-            }
-        }
-    ],
-    "certifications": [
-        {
-            "slug": "az-900",
-            "issuer": "Microsoft",
-            "issue_date": "2024-05",
-            "expiry_date": null,
-            "credential_url": "",
-            "translations": {
-                "en": {
-                    "title": "Microsoft Certified: Azure Fundamentals (AZ-900)",
-                    "description": "Foundational knowledge of cloud services and how those services are provided with Microsoft Azure."
-                },
-                "es": {
-                    "title": "Certificación Microsoft AZ-900",
-                    "description": "Conocimientos fundamentales de los servicios en la nube y su provisión con Microsoft Azure."
-                }
-            }
-        }
-    ],
-    "projects": [
-        {
-            "slug": "data-platform",
-            "category": "data-engineering",
+            "slug": "honor-hub",
+            "category": "web-app",
             "is_featured_cv": true,
-            "tags": [
-                "Docker",
-                "Redpanda",
-                "dbt",
-                "PostgreSQL",
-                "Redis"
-            ],
-            "urls": [
-                {
-                    "url_type": "github",
-                    "url": "https://github.com/hailtr/data-platform",
-                    "label": "GitHub Repo",
-                    "order": 1
-                }
-            ],
-            "images": [
-                {
-                    "url": "https://rfo-portfolio.vercel.app/static/images/projects/data-platform-arch.png",
-                    "type": "image",
-                    "caption": "Architecture Diagram",
-                    "order": 1,
-                    "is_featured": true,
-                    "alt_text": "Data Platform Architecture",
-                    "thumbnail_url": ""
-                }
-            ],
+            "tags": ["Python", "Flask", "PostgreSQL", "SQLAlchemy", "JavaScript"],
+            "urls": [],
+            "images": [],
             "translations": {
                 "en": {
-                    "title": "SCALABLE DATA PLATFORM",
-                    "subtitle": "Multi-tenant Architecture • Container-Native",
-                    "summary": "Production-grade streaming infrastructure using Redpanda and dbt.",
-                    "description": "Engineered a production-grade streaming infrastructure using Redpanda, Redis, and dbt. Designed for high-throughput data ingestion and modular transformation.",
-                    "cv_description": "<div style='font-size: 11px; line-height: 1.35; color: #334155;'><p style='margin: 0 0 6px 0; text-align: justify;'>Production-grade, container-native infrastructure. Replaces isolated scripts with a governed <strong>Docker</strong> ecosystem, using <strong>Redpanda</strong> for streaming and <strong>Redis</strong> for caching.</p><div style='display: flex; gap: 15px; margin-bottom: 6px;'><div style='flex: 1;'><div style='font-size: 10px; font-weight: 700; color: #0f172a; margin-bottom: 2px;'>⚡ Ingestion</div><div style='font-size: 10px; line-height: 1.2;'>Optimized Python batching + Redis Caching.</div></div><div style='flex: 1;'><div style='font-size: 10px; font-weight: 700; color: #0f172a; margin-bottom: 2px;'>🛡️ Governance</div><div style='font-size: 10px; line-height: 1.2;'>dbt for modular SQL + Strict linting (Pre-commit).</div></div></div><div style='border-top: 1px solid #e2e8f0; padding-top: 4px; font-size: 10px; color: #475569;'><strong>Stack:</strong> Docker • Redpanda • Redis • PostgreSQL • dbt • Python</div></div>",
-                    "content": {
-                        "problem": "Siloed data scripts causing maintenance hell.",
-                        "solution": "Containerized platform with decoupled services.",
-                        "tech_stack": ["Docker", "Redpanda", "dbt"],
-                        "features": ["Streaming", "Caching", "Testing"]
-                    }
+                    "title": "HONOR OPERATIONS HUB",
+                    "subtitle": "Retail Automation System • Legacy Migration",
+                    "summary": "Full-stack system migrating Excel workflows to SQL/Flask.",
+                    "description": "<div style='font-family: sans-serif; color: #334155; background-color: #f8fafc; padding: 24px; border-radius: 12px; border: 1px solid #e2e8f0;'><p style='margin-top: 0; font-size: 1.05rem; line-height: 1.6;'>This project addressed a critical bottleneck: core retail operations were running on fragmented Excel sheets and WhatsApp messages. I architected and built a centralized <strong>Web Operation System</strong> to enforce data integrity and automate workflows.</p><div style='background-color: #ffffff; padding: 20px; border-radius: 8px; border: 1px solid #cbd5e1; margin-top: 24px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);'><h3 style='color: #0f172a; margin-top: 0; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px;'>System Architecture</h3><p style='margin-bottom: 0;'>Built on a robust <strong>Flask (Python)</strong> backend with <strong>SQLAlchemy</strong> ORM and a <strong>PostgreSQL</strong> database. I implemented strict data typing and relational constraints to replace free-text Excel inputs, ensuring 100% data consistency.</p></div><div style='background-color: #ffffff; padding: 20px; border-radius: 8px; border: 1px solid #cbd5e1; margin-top: 20px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);'><h3 style='color: #0f172a; margin-top: 0; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px;'>Key Features</h3><ul style='margin-bottom: 0; padding-left: 20px;'><li><strong>Automated Store Provisioning:</strong> Replaced a 1-week manual process with a bulk-upload feature that creates store entities in minutes.</li><li><strong>Audit Trails:</strong> Implemented comprehensive logging for every status change (Pending → Approved).</li><li><strong>Inventory Validation:</strong> Real-time checks against warehouse data to prevent stock mismatches.</li></ul></div><h3 style='margin-top: 24px; color: #0f172a;'>Business Impact</h3><div style='overflow-x: auto; border-radius: 8px; border: 1px solid #cbd5e1; box-shadow: 0 2px 4px rgba(0,0,0,0.05);'><table style='min-width: 100%; border-collapse: collapse; font-size: 0.9rem;'><thead style='background-color: #1e293b; color: white;'><tr><th style='padding: 12px 16px; text-align: left;'>KPI</th><th style='padding: 12px 16px; text-align: center;'>Legacy (Excel)</th><th style='padding: 12px 16px; text-align: center; background-color: #0f172a;'>Honor Hub</th></tr></thead><tbody style='background-color: white;'><tr><td style='padding: 12px 16px; border-bottom: 1px solid #e2e8f0; font-weight: 600;'>Data Entry Errors</td><td style='padding: 12px 16px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #ef4444;'>Frequent (~15%)</td><td style='padding: 12px 16px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #16a34a; font-weight: bold; background-color: #f0fdf4;'>&lt; 1%</td></tr><tr><td style='padding: 12px 16px; border-bottom: 1px solid #e2e8f0; font-weight: 600;'>Store Setup Time</td><td style='padding: 12px 16px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #64748b;'>5-7 Days</td><td style='padding: 12px 16px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #0f172a; font-weight: bold; background-color: #f0fdf4;'>~10 Minutes</td></tr></tbody></table></div></div>",
+                    "cv_description": "Legacy system migration to Python/SQL.",
+                    "content": { "problem": "", "solution": "", "tech_stack": [], "features": [] }
                 },
                 "es": {
-                    "title": "PLATAFORMA DE DATOS ESCALABLE",
-                    "subtitle": "Arquitectura Multi-tenant • Container-Native",
-                    "summary": "Infraestructura de streaming production-grade usando Redpanda y dbt.",
-                    "description": "Diseñé una infraestructura de streaming production-grade usando Redpanda, Redis y dbt. Optimizada para ingesta de alto rendimiento y transformación modular.",
-                    "cv_description": "<div style='font-size: 11px; line-height: 1.35; color: #334155;'><p style='margin: 0 0 6px 0; text-align: justify;'>Infraestructura \"production-grade\" nativa de contenedores. Reemplaza scripts aislados con un ecosistema <strong>Docker</strong> gobernado, usando <strong>Redpanda</strong> para streaming y <strong>Redis</strong> para caché.</p><div style='display: flex; gap: 15px; margin-bottom: 6px;'><div style='flex: 1;'><div style='font-size: 10px; font-weight: 700; color: #0f172a; margin-bottom: 2px;'>⚡ Ingesta</div><div style='font-size: 10px; line-height: 1.2;'>Batching optimizado con Python + Redis Caching.</div></div><div style='flex: 1;'><div style='font-size: 10px; font-weight: 700; color: #0f172a; margin-bottom: 2px;'>🛡️ CI/CD</div><div style='font-size: 10px; line-height: 1.2;'>dbt para SQL modular + Linting estricto (Pre-commit).</div></div></div><div style='border-top: 1px solid #e2e8f0; padding-top: 4px; font-size: 10px; color: #475569;'><strong>Stack:</strong> Docker • Redpanda • Redis • PostgreSQL • dbt • Python</div></div>",
-                    "content": {
-                        "problem": "Scripts aislados difíciles de mantener.",
-                        "solution": "Plataforma contenerizada con servicios desacoplados.",
-                        "tech_stack": ["Docker", "Redpanda", "dbt"],
-                        "features": ["Streaming", "Caching", "Testing"]
-                    }
+                    "title": "HONOR OPERATIONS HUB",
+                    "subtitle": "Automatización Retail • Migración Legacy",
+                    "summary": "Sistema Full-stack migrando flujos de Excel a SQL/Flask.",
+                    "description": "<div style='font-family: sans-serif; color: #334155; background-color: #f8fafc; padding: 24px; border-radius: 12px; border: 1px solid #e2e8f0;'><p style='margin-top: 0; font-size: 1.05rem; line-height: 1.6;'>Este proyecto atacó un cuello de botella crítico: las operaciones retail dependían de hojas de Excel fragmentadas y WhatsApp. Arquitecté y construí un <strong>Sistema Web de Operaciones</strong> centralizado para forzar la integridad de datos y automatizar flujos.</p><div style='background-color: #ffffff; padding: 20px; border-radius: 8px; border: 1px solid #cbd5e1; margin-top: 24px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);'><h3 style='color: #0f172a; margin-top: 0; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px;'>Arquitectura del Sistema</h3><p style='margin-bottom: 0;'>Construido sobre un backend robusto en <strong>Flask (Python)</strong> con <strong>SQLAlchemy</strong> ORM y base de datos <strong>PostgreSQL</strong>. Implementé tipado estricto y restricciones relacionales para reemplazar la entrada libre de Excel.</p></div><div style='background-color: #ffffff; padding: 20px; border-radius: 8px; border: 1px solid #cbd5e1; margin-top: 20px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);'><h3 style='color: #0f172a; margin-top: 0; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px;'>Funcionalidades Clave</h3><ul style='margin-bottom: 0; padding-left: 20px;'><li><strong>Provisionamiento Automatizado:</strong> Reemplacé un proceso manual de 1 semana con carga masiva que crea tiendas en minutos.</li><li><strong>Trazabilidad (Audit Trails):</strong> Registro completo de cambios de estado.</li><li><strong>Validación de Inventario:</strong> Chequeos en tiempo real contra almacén.</li></ul></div><h3 style='margin-top: 24px; color: #0f172a;'>Impacto de Negocio</h3><div style='overflow-x: auto; border-radius: 8px; border: 1px solid #cbd5e1; box-shadow: 0 2px 4px rgba(0,0,0,0.05);'><table style='min-width: 100%; border-collapse: collapse; font-size: 0.9rem;'><thead style='background-color: #1e293b; color: white;'><tr><th style='padding: 12px 16px; text-align: left;'>KPI</th><th style='padding: 12px 16px; text-align: center;'>Legacy (Excel)</th><th style='padding: 12px 16px; text-align: center; background-color: #0f172a;'>Honor Hub</th></tr></thead><tbody style='background-color: white;'><tr><td style='padding: 12px 16px; border-bottom: 1px solid #e2e8f0; font-weight: 600;'>Errores de Datos</td><td style='padding: 12px 16px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #ef4444;'>Frecuentes (~15%)</td><td style='padding: 12px 16px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #16a34a; font-weight: bold; background-color: #f0fdf4;'>&lt; 1%</td></tr><tr><td style='padding: 12px 16px; border-bottom: 1px solid #e2e8f0; font-weight: 600;'>Tiempo de Setup</td><td style='padding: 12px 16px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #64748b;'>5-7 Días</td><td style='padding: 12px 16px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #0f172a; font-weight: bold; background-color: #f0fdf4;'>~10 Minutos</td></tr></tbody></table></div></div>",
+                    "cv_description": "Migración de sistema legacy a Python/SQL.",
+                    "content": { "problem": "", "solution": "", "tech_stack": [], "features": [] }
+                }
+            }
+        },
+        {
+            "slug": "bcv-scraper",
+            "category": "web-scraping",
+            "is_featured_cv": false,
+            "tags": ["Python", "GitHub Actions", "PostgreSQL", "API", "Automation"],
+            "urls": [
+                { "url_type": "github", "url": "https://github.com/hailtr/bcv-scraper", "label": "GitHub Repo", "order": 1 }
+            ],
+            "images": [],
+            "translations": {
+                "en": {
+                    "title": "FINANCIAL DATA SCRAPER",
+                    "subtitle": "Autonomous Extraction • API",
+                    "summary": "Resilient scraper ensuring 100% uptime for financial rates.",
+                    "description": "<div style='font-family: sans-serif; color: #334155; background-color: #f8fafc; padding: 24px; border-radius: 12px; border: 1px solid #e2e8f0;'><p style='margin-top: 0; font-size: 1.05rem; line-height: 1.6;'>Dependencies on third-party APIs for public data can be costly and unreliable. I built a <strong>Resilient Scraping Engine</strong> to democratize access to official exchange rates, creating a persistent, self-hosted history independent of external downtime.</p><div style='background-color: #ffffff; padding: 20px; border-radius: 8px; border: 1px solid #cbd5e1; margin-top: 24px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);'><h3 style='color: #0f172a; margin-top: 0; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px;'>Engineering Solution</h3><p style='margin-bottom: 0;'>A serverless Python scraper orchestrated via <strong>GitHub Actions (Cron)</strong>. It navigates unstable government portals, extracts rates using robust selectors, normalizes the data, and persists it to a <strong>PostgreSQL</strong> warehouse, exposing it via a High-Availability REST API.</p></div><h3 style='margin-top: 24px; color: #0f172a;'>System Benefits</h3><div style='overflow-x: auto; border-radius: 8px; border: 1px solid #cbd5e1; box-shadow: 0 2px 4px rgba(0,0,0,0.05);'><table style='min-width: 100%; border-collapse: collapse; font-size: 0.9rem;'><thead style='background-color: #1e293b; color: white;'><tr><th style='padding: 12px 16px; text-align: left;'>Feature</th><th style='padding: 12px 16px; text-align: center;'>Paid APIs</th><th style='padding: 12px 16px; text-align: center; background-color: #0f172a;'>My Solution</th></tr></thead><tbody style='background-color: white;'><tr><td style='padding: 12px 16px; border-bottom: 1px solid #e2e8f0; font-weight: 600;'>Cost</td><td style='padding: 12px 16px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #ef4444;'>Recurring Subscription</td><td style='padding: 12px 16px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #16a34a; font-weight: bold; background-color: #f0fdf4;'>$0 (Free Tier Ops)</td></tr><tr><td style='padding: 12px 16px; border-bottom: 1px solid #e2e8f0; font-weight: 600;'>Reliability</td><td style='padding: 12px 16px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #64748b;'>Vendor Dependent</td><td style='padding: 12px 16px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #0f172a; font-weight: bold; background-color: #f0fdf4;'>Owned & Cached</td></tr></tbody></table></div></div>",
+                    "cv_description": "Scraper autónomo de datos financieros.",
+                    "content": { "problem": "", "solution": "", "tech_stack": [], "features": [] }
+                },
+                "es": {
+                    "title": "SCRAPER DE DATOS FINANCIEROS",
+                    "subtitle": "Extracción Autónoma • API",
+                    "summary": "Scraper resiliente garantizando 100% de disponibilidad de tasas.",
+                    "description": "<div style='font-family: sans-serif; color: #334155; background-color: #f8fafc; padding: 24px; border-radius: 12px; border: 1px solid #e2e8f0;'><p style='margin-top: 0; font-size: 1.05rem; line-height: 1.6;'>Depender de APIs de terceros para datos públicos es costoso e inestable. Construí un <strong>Motor de Scraping Resiliente</strong> para democratizar el acceso a tasas de cambio oficiales, creando un histórico persistente e independiente de las caídas del portal origen.</p><div style='background-color: #ffffff; padding: 20px; border-radius: 8px; border: 1px solid #cbd5e1; margin-top: 24px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);'><h3 style='color: #0f172a; margin-top: 0; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px;'>Solución de Ingeniería</h3><p style='margin-bottom: 0;'>Un scraper Python serverless orquestado vía <strong>GitHub Actions (Cron)</strong>. Navega portales gubernamentales inestables, extrae tasas con selectores robustos, normaliza la data y la persiste en <strong>PostgreSQL</strong>, exponiéndola vía una API REST de Alta Disponibilidad.</p></div><h3 style='margin-top: 24px; color: #0f172a;'>Beneficios del Sistema</h3><div style='overflow-x: auto; border-radius: 8px; border: 1px solid #cbd5e1; box-shadow: 0 2px 4px rgba(0,0,0,0.05);'><table style='min-width: 100%; border-collapse: collapse; font-size: 0.9rem;'><thead style='background-color: #1e293b; color: white;'><tr><th style='padding: 12px 16px; text-align: left;'>Característica</th><th style='padding: 12px 16px; text-align: center;'>APIs de Pago</th><th style='padding: 12px 16px; text-align: center; background-color: #0f172a;'>Mi Solución</th></tr></thead><tbody style='background-color: white;'><tr><td style='padding: 12px 16px; border-bottom: 1px solid #e2e8f0; font-weight: 600;'>Costo</td><td style='padding: 12px 16px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #ef4444;'>Suscripción Recurrente</td><td style='padding: 12px 16px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #16a34a; font-weight: bold; background-color: #f0fdf4;'>$0 (Free Tier Ops)</td></tr><tr><td style='padding: 12px 16px; border-bottom: 1px solid #e2e8f0; font-weight: 600;'>Confiabilidad</td><td style='padding: 12px 16px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #64748b;'>Depende del Proveedor</td><td style='padding: 12px 16px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #0f172a; font-weight: bold; background-color: #f0fdf4;'>Propia & Caché</td></tr></tbody></table></div></div>",
+                    "cv_description": "Extracción autónoma de datos financieros.",
+                    "content": { "problem": "", "solution": "", "tech_stack": [], "features": [] }
+                }
+            }
+        },
+        {
+            "slug": "dynamic-portfolio",
+            "category": "web-app",
+            "is_featured_cv": false,
+            "tags": ["Python", "Flask", "Redis", "WeasyPrint", "PostgreSQL"],
+            "urls": [
+                { "url_type": "website", "url": "https://rfo-portfolio.vercel.app", "label": "Live Site", "order": 1 }
+            ],
+            "images": [],
+            "translations": {
+                "en": {
+                    "title": "DYNAMIC BRAND PLATFORM",
+                    "subtitle": "Headless CMS • PDF Generation",
+                    "summary": "Full-stack portfolio with real-time CV generation engine.",
+                    "description": "<div style='font-family: sans-serif; color: #334155; background-color: #f8fafc; padding: 24px; border-radius: 12px; border: 1px solid #e2e8f0;'><p style='margin-top: 0; font-size: 1.05rem; line-height: 1.6;'>This project solves the \"data desynchronization\" problem of having a CV outdated relative to the web portfolio. I treated professional experience as a master dataset, creating a decoupled architecture for real-time content management and on-demand \"pixel-perfect\" PDF generation.</p><div style='background-color: #ffffff; padding: 20px; border-radius: 8px; border: 1px solid #cbd5e1; margin-top: 24px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);'><h3 style='color: #0f172a; margin-top: 0; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px;'>Engineering Solution</h3><p style='margin-bottom: 0;'>Designed a <strong>Decoupled Full-Stack</strong> architecture where the backend acts as the Single Source of Truth. Implemented a high-performance cache layer with <strong>Redis</strong> for sub-millisecond response times, and a server-side rendering engine (WeasyPrint) that transforms structured JSON data into professional PDFs on the fly.</p></div><div style='background-color: #ffffff; padding: 20px; border-radius: 8px; border: 1px solid #cbd5e1; margin-top: 20px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);'><h3 style='color: #0f172a; margin-top: 0; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px;'>System Capabilities</h3><ul style='margin-bottom: 0; padding-left: 20px;'><li><strong>Headless Content Management:</strong> Secure admin panel (OAuth) to update projects without redeploying code.</li><li><strong>Document Generation Pipeline:</strong> Automated engine assembling the CV in real-time based on the latest DB data.</li><li><strong>Performance Optimization:</strong> Hybrid cache strategy (Memory + Redis) reducing PostgreSQL load by 95%.</li></ul></div><h3 style='margin-top: 24px; color: #0f172a;'>Operational Impact</h3><div style='overflow-x: auto; border-radius: 8px; border: 1px solid #cbd5e1; box-shadow: 0 2px 4px rgba(0,0,0,0.05);'><table style='min-width: 100%; border-collapse: collapse; font-size: 0.9rem;'><thead style='background-color: #1e293b; color: white;'><tr><th style='padding: 12px 16px; text-align: left;'>Metric</th><th style='padding: 12px 16px; text-align: center;'>Static Portfolio</th><th style='padding: 12px 16px; text-align: center; background-color: #0f172a;'>Dynamic Platform</th></tr></thead><tbody style='background-color: white;'><tr><td style='padding: 12px 16px; border-bottom: 1px solid #e2e8f0; font-weight: 600;'>Maintenance</td><td style='padding: 12px 16px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #64748b;'>Code Edits / Redeploy</td><td style='padding: 12px 16px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #0f172a; font-weight: bold; background-color: #f0fdf4;'>No-Code Admin Panel</td></tr><tr><td style='padding: 12px 16px; border-bottom: 1px solid #e2e8f0; font-weight: 600;'>CV Sync</td><td style='padding: 12px 16px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #ef4444;'>Manual (Separate files)</td><td style='padding: 12px 16px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #16a34a; font-weight: bold; background-color: #f0fdf4;'>Automatic (Server-side)</td></tr><tr><td style='padding: 12px 16px; font-weight: 500;'>API Performance</td><td style='padding: 12px 16px; text-align: center; color: #64748b;'>N/A (Static files)</td><td style='padding: 12px 16px; text-align: center; color: #0f172a; font-weight: bold; background-color: #f0fdf4;'>Sub-ms (Redis Layer)</td></tr></tbody></table></div></div>",
+                    "cv_description": "Plataforma dinámica con generación de PDF.",
+                    "content": { "problem": "", "solution": "", "tech_stack": [], "features": [] }
+                },
+                "es": {
+                    "title": "PLATAFORMA DE MARCA DINÁMICA",
+                    "subtitle": "Headless CMS • Generación PDF",
+                    "summary": "Portafolio full-stack con motor de CV en tiempo real.",
+                    "description": "<div style='font-family: sans-serif; color: #334155; background-color: #f8fafc; padding: 24px; border-radius: 12px; border: 1px solid #e2e8f0;'><p style='margin-top: 0; font-size: 1.05rem; line-height: 1.6;'>Este proyecto representa la transición de un portafolio estático convencional a una Plataforma de Marca Personal totalmente dinámica. El sistema resuelve el problema de la \"desincronización de datos\" tratando la experiencia profesional como un dataset maestro para generar documentos PDF \"pixel-perfect\" bajo demanda.</p><div style='background-color: #ffffff; padding: 20px; border-radius: 8px; border: 1px solid #cbd5e1; margin-top: 24px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);'><h3 style='color: #0f172a; margin-top: 0; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px;'>Solución de Ingeniería</h3><p style='margin-bottom: 0;'>Diseñé una arquitectura <strong>Full-Stack desacoplada</strong> donde el backend actúa como fuente única de verdad (Single Source of Truth). Implementé una capa de caché de alto rendimiento con <strong>Redis</strong> para garantizar tiempos de respuesta sub-milisegundo, y un motor de renderizado server-side (WeasyPrint) que transforma datos JSON en PDFs profesionales.</p></div><div style='background-color: #ffffff; padding: 20px; border-radius: 8px; border: 1px solid #cbd5e1; margin-top: 20px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);'><h3 style='color: #0f172a; margin-top: 0; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px;'>Capacidades del Sistema</h3><ul style='margin-bottom: 0; padding-left: 20px;'><li><strong>Gestión de Contenido Headless:</strong> Panel de administración seguro (OAuth) que permite actualizar contenido sin redestplegar.</li><li><strong>Pipeline de Generación:</strong> Motor automatizado que ensambla el CV en tiempo real basándose en los datos más recientes de la BD.</li><li><strong>Optimización de Rendimiento:</strong> Estrategia de caché híbrida (Memoria + Redis) que reduce la carga en PostgreSQL en un 95%.</li></ul></div><h3 style='margin-top: 24px; color: #0f172a;'>Impacto Técnico</h3><div style='overflow-x: auto; border-radius: 8px; border: 1px solid #cbd5e1; box-shadow: 0 2px 4px rgba(0,0,0,0.05);'><table style='min-width: 100%; border-collapse: collapse; font-size: 0.9rem;'><thead style='background-color: #1e293b; color: white;'><tr><th style='padding: 12px 16px; text-align: left;'>Métrica</th><th style='padding: 12px 16px; text-align: center;'>Portafolio Estático</th><th style='padding: 12px 16px; text-align: center; background-color: #0f172a;'>Plataforma Dinámica</th></tr></thead><tbody style='background-color: white;'><tr><td style='padding: 12px 16px; border-bottom: 1px solid #e2e8f0; font-weight: 600;'>Mantenimiento</td><td style='padding: 12px 16px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #64748b;'>Edición Código / Re-deploy</td><td style='padding: 12px 16px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #0f172a; font-weight: bold; background-color: #f0fdf4;'>Panel Admin (Real-time)</td></tr><tr><td style='padding: 12px 16px; border-bottom: 1px solid #e2e8f0; font-weight: 600;'>Sincronización CV</td><td style='padding: 12px 16px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #ef4444;'>Manual (Archivos separados)</td><td style='padding: 12px 16px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #16a34a; font-weight: bold; background-color: #f0fdf4;'>Automática (Server-side)</td></tr><tr><td style='padding: 12px 16px; font-weight: 500;'>Rendimiento API</td><td style='padding: 12px 16px; text-align: center; color: #64748b;'>N/A</td><td style='padding: 12px 16px; text-align: center; color: #0f172a; font-weight: bold; background-color: #f0fdf4;'>Sub-ms (Redis Layer)</td></tr></tbody></table></div></div>",
+                    "cv_description": "Generación automática de CV y gestión de contenido.",
+                    "content": { "problem": "", "solution": "", "tech_stack": [], "features": [] }
                 }
             }
         }
