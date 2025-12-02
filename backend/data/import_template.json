@@ -1,0 +1,426 @@
+{
+    "_README": "Portfolio Data Import Template - Rafael Ortiz",
+    "_VERSION": "2.0",
+    "_INSTRUCTIONS": "1. Fill out your data below. 2. Run: python scripts/import_portfolio.py",
+    "profile": {
+        "slug": "rafael-ortiz",
+        "name": "Rafael Ortiz",
+        "email": "lustigrfortiz@gmail.com",
+        "location": {
+            "city": "Caracas",
+            "region": "Distrito Capital",
+            "country": "Venezuela"
+        },
+        "avatar_url": "https://rfo-portfolio.vercel.app/static/images/profilepicture.jpg",
+        "social_links": {
+            "github": "https://github.com/hailtr",
+            "linkedin": "https://linkedin.com/in/rafaelortizaguilar",
+            "website": "https://rfo-portfolio.vercel.app"
+        },
+        "translations": {
+            "en": {
+                "role": "Data Platform Engineer",
+                "tagline": "Building scalable, container-native data infrastructures.",
+                "bio": "Pragmatic Data Engineer who transforms operational chaos into clean, reproducible software architectures. I don't just move data; I build Platforms. My approach is 'Engineering-First': designing container-native solutions with Docker, Python, and GCP to eliminate technical debt. Proven experience migrating legacy systems into high-performance pipelines (Batch/Streaming) leveraging Redpanda and dbt."
+            },
+            "es": {
+                "role": "Ingeniero de Plataforma de Datos",
+                "tagline": "Construyendo infraestructuras de datos escalables y nativas de contenedores.",
+                "bio": "Ingeniero de Datos pragmático que transforma el caos operativo en arquitecturas de software limpias y reproducibles. No solo muevo datos; construyo Plataformas. Mi enfoque es 'Engineering-First': diseño soluciones container-native con Docker, Python y GCP para eliminar deuda técnica. Experiencia real migrando sistemas legacy hacia pipelines de alto rendimiento usando Redpanda y dbt."
+            }
+        }
+    },
+    "experience": [
+        {
+            "slug": "honor-venezuela-data-engineer",
+            "company": "HONOR Venezuela",
+            "location": "Caracas, Venezuela",
+            "start_date": "2025-09",
+            "end_date": "2025-10",
+            "current": false,
+            "tags": [
+                "Python",
+                "Flask",
+                "PostgreSQL",
+                "Migration",
+                "API"
+            ],
+            "translations": {
+                "en": {
+                    "title": "HONOR Venezuela",
+                    "subtitle": "Data Engineer",
+                    "description": "Led the complete migration of data processes from Excel/WhatsApp to an engineered system with Database, REST API, and automated workflows.\n- Migrated monthly Excel operations to a real PostgreSQL database, building a complete system with Flask + SQLAlchemy and REST API.\n- Reduced manual data entry errors by ~90% by implementing multi-layer validation, data modeling, and automated ETL pipelines.\n- Created an audit and tracking system previously non-existent with workflow states and approval tracking.\n- Accelerated store creation from 1 week to minutes by automating bulk processes and developing CLI tools."
+                },
+                "es": {
+                    "title": "HONOR Venezuela",
+                    "subtitle": "Data Engineer",
+                    "description": "Migración completa de procesos de datos desde Excel/WhatsApp a sistema de ingeniería con base de datos, API REST y workflows automatizados.\n- Migré operaciones de Excel mensual a base de datos PostgreSQL real, construyendo sistema completo con Flask + SQLAlchemy y API REST.\n- Reduje errores de entrada manual en ~90% implementando validación multi-capa, data modeling y pipelines ETL automatizados.\n- Creé sistema de auditoría y seguimiento inexistente previamente con workflow states y approval tracking.\n- Aceleré creación de tiendas de 1 semana a minutos automatizando procesos bulk y desarrollando herramientas CLI."
+                }
+            }
+        },
+        {
+            "slug": "venepandi-data-engineer",
+            "company": "Venepandi C.A.",
+            "location": "Caracas, Venezuela",
+            "start_date": "2025-03",
+            "end_date": "2025-06",
+            "current": false,
+            "tags": [
+                "Python",
+                "AI",
+                "OCR",
+                "Automation",
+                "Whisper"
+            ],
+            "translations": {
+                "en": {
+                    "title": "Venepandi C.A.",
+                    "subtitle": "Data Engineer",
+                    "description": "Development of AI automation systems for unstructured data processing.\n- Designed and implemented an end-to-end automation system using OCR (Tesseract) and Whisper (OpenAI) to extract data from physical receipts and audios.\n- Built data pipeline to transform unstructured information into relational data integrating with reports.\n- Generated direct business impact: $5,000 USD/month in expense reduction through manual process automation."
+                },
+                "es": {
+                    "title": "Venepandi C.A.",
+                    "subtitle": "Data Engineer",
+                    "description": "Desarrollo de sistemas de automatización con IA para procesamiento de datos no estructurados.\n- Diseñé e implementé un sistema de automatización end-to-end utilizando OCR (Tesseract) y Whisper (OpenAI) para extraer datos desde recibos físicos y audios.\n- Construí pipeline de datos para transformar información no estructurada en datos relacionales integrables con reportes.\n- Generé impacto de negocio directo: $5,000 USD/mes en reducción de gastos mediante automatización de procesos manuales."
+                }
+            }
+        },
+        {
+            "slug": "thermogroup-data-engineer",
+            "company": "Thermogroup",
+            "location": "Caracas, Venezuela",
+            "start_date": "2024-02",
+            "end_date": "2024-12",
+            "current": false,
+            "tags": [
+                "Power BI",
+                "SQL",
+                "ETL",
+                "PostgreSQL"
+            ],
+            "translations": {
+                "en": {
+                    "title": "Thermogroup",
+                    "subtitle": "Data Engineer",
+                    "description": "Design and implementation of end-to-end data pipelines for operational monitoring.\n- Designed and implemented real-time monitoring system integrating ETL pipelines, data quality validation, and automated reporting.\n- Developed data transformation framework that reduced manual errors by 70%.\n- Built BI infrastructure with Power BI and PostgreSQL for continuous tracking of operational KPIs."
+                },
+                "es": {
+                    "title": "Thermogroup",
+                    "subtitle": "Data Engineer",
+                    "description": "Diseño e implementación de pipelines de datos end-to-end para monitoreo operativo.\n- Diseñé e implementé sistema de monitoreo en tiempo real integrando pipelines ETL, validación de calidad de datos y reporting automatizado.\n- Desarrollé framework de transformación de datos que redujo errores manuales en 70%.\n- Construí infraestructura de BI con Power BI y PostgreSQL para seguimiento continuo de KPIs operativos."
+                }
+            }
+        }
+    ],
+    "education": [
+        {
+            "slug": "iugt-tsu",
+            "institution": "Instituto Universitario de Gerencia y Tecnología",
+            "location": "Caracas, Venezuela",
+            "start_date": "2024-01",
+            "end_date": null,
+            "current": true,
+            "courses": [],
+            "translations": {
+                "en": {
+                    "title": "Higher Technical Degree in Informatics",
+                    "subtitle": "Computer Science",
+                    "description": "Focused on Software Engineering, Data Structures, and Database Management."
+                },
+                "es": {
+                    "title": "Técnico Superior Universitario en Informática",
+                    "subtitle": "Informática",
+                    "description": "Enfoque en Ingeniería de Software, Estructuras de Datos y Gestión de Bases de Datos."
+                }
+            }
+        }
+    ],
+    "skills": [
+        {
+            "slug": "gcp",
+            "icon_url": "",
+            "proficiency": 80,
+            "category_slug": "cloud-infrastructure",
+            "order": 1,
+            "is_visible_cv": true,
+            "translations": {
+                "en": { "name": "GCP (BigQuery, Cloud Run, Pub/Sub)", "description": "" },
+                "es": { "name": "GCP (BigQuery, Cloud Run, Pub/Sub)", "description": "" }
+            }
+        },
+        {
+            "slug": "docker",
+            "icon_url": "",
+            "proficiency": 95,
+            "category_slug": "cloud-infrastructure",
+            "order": 2,
+            "is_visible_cv": true,
+            "translations": {
+                "en": { "name": "Docker & Docker Compose", "description": "" },
+                "es": { "name": "Docker & Docker Compose", "description": "" }
+            }
+        },
+        {
+            "slug": "terraform",
+            "icon_url": "",
+            "proficiency": 70,
+            "category_slug": "cloud-infrastructure",
+            "order": 3,
+            "is_visible_cv": true,
+            "translations": {
+                "en": { "name": "Terraform (IaC)", "description": "" },
+                "es": { "name": "Terraform (IaC)", "description": "" }
+            }
+        },
+        {
+            "slug": "azure",
+            "icon_url": "",
+            "proficiency": 75,
+            "category_slug": "cloud-infrastructure",
+            "order": 4,
+            "is_visible_cv": true,
+            "translations": {
+                "en": { "name": "Azure (Fabric, Synapse)", "description": "" },
+                "es": { "name": "Azure (Fabric, Synapse)", "description": "" }
+            }
+        },
+        {
+            "slug": "linux",
+            "icon_url": "",
+            "proficiency": 85,
+            "category_slug": "cloud-infrastructure",
+            "order": 5,
+            "is_visible_cv": true,
+            "translations": {
+                "en": { "name": "Linux / Bash Shell", "description": "" },
+                "es": { "name": "Linux / Bash Shell", "description": "" }
+            }
+        },
+        {
+            "slug": "redpanda",
+            "icon_url": "",
+            "proficiency": 85,
+            "category_slug": "modern-data-stack",
+            "order": 1,
+            "is_visible_cv": true,
+            "translations": {
+                "en": { "name": "Redpanda (Kafka Protocol)", "description": "" },
+                "es": { "name": "Redpanda (Kafka Protocol)", "description": "" }
+            }
+        },
+        {
+            "slug": "dbt",
+            "icon_url": "",
+            "proficiency": 80,
+            "category_slug": "modern-data-stack",
+            "order": 2,
+            "is_visible_cv": true,
+            "translations": {
+                "en": { "name": "dbt (Data Build Tool)", "description": "" },
+                "es": { "name": "dbt (Data Build Tool)", "description": "" }
+            }
+        },
+        {
+            "slug": "postgresql",
+            "icon_url": "",
+            "proficiency": 90,
+            "category_slug": "modern-data-stack",
+            "order": 3,
+            "is_visible_cv": true,
+            "translations": {
+                "en": { "name": "PostgreSQL (Advanced)", "description": "" },
+                "es": { "name": "PostgreSQL (Avanzado)", "description": "" }
+            }
+        },
+        {
+            "slug": "airflow",
+            "icon_url": "",
+            "proficiency": 70,
+            "category_slug": "modern-data-stack",
+            "order": 4,
+            "is_visible_cv": true,
+            "translations": {
+                "en": { "name": "Airflow / Orchestration", "description": "" },
+                "es": { "name": "Airflow / Orchestration", "description": "" }
+            }
+        },
+        {
+            "slug": "redis",
+            "icon_url": "",
+            "proficiency": 75,
+            "category_slug": "modern-data-stack",
+            "order": 5,
+            "is_visible_cv": true,
+            "translations": {
+                "en": { "name": "Redis / Caching", "description": "" },
+                "es": { "name": "Redis / Caching", "description": "" }
+            }
+        },
+        {
+            "slug": "python",
+            "icon_url": "",
+            "proficiency": 95,
+            "category_slug": "core-engineering",
+            "order": 1,
+            "is_visible_cv": true,
+            "translations": {
+                "en": { "name": "Python (AsyncIO, Pandas, FastAPI)", "description": "" },
+                "es": { "name": "Python (AsyncIO, Pandas, FastAPI)", "description": "" }
+            }
+        },
+        {
+            "slug": "sql-modeling",
+            "icon_url": "",
+            "proficiency": 90,
+            "category_slug": "core-engineering",
+            "order": 2,
+            "is_visible_cv": true,
+            "translations": {
+                "en": { "name": "SQL (Advanced Modeling)", "description": "" },
+                "es": { "name": "SQL (Advanced Modeling)", "description": "" }
+            }
+        },
+        {
+            "slug": "git-cicd",
+            "icon_url": "",
+            "proficiency": 85,
+            "category_slug": "core-engineering",
+            "order": 3,
+            "is_visible_cv": true,
+            "translations": {
+                "en": { "name": "Git & CI/CD Pipelines", "description": "" },
+                "es": { "name": "Git & CI/CD Pipelines", "description": "" }
+            }
+        },
+        {
+            "slug": "rest-api",
+            "icon_url": "",
+            "proficiency": 90,
+            "category_slug": "core-engineering",
+            "order": 4,
+            "is_visible_cv": true,
+            "translations": {
+                "en": { "name": "REST API Design", "description": "" },
+                "es": { "name": "REST API Design", "description": "" }
+            }
+        },
+        {
+            "slug": "pytest",
+            "icon_url": "",
+            "proficiency": 80,
+            "category_slug": "core-engineering",
+            "order": 5,
+            "is_visible_cv": true,
+            "translations": {
+                "en": { "name": "Testing (Pytest)", "description": "" },
+                "es": { "name": "Pruebas (Pytest)", "description": "" }
+            }
+        }
+    ],
+    "skill_categories": [
+        {
+            "slug": "cloud-infrastructure",
+            "order": 1,
+            "translations": {
+                "en": { "name": "Cloud & Infrastructure" },
+                "es": { "name": "Nube & Infraestructura" }
+            }
+        },
+        {
+            "slug": "modern-data-stack",
+            "order": 2,
+            "translations": {
+                "en": { "name": "Modern Data Stack" },
+                "es": { "name": "Stack de Datos Moderno" }
+            }
+        },
+        {
+            "slug": "core-engineering",
+            "order": 3,
+            "translations": {
+                "en": { "name": "Core Engineering" },
+                "es": { "name": "Ingeniería de Software" }
+            }
+        }
+    ],
+    "certifications": [
+        {
+            "slug": "az-900",
+            "issuer": "Microsoft",
+            "issue_date": "2024-05",
+            "expiry_date": null,
+            "credential_url": "",
+            "translations": {
+                "en": {
+                    "title": "Microsoft Certified: Azure Fundamentals (AZ-900)",
+                    "description": "Foundational knowledge of cloud services and how those services are provided with Microsoft Azure."
+                },
+                "es": {
+                    "title": "Certificación Microsoft AZ-900",
+                    "description": "Conocimientos fundamentales de los servicios en la nube y su provisión con Microsoft Azure."
+                }
+            }
+        }
+    ],
+    "projects": [
+        {
+            "slug": "data-platform",
+            "category": "data-engineering",
+            "is_featured_cv": true,
+            "tags": [
+                "Docker",
+                "Redpanda",
+                "dbt",
+                "PostgreSQL",
+                "Redis"
+            ],
+            "urls": [
+                {
+                    "url_type": "github",
+                    "url": "https://github.com/hailtr/data-platform",
+                    "label": "GitHub Repo",
+                    "order": 1
+                }
+            ],
+            "images": [
+                {
+                    "url": "https://rfo-portfolio.vercel.app/static/images/projects/data-platform-arch.png",
+                    "type": "image",
+                    "caption": "Architecture Diagram",
+                    "order": 1,
+                    "is_featured": true,
+                    "alt_text": "Data Platform Architecture",
+                    "thumbnail_url": ""
+                }
+            ],
+            "translations": {
+                "en": {
+                    "title": "SCALABLE DATA PLATFORM",
+                    "subtitle": "Multi-tenant Architecture • Container-Native",
+                    "summary": "Production-grade streaming infrastructure using Redpanda and dbt.",
+                    "description": "Engineered a production-grade streaming infrastructure using Redpanda, Redis, and dbt. Designed for high-throughput data ingestion and modular transformation.",
+                    "cv_description": "<div style='font-size: 11px; line-height: 1.35; color: #334155;'><p style='margin: 0 0 6px 0; text-align: justify;'>Production-grade, container-native infrastructure. Replaces isolated scripts with a governed <strong>Docker</strong> ecosystem, using <strong>Redpanda</strong> for streaming and <strong>Redis</strong> for caching.</p><div style='display: flex; gap: 15px; margin-bottom: 6px;'><div style='flex: 1;'><div style='font-size: 10px; font-weight: 700; color: #0f172a; margin-bottom: 2px;'>⚡ Ingestion</div><div style='font-size: 10px; line-height: 1.2;'>Optimized Python batching + Redis Caching.</div></div><div style='flex: 1;'><div style='font-size: 10px; font-weight: 700; color: #0f172a; margin-bottom: 2px;'>🛡️ Governance</div><div style='font-size: 10px; line-height: 1.2;'>dbt for modular SQL + Strict linting (Pre-commit).</div></div></div><div style='border-top: 1px solid #e2e8f0; padding-top: 4px; font-size: 10px; color: #475569;'><strong>Stack:</strong> Docker • Redpanda • Redis • PostgreSQL • dbt • Python</div></div>",
+                    "content": {
+                        "problem": "Siloed data scripts causing maintenance hell.",
+                        "solution": "Containerized platform with decoupled services.",
+                        "tech_stack": ["Docker", "Redpanda", "dbt"],
+                        "features": ["Streaming", "Caching", "Testing"]
+                    }
+                },
+                "es": {
+                    "title": "PLATAFORMA DE DATOS ESCALABLE",
+                    "subtitle": "Arquitectura Multi-tenant • Container-Native",
+                    "summary": "Infraestructura de streaming production-grade usando Redpanda y dbt.",
+                    "description": "Diseñé una infraestructura de streaming production-grade usando Redpanda, Redis y dbt. Optimizada para ingesta de alto rendimiento y transformación modular.",
+                    "cv_description": "<div style='font-size: 11px; line-height: 1.35; color: #334155;'><p style='margin: 0 0 6px 0; text-align: justify;'>Infraestructura \"production-grade\" nativa de contenedores. Reemplaza scripts aislados con un ecosistema <strong>Docker</strong> gobernado, usando <strong>Redpanda</strong> para streaming y <strong>Redis</strong> para caché.</p><div style='display: flex; gap: 15px; margin-bottom: 6px;'><div style='flex: 1;'><div style='font-size: 10px; font-weight: 700; color: #0f172a; margin-bottom: 2px;'>⚡ Ingesta</div><div style='font-size: 10px; line-height: 1.2;'>Batching optimizado con Python + Redis Caching.</div></div><div style='flex: 1;'><div style='font-size: 10px; font-weight: 700; color: #0f172a; margin-bottom: 2px;'>🛡️ CI/CD</div><div style='font-size: 10px; line-height: 1.2;'>dbt para SQL modular + Linting estricto (Pre-commit).</div></div></div><div style='border-top: 1px solid #e2e8f0; padding-top: 4px; font-size: 10px; color: #475569;'><strong>Stack:</strong> Docker • Redpanda • Redis • PostgreSQL • dbt • Python</div></div>",
+                    "content": {
+                        "problem": "Scripts aislados difíciles de mantener.",
+                        "solution": "Plataforma contenerizada con servicios desacoplados.",
+                        "tech_stack": ["Docker", "Redpanda", "dbt"],
+                        "features": ["Streaming", "Caching", "Testing"]
+                    }
+                }
+            }
+        }
+    ]
+}
