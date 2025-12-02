@@ -16,14 +16,14 @@ import json
 import os
 import io
 
-cv_bp = Blueprint("cv", __name__)
+cv_bp = Blueprint("cv", __name__, url_prefix="/cv")
 
-@cv_bp.route('/cv/guide')
+@cv_bp.route('/guide')
 def cv_guide():
     """Render the static CV guide with placeholder content."""
     return render_template('cv_guide.html')
 
-@cv_bp.route('/cv/guide/pdf')
+@cv_bp.route('/guide/pdf')
 def cv_guide_pdf():
     """Generate PDF for the CV guide."""
     try:
@@ -329,7 +329,7 @@ def build_cv_from_models(lang="es"):
         raise e
 
 
-@cv_bp.route("/cv", methods=["GET"])
+@cv_bp.route("/", methods=["GET"])
 def cv_view():
     """Render CV HTML page"""
     try:
@@ -352,7 +352,7 @@ def cv_view():
         ), 500
 
 
-@cv_bp.route("/cv/pdf", methods=["GET"])
+@cv_bp.route("/pdf", methods=["GET"])
 def cv_pdf():
     """Generate and download CV PDF"""
     try:
@@ -377,7 +377,7 @@ def cv_pdf():
         import traceback
         return render_template("error.html"), 500
 
-@cv_bp.route("/cv/inspect", methods=["GET"])
+@cv_bp.route("/inspect", methods=["GET"])
 def cv_inspect():
     """Inspect actual database content for CV data"""
     try:
@@ -457,7 +457,7 @@ def cv_inspect():
         return f"<pre>{traceback.format_exc()}</pre>", 500
 
 
-@cv_bp.route("/cv/data-check", methods=["GET"])
+@cv_bp.route("/data-check", methods=["GET"])
 def data_check():
     """Check all possible locations for CV data"""
     try:
