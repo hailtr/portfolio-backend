@@ -354,16 +354,37 @@ def cv_view():
 
 @cv_bp.route("/cv/pdf", methods=["GET"])
 def cv_pdf():
-    """Generate and download CV PDF"""
+    """Generate and download CV PDF with caching"""
     try:
+        from backend.services.cv_cache import get_cached_pdf, set_cached_pdf
+        from io import BytesIO
+        
         lang = request.args.get("lang", "es")
         cv_data = build_cv_from_models(lang)
 
         if not cv_data:
             return jsonify({"error": "CV data not found"}), 404
 
+        # Check cache first
+        cached_pdf, cache_hit = get_cached_pdf(lang, cv_data)
+        if cache_hit and cached_pdf:
+            current_app.logger.info(f"PDF cache HIT for lang={lang}")
+            filename = f"CV_Rafael_Ortiz_{lang}.pdf"
+            return send_file(
+                BytesIO(cached_pdf),
+                mimetype="application/pdf",
+                as_attachment=True,
+                download_name=filename,
+            )
+        
+        # Cache miss - generate PDF
+        current_app.logger.info(f"PDF cache MISS for lang={lang}, generating...")
         pdf_service = PDFService()
         pdf_bytes = pdf_service.generate_cv_pdf(cv_data, lang)
+        
+        # Store in cache for next time
+        set_cached_pdf(lang, cv_data, pdf_bytes)
+        current_app.logger.info(f"PDF cached for lang={lang}")
 
         filename = f"CV_Rafael_Ortiz_{lang}.pdf"
 
@@ -375,6 +396,7 @@ def cv_pdf():
         )
     except Exception as e:
         import traceback
+        current_app.logger.error(f"PDF generation error: {traceback.format_exc()}")
         return render_template("error.html"), 500
 
 @cv_bp.route("/cv/inspect", methods=["GET"])

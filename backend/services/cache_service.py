@@ -63,8 +63,14 @@ def invalidate_entities_cache():
     """
     Invalidate all entity-related cache entries.
     Call this when entities are created/updated/deleted.
+    Also invalidates CV data and PDF caches.
     """
     try:
+        # Also invalidate CV and PDF caches
+        from backend.services.cv_cache import invalidate_all_cv_cache
+        invalidate_all_cv_cache()
+        logger.info("Invalidated CV and PDF caches")
+        
         # Delete all keys with 'entities' pattern
         if REDIS_URL:
             # Redis-specific invalidation
