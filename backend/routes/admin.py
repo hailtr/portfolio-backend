@@ -412,10 +412,52 @@ def save_experience():
         else:
             exp = Experience()
             db.session.add(exp)
-            
-        exp.slug = data.get("slug")
-        exp.company = data.get("company")
+        
+        # Get company - preserve existing value if not provided during update
+        company = data.get("company")
+        if exp_id and company is None:
+            company = exp.company  # Keep existing company if not provided
+        exp.company = company
+        
         exp.location = data.get("location")
+        
+        # Handle slug - auto-generate if not provided
+        slug = data.get("slug")
+        if not slug:
+            # If updating and no new slug provided, keep the existing one
+            if exp_id and exp.slug:
+                slug = exp.slug
+            else:
+                # Generate slug from company + title
+                import re
+                import unicodedata
+                def slugify(value):
+                    value = str(value) if value else ""
+                    value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
+                    value = re.sub(r'[^\w\s-]', '', value).lower()
+                    return re.sub(r'[-\s]+', '-', value).strip('-')
+                
+                title = data.get("title_en") or data.get("title_es") or "experience"
+                company_part = slugify(company) if company else ""
+                title_part = slugify(title)
+                
+                if company_part:
+                    base_slug = f"{company_part}-{title_part}" if title_part else company_part
+                else:
+                    base_slug = title_part or f"experience-{exp_id or 'new'}"
+                
+                slug = base_slug
+                # Ensure uniqueness
+                counter = 1
+                while Experience.query.filter_by(slug=slug).first():
+                    if exp_id:  # If editing, check if it's the same experience
+                        existing = Experience.query.filter_by(slug=slug).first()
+                        if existing.id == exp_id:
+                            break
+                    slug = f"{base_slug}-{counter}"
+                    counter += 1
+        
+        exp.slug = slug
         exp.start_date = data.get("startDate")
         exp.end_date = data.get("endDate")
         exp.current = data.get("current", False)
