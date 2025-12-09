@@ -6,11 +6,11 @@ WeasyPrint works perfectly on Railway (Linux) - no Windows fallback needed.
 """
 
 from io import BytesIO
-from flask import render_template
 import os
+import re
 
 try:
-    from weasyprint import HTML, CSS
+    from weasyprint import HTML
 
     WEASYPRINT_AVAILABLE = True
 except (OSError, ImportError) as e:
@@ -56,29 +56,40 @@ class PDFService:
             profile_img_url = None
 
         # Render HTML template with CV data and absolute image path
+        from flask import render_template
         html_string = render_template(
             "cv.html", cv_data=cv_data, lang=lang, profile_img_abs_path=profile_img_url
         )
 
-        # Generate PDF with absolute base URL
-        base_url = backend_dir
-        html = HTML(string=html_string, base_url=base_url)
-
-        # Load CSS if it exists
-        css = None
+        # Load and inject CSS directly into HTML to avoid file path issues
+        # This is critical for production environments where WeasyPrint can't resolve Flask's url_for()
         if os.path.exists(css_path):
             with open(css_path, 'r', encoding='utf-8') as f:
                 css_content = f.read()
             
-            # Prepend font import to CSS content to ensure WeasyPrint loads it
+            # Prepend font import to CSS content
             font_import = "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');\n"
             css_content = font_import + css_content
             
-            css = CSS(string=css_content)
+            # Inject CSS inline by replacing the link tag or appending to head
+            # Try multiple patterns to catch different renderings of url_for
+            # Pattern 1: Match any link tag to cv.css
+            html_string = re.sub(
+                r'<link[^>]*href="[^"]*cv\.css"[^>]*>',
+                f'<style>{css_content}</style>',
+                html_string
+            )
+            # If no replacement occurred (pattern didn't match), inject before </head>
+            if '<style>' not in html_string:
+                html_string = html_string.replace('</head>', f'<style>{css_content}</style></head>')
+
+        # Generate PDF - no need for separate stylesheet since CSS is now inline
+        html = HTML(string=html_string, base_url=backend_dir)
 
         # Generate PDF bytes
         pdf_bytes = BytesIO()
-        html.write_pdf(pdf_bytes, stylesheets=[css] if css else None)
+        html.write_pdf(pdf_bytes)
         pdf_bytes.seek(0)
 
         return pdf_bytes
+
