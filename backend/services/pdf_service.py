@@ -67,8 +67,9 @@ class PDFService:
             with open(css_path, 'r', encoding='utf-8') as f:
                 css_content = f.read()
             
-            # Prepend font import to CSS content
-            font_import = "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');\n"
+            # Use minimal font weights for smaller PDF (was 300,400,500,600,700 = ~1MB)
+            # Only load 400 (regular) and 700 (bold) = much smaller
+            font_import = "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');\n"
             css_content = font_import + css_content
             
             # Inject CSS inline by replacing the link tag or appending to head

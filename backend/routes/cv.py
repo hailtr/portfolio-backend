@@ -189,12 +189,18 @@ def build_cv_from_models(lang="es"):
                 
                 summary = ' '.join(summary_lines)
 
+            # Debug: Log current status
+            current_app.logger.info(f"Experience '{trans.title}': current={exp.current}, end_date={exp.end_date}")
+            
+            end_date_display = ("Presente" if lang == "es" else "Present") if exp.current else format_date(exp.end_date, lang)
+            current_app.logger.info(f"  -> endDate will be: '{end_date_display}'")
+            
             cv_data["work"].append({
                 "company": trans.title,  # Using title as Company Name based on user preference
                 "position": trans.subtitle,  # Using subtitle as Role
                 "url": "",  # Experience model doesn't have URL explicitly
                 "startDate": format_date(exp.start_date, lang),
-                "endDate": format_date(exp.end_date, lang),
+                "endDate": end_date_display,
                 "summary": summary,
                 "highlights": highlights
             })
@@ -477,6 +483,33 @@ def cv_inspect():
     except Exception as e:
         import traceback
         return f"<pre>{traceback.format_exc()}</pre>", 500
+
+
+@cv_bp.route("/cv/clear-cache", methods=["GET", "POST"])
+def clear_cv_cache():
+    """Manually clear CV data and PDF caches"""
+    try:
+        from backend.services.cv_cache import invalidate_all_cv_cache, get_cache_stats
+        
+        # Get stats before clearing
+        stats_before = get_cache_stats()
+        
+        # Clear caches
+        invalidate_all_cv_cache()
+        
+        # Get stats after
+        stats_after = get_cache_stats()
+        
+        return jsonify({
+            "success": True,
+            "message": "CV and PDF caches cleared",
+            "before": stats_before,
+            "after": stats_after
+        })
+    except Exception as e:
+        import traceback
+        current_app.logger.error(f"Cache clear failed: {traceback.format_exc()}")
+        return jsonify({"error": str(e)}), 500
 
 
 @cv_bp.route("/cv/data-check", methods=["GET"])

@@ -41,5 +41,5 @@ Thumbs.db
 legacy/
 
 # Archivos de testing
-*test*.pdf
-*test*.py
+#*test*.pdf
+#*test*.py

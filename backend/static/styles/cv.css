@@ -363,9 +363,14 @@ body {
     box-shadow: none;
     width: 100%;
     height: 297mm;
+    max-height: 297mm;
+    overflow: hidden;
+    /* Prevent content overflow to second page */
     background: var(--white);
     display: grid;
     grid-template-columns: 30% 70%;
+    page-break-inside: avoid;
+    page-break-after: avoid;
   }
 
   #download-pdf {
@@ -378,6 +383,9 @@ body {
     justify-content: flex-start !important;
     /* Override space-between */
     height: auto !important;
+    max-height: 295mm !important;
+    /* Slightly less than A4 to prevent overflow */
+    overflow: hidden !important;
     /* Let content determine height */
   }
 
@@ -389,7 +397,18 @@ body {
     justify-content: flex-start !important;
     /* Override space-between */
     height: auto !important;
+    max-height: 295mm !important;
+    overflow: hidden !important;
     /* Let content determine height */
+  }
+
+  /* Reduce section margins for tighter fit */
+  .main-section {
+    margin-bottom: 0.8rem !important;
+  }
+
+  .sidebar-section {
+    margin-bottom: 0.8rem !important;
   }
 
   /* Social links: force tight spacing */
@@ -433,6 +452,15 @@ body {
   a {
     text-decoration: none;
     color: inherit;
+  }
+
+  /* Prevent any element from causing page breaks */
+  .timeline-item,
+  .education-item,
+  .skill-category,
+  .contact-section,
+  .profile-section {
+    page-break-inside: avoid;
   }
 }
 

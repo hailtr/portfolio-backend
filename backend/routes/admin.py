@@ -405,6 +405,8 @@ def delete_project(project_id):
 def save_experience():
     try:
         data = request.json
+        # Debug: Log incoming data for 'current' field
+        current_app.logger.info(f"save_experience received: current={data.get('current')}, type={type(data.get('current'))}")
         exp_id = data.get("id")
         
         if exp_id:
@@ -843,7 +845,7 @@ def backup_database():
                 'id': p.id,
                 'slug': p.slug,
                 'category': p.category,
-                'url': p.url,
+                'is_featured_cv': p.is_featured_cv,
                 'created_at': p.created_at.isoformat() if p.created_at else None,
                 'translations': [{
                     'lang': t.lang,
@@ -851,12 +853,21 @@ def backup_database():
                     'subtitle': t.subtitle,
                     'description': t.description,
                     'summary': t.summary,
-                    'content': t.content
+                    'content': t.content,
+                    'cv_description': getattr(t, 'cv_description', None)
                 } for t in p.translations],
+                'urls': [{
+                    'url_type': u.url_type,
+                    'url': u.url,
+                    'order': u.order
+                } for u in p.urls],
                 'images': [{
                     'url': img.url,
                     'type': img.type,
-                    'caption': img.caption,
+                    'alt_text': getattr(img, 'alt_text', None),
+                    'width': getattr(img, 'width', None),
+                    'height': getattr(img, 'height', None),
+                    'is_featured': getattr(img, 'is_featured', False),
                     'order': img.order
                 } for img in p.images],
                 'tags': [{'name': tag.name, 'slug': tag.slug} for tag in p.tags]
@@ -889,7 +900,8 @@ def backup_database():
                 'location': edu.location,
                 'start_date': edu.start_date if isinstance(edu.start_date, str) else (edu.start_date.isoformat() if edu.start_date else None),
                 'end_date': edu.end_date if isinstance(edu.end_date, str) else (edu.end_date.isoformat() if edu.end_date else None),
-                'courses': edu.courses,
+                'current': edu.current,
+                'courses': [{'name': c.name, 'order': c.order} for c in edu.courses],
                 'translations': [{
                     'lang': t.lang,
                     'title': t.title,
@@ -897,14 +909,31 @@ def backup_database():
                 } for t in edu.translations]
             })
         
+        # Backup Skill Categories
+        backup_data['skill_categories'] = []
+        for sc in SkillCategory.query.all():
+            backup_data['skill_categories'].append({
+                'id': sc.id,
+                'slug': sc.slug,
+                'order': sc.order,
+                'translations': [{
+                    'lang': t.lang,
+                    'name': t.name
+                } for t in sc.translations]
+            })
+        
         # Backup Skills
         for s in Skill.query.all():
             backup_data['skills'].append({
                 'id': s.id,
                 'slug': s.slug,
-                'category': s.category,
+                'category': s.category,  # Legacy field
+                'category_id': s.category_id,
                 'proficiency': s.proficiency,
                 'icon_url': s.icon_url,
+                'is_visible_cv': s.is_visible_cv,
+                'is_visible_portfolio': s.is_visible_portfolio,
+                'order': s.order,
                 'translations': [{
                     'lang': t.lang,
                     'name': t.name,
