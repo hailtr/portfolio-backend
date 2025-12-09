@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  backend:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - FLASK_ENV=development
+      # Add your DATABASE_URL here for testing, or use env command
+      # - DATABASE_URL=postgresql://...
+    volumes:
+      # Mount local code for live reloading
+      - ./backend:/app/backend:ro
+      - ./backend/static:/app/backend/static:ro
+      - ./backend/templates:/app/backend/templates:ro
+    command: python run.py
