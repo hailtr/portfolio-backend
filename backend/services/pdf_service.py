@@ -65,16 +65,25 @@ class PDFService:
 
     def _prepare_html(self, cv_data, lang):
         """Prepare HTML and CSS content for PDF generation"""
+        import base64
+        
         # Get absolute paths for static files
         backend_dir = os.path.dirname(os.path.dirname(__file__))
         static_dir = os.path.join(backend_dir, "static")
         css_path = os.path.join(static_dir, "styles", "cv.css")
         images_dir = os.path.join(static_dir, "images")
 
-        # Prepare image path for template (absolute path for WeasyPrint)
+        # Prepare image - use base64 for microservice, file:// for local
         profile_img_path = os.path.join(images_dir, "profilepicture.jpg")
         if os.path.exists(profile_img_path):
-            profile_img_url = f"file://{profile_img_path}".replace("\\", "/")
+            if self.use_microservice:
+                # Embed as base64 for microservice (Cloud Run doesn't have the file)
+                with open(profile_img_path, 'rb') as img_file:
+                    img_data = base64.b64encode(img_file.read()).decode('utf-8')
+                profile_img_url = f"data:image/jpeg;base64,{img_data}"
+            else:
+                # Use file:// URL for local WeasyPrint
+                profile_img_url = f"file://{profile_img_path}".replace("\\", "/")
         else:
             profile_img_url = None
 
