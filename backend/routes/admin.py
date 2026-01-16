@@ -460,8 +460,8 @@ def save_experience():
                     counter += 1
         
         exp.slug = slug
-        exp.start_date = data.get("startDate")
-        exp.end_date = data.get("endDate")
+        exp.start_date = data.get("startDate") or None
+        exp.end_date = data.get("endDate") or None
         exp.current = data.get("current", False)
         
         # Translations
@@ -521,8 +521,8 @@ def save_education():
             location = edu.location
         edu.location = location
         
-        edu.start_date = data.get("startDate")
-        edu.end_date = data.get("endDate")
+        edu.start_date = data.get("startDate") or None
+        edu.end_date = data.get("endDate") or None
         edu.current = data.get("current", False)
         
         # Handle slug - auto-generate if not provided
@@ -707,9 +707,10 @@ def save_certification():
         
         if cert_id:
             cert = Certification.query.get_or_404(cert_id)
+            is_new = False
         else:
             cert = Certification()
-            db.session.add(cert)
+            is_new = True
         
         # Preserve existing values during updates, auto-generate slug if needed
         issuer = data.get("issuer")
@@ -717,8 +718,8 @@ def save_certification():
             issuer = cert.issuer
         cert.issuer = issuer
         
-        cert.issue_date = data.get("issueDate")
-        cert.expiry_date = data.get("expiryDate")
+        cert.issue_date = data.get("issueDate") or None
+        cert.expiry_date = data.get("expiryDate") or None
         cert.credential_url = data.get("url")
         
         # Handle slug - auto-generate if not provided
@@ -730,6 +731,7 @@ def save_certification():
                 # Auto-generate from title
                 import unicodedata
                 import re
+                from datetime import datetime
                 
                 def slugify(value):
                     value = str(value) if value else ""
@@ -737,8 +739,12 @@ def save_certification():
                     value = re.sub(r'[^\w\s-]', '', value).lower()
                     return re.sub(r'[-\s]+', '-', value).strip('-')
                 
-                title = data.get("title_en") or data.get("title_es") or "certification"
+                title = data.get("title_en") or data.get("title_es") or ""
                 base_slug = slugify(title)
+                
+                # Fallback if slug is empty
+                if not base_slug:
+                    base_slug = f"certification-{datetime.now().strftime('%Y%m%d%H%M%S')}"
                 
                 slug = base_slug
                 # Ensure uniqueness
@@ -752,6 +758,10 @@ def save_certification():
                     counter += 1
         
         cert.slug = slug
+        
+        # Add to session after slug is set (prevents autoflush with null slug)
+        if is_new:
+            db.session.add(cert)
         
         # Translations
         for lang in ["es", "en"]:
