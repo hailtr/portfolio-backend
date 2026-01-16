@@ -101,20 +101,14 @@
       {% if cv_data.awards %}
       <div class="sidebar-section">
         <h3 class="section-title">{% if lang == 'es' %}Certificaciones{% else %}Certifications{% endif %}</h3>
-        <div class="education-list">
+        <div class="skill-tags" style="gap: 0.4rem;">
           {% for award in cv_data.awards %}
-          <div class="education-item">
-            <h4 class="institution">
-              {% if award.link %}
-              <a href="{{ award.link }}" target="_blank" style="text-decoration: none; color: inherit;">{{ award.title
-                }}</a>
-              {% else %}
-              {{ award.title }}
-              {% endif %}
-            </h4>
-            <div class="degree">{{ award.awarder }}</div>
-            <div class="date">{{ award.date }}</div>
-          </div>
+          {% if award.link %}
+          <a href="{{ award.link }}" target="_blank" class="skill-tag"
+            style="text-decoration: none; color: inherit;">{{ award.title }}</a>
+          {% else %}
+          <span class="skill-tag">{{ award.title }}</span>
+          {% endif %}
           {% endfor %}
         </div>
       </div>

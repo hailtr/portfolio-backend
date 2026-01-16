@@ -209,7 +209,7 @@ body {
 }
 
 .main-section {
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 .summary-text {
@@ -404,11 +404,11 @@ body {
 
   /* Reduce section margins for tighter fit */
   .main-section {
-    margin-bottom: 0.8rem !important;
+    margin-bottom: 0.5rem !important;
   }
 
   .sidebar-section {
-    margin-bottom: 0.8rem !important;
+    margin-bottom: 0.5rem !important;
   }
 
   /* Social links: force tight spacing */

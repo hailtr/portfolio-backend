@@ -244,12 +244,22 @@ def build_cv_from_models(lang="es"):
             # Extract course names from Course objects
             course_names = [course.name for course in sorted(edu.courses, key=lambda c: c.order)] if edu.courses else []
             
+            # Handle expected graduation date
+            if edu.current and edu.end_date:
+                # Show "Expected Graduation [Year]"
+                year = edu.end_date.strftime("%Y")
+                end_date_display = f"Graduación Esperada {year}" if lang == "es" else f"Expected Graduation {year}"
+            elif edu.current:
+                end_date_display = "En Curso" if lang == "es" else "In Progress"
+            else:
+                end_date_display = format_date(edu.end_date, lang)
+            
             cv_data["education"].append({
                 "institution": edu.institution,
                 "area": trans.subtitle, # Field of Study
                 "studyType": trans.title, # Degree
                 "startDate": format_date(edu.start_date, lang),
-                "endDate": format_date(edu.end_date, lang),
+                "endDate": end_date_display,
                 "location": edu.location,
                 "courses": course_names
             })

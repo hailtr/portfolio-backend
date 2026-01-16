@@ -38,7 +38,7 @@ def health_check():
 
 @api_bp.route("/projects", methods=["GET"])
 @api_rate_limit()
-@cache_response(timeout=300, key_func=cache_key_with_lang)
+@cache_response(timeout=3600, key_func=cache_key_with_lang)
 def get_projects():
     lang = request.args.get("lang", "es")
     category = request.args.get("category")
@@ -112,7 +112,7 @@ def get_projects():
 
 @api_bp.route("/projects/<slug>", methods=["GET"])
 @api_rate_limit()
-@cache_response(timeout=300, key_func=cache_key_with_lang)
+@cache_response(timeout=3600, key_func=cache_key_with_lang)
 def get_project(slug):
     lang = request.args.get("lang", "es")
     
@@ -178,7 +178,7 @@ def get_project(slug):
 
 @api_bp.route("/experience", methods=["GET"])
 @api_rate_limit()
-@cache_response(timeout=300, key_func=cache_key_with_lang)
+@cache_response(timeout=3600, key_func=cache_key_with_lang)
 def get_experience():
     lang = request.args.get("lang", "es")
     
@@ -216,7 +216,7 @@ def get_experience():
 
 @api_bp.route("/education", methods=["GET"])
 @api_rate_limit()
-@cache_response(timeout=300, key_func=cache_key_with_lang)
+@cache_response(timeout=3600, key_func=cache_key_with_lang)
 def get_education():
     lang = request.args.get("lang", "es")
     
@@ -255,7 +255,7 @@ def get_education():
 
 @api_bp.route("/skills", methods=["GET"])
 @api_rate_limit()
-@cache_response(timeout=300, key_func=cache_key_with_lang)
+@cache_response(timeout=3600, key_func=cache_key_with_lang)
 def get_skills():
     lang = request.args.get("lang", "es")
     
@@ -289,7 +289,7 @@ def get_skills():
 
 @api_bp.route("/certifications", methods=["GET"])
 @api_rate_limit()
-@cache_response(timeout=300, key_func=cache_key_with_lang)
+@cache_response(timeout=3600, key_func=cache_key_with_lang)
 def get_certifications():
     lang = request.args.get("lang", "es")
     
@@ -324,7 +324,7 @@ def get_certifications():
 
 @api_bp.route("/profile", methods=["GET"])
 @api_rate_limit()
-@cache_response(timeout=300, key_func=cache_key_with_lang)
+@cache_response(timeout=3600, key_func=cache_key_with_lang)
 def get_profile():
     lang = request.args.get("lang", "es")
     

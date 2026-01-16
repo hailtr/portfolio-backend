@@ -209,8 +209,12 @@ function getFormTemplate(type, data) {
             <input type="date" class="form-control" name="startDate" value="${d.start_date ? d.start_date.substring(0, 10) : ''}">
         </div>
         <div class="form-group">
-            <label class="form-label">End Date</label>
-            <input type="date" class="form-control" name="endDate" value="${d.end_date ? d.end_date.substring(0, 10) : ''}">
+            <label class="form-label">End Date (Expected Graduation)</label>
+            <input type="date" class="form-control" name="endDate" id="edu-endDate-input" value="${d.end_date ? d.end_date.substring(0, 10) : ''}" ${d.current ? 'disabled' : ''}>
+        </div>
+        <div class="form-group" style="display: flex; align-items: center; gap: 0.5rem;">
+            <input type="checkbox" name="current" id="edu-current-checkbox" ${d.current ? 'checked' : ''} onchange="document.getElementById('edu-endDate-input').disabled = this.checked; if(this.checked) document.getElementById('edu-endDate-input').value = '';">
+            <label class="form-label" for="edu-current-checkbox" style="margin-bottom: 0; cursor: pointer;">Currently Studying</label>
         </div>
         <div class="form-group">
             <label class="form-label">Courses (comma separated)</label>
