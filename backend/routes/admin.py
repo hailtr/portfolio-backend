@@ -509,13 +509,59 @@ def save_education():
         else:
             edu = Education()
             db.session.add(edu)
-            
-        edu.slug = data.get("slug")
-        edu.institution = data.get("institution")
-        edu.location = data.get("location")
+        
+        # Preserve existing values during updates
+        institution = data.get("institution")
+        if edu_id and institution is None:
+            institution = edu.institution
+        edu.institution = institution
+        
+        location = data.get("location")
+        if edu_id and location is None:
+            location = edu.location
+        edu.location = location
+        
         edu.start_date = data.get("startDate")
         edu.end_date = data.get("endDate")
         edu.current = data.get("current", False)
+        
+        # Handle slug - auto-generate if not provided
+        slug = data.get("slug")
+        if not slug:
+            if edu_id and edu.slug:
+                slug = edu.slug  # Preserve existing slug during update
+            else:
+                # Auto-generate from institution and title
+                import unicodedata
+                import re
+                
+                def slugify(value):
+                    value = str(value) if value else ""
+                    value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
+                    value = re.sub(r'[^\w\s-]', '', value).lower()
+                    return re.sub(r'[-\s]+', '-', value).strip('-')
+                
+                title = data.get("title_en") or data.get("title_es") or ""
+                inst_part = slugify(institution) if institution else ""
+                title_part = slugify(title)
+                
+                if inst_part:
+                    base_slug = f"{inst_part}-{title_part}" if title_part else inst_part
+                else:
+                    base_slug = title_part or f"education-{edu_id or 'new'}"
+                
+                slug = base_slug
+                # Ensure uniqueness
+                counter = 1
+                while Education.query.filter_by(slug=slug).first():
+                    if edu_id:
+                        existing = Education.query.filter_by(slug=slug).first()
+                        if existing.id == edu_id:
+                            break
+                    slug = f"{base_slug}-{counter}"
+                    counter += 1
+        
+        edu.slug = slug
         
         # Translations
         for lang in ["es", "en"]:
@@ -664,12 +710,48 @@ def save_certification():
         else:
             cert = Certification()
             db.session.add(cert)
-            
-        cert.slug = data.get("slug")
-        cert.issuer = data.get("issuer")
+        
+        # Preserve existing values during updates, auto-generate slug if needed
+        issuer = data.get("issuer")
+        if cert_id and issuer is None:
+            issuer = cert.issuer
+        cert.issuer = issuer
+        
         cert.issue_date = data.get("issueDate")
         cert.expiry_date = data.get("expiryDate")
         cert.credential_url = data.get("url")
+        
+        # Handle slug - auto-generate if not provided
+        slug = data.get("slug")
+        if not slug:
+            if cert_id and cert.slug:
+                slug = cert.slug  # Preserve existing slug during update
+            else:
+                # Auto-generate from title
+                import unicodedata
+                import re
+                
+                def slugify(value):
+                    value = str(value) if value else ""
+                    value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
+                    value = re.sub(r'[^\w\s-]', '', value).lower()
+                    return re.sub(r'[-\s]+', '-', value).strip('-')
+                
+                title = data.get("title_en") or data.get("title_es") or "certification"
+                base_slug = slugify(title)
+                
+                slug = base_slug
+                # Ensure uniqueness
+                counter = 1
+                while Certification.query.filter_by(slug=slug).first():
+                    if cert_id:
+                        existing = Certification.query.filter_by(slug=slug).first()
+                        if existing.id == cert_id:
+                            break
+                    slug = f"{base_slug}-{counter}"
+                    counter += 1
+        
+        cert.slug = slug
         
         # Translations
         for lang in ["es", "en"]:

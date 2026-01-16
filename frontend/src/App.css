@@ -1739,6 +1739,7 @@ svg,
 
   .profile-greating h1 {
     font-size: 3.5rem;
+    min-height: 4rem; /* Prevent layout shift when text loads/changes */
   }
 
   .tagline {
