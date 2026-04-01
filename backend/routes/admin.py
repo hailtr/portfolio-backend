@@ -482,15 +482,17 @@ def save_experience():
             translation = next((t for t in exp.translations if t.lang == lang), None)
             if translation:
                 translation.title = data.get(f"title_{lang}")
+                translation.subtitle = data.get(f"subtitle_{lang}")
                 translation.description = data.get(f"description_{lang}")
             else:
                 t = ExperienceTranslation(
                     lang=lang,
-                    title=data.get(f"title_{lang}"), # Role
+                    title=data.get(f"title_{lang}"), # Company name
+                    subtitle=data.get(f"subtitle_{lang}"), # Role/position
                     description=data.get(f"description_{lang}")
                 )
                 exp.translations.append(t)
-            
+
         # Tags (Skills)
         exp.tags = []
         for tag_name in data.get("tags", []):

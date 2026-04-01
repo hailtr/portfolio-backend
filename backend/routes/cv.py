@@ -157,7 +157,7 @@ def build_cv_from_models(lang="es"):
 
         # 2. Fetch Experience with eager loading
         # Limit to 3 most recent items as requested
-        experiences = Experience.query.options(joinedload(Experience.translations)).order_by(desc(Experience.start_date)).limit(3).all()
+        experiences = Experience.query.options(joinedload(Experience.translations)).order_by(desc(Experience.start_date)).all()
         for exp in experiences:
             trans = next((t for t in exp.translations if t.lang == lang), None)
             if not trans: continue
@@ -201,6 +201,7 @@ def build_cv_from_models(lang="es"):
                 "url": "",  # Experience model doesn't have URL explicitly
                 "startDate": format_date(exp.start_date, lang),
                 "endDate": end_date_display,
+                "location": exp.location,
                 "summary": summary,
                 "highlights": highlights
             })
