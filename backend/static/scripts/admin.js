@@ -475,6 +475,54 @@ function editSkill(id) { openModal('skill', skills.find(s => s.id == id)); }
 function editSkillCategory(id) { openModal('skill-category', skill_categories.find(c => c.id == id)); }
 function editCertification(id) { openModal('certification', certifications.find(c => c.id == id)); }
 
+// Validation
+function validateForm(type, data) {
+  const errors = [];
+
+  if (type === 'project') {
+    if (!data.title_es && !data.title_en) {
+      errors.push('Title (ES or EN) is required');
+    }
+    const cat = data.category;
+    if (cat && !['project', 'work', 'study'].includes(cat)) {
+      errors.push('Category must be: project, work, or study');
+    }
+  } else if (type === 'experience') {
+    if (!data.title_es && !data.title_en) {
+      errors.push('Company name (ES or EN) is required');
+    }
+  } else if (type === 'education') {
+    if (!data.title_es && !data.title_en) {
+      errors.push('Degree (ES or EN) is required');
+    }
+  } else if (type === 'skill') {
+    if (!data.name_es && !data.name_en) {
+      errors.push('Skill name (ES or EN) is required');
+    }
+  } else if (type === 'skill-category') {
+    if (!data.slug) {
+      errors.push('Slug is required');
+    }
+    if (!data.name_es && !data.name_en) {
+      errors.push('Category name (ES or EN) is required');
+    }
+  } else if (type === 'certification') {
+    if (!data.title_es && !data.title_en) {
+      errors.push('Title (ES or EN) is required');
+    }
+  }
+
+  // URL format validation
+  const urlFields = ['url', 'credential_url', 'icon_url'];
+  urlFields.forEach(field => {
+    if (data[field] && data[field].trim() && !data[field].match(/^https?:\/\//)) {
+      errors.push(`${field} must start with http:// or https://`);
+    }
+  });
+
+  return errors;
+}
+
 // API Actions
 async function saveItem() {
   const form = document.getElementById('edit-form');
@@ -527,6 +575,21 @@ async function saveItem() {
 
   if (currentId) data.id = currentId;
 
+  // Client-side validation
+  const errors = validateForm(currentType, data);
+  if (errors.length > 0) {
+    showToast(errors.join('. '), 'error');
+    return;
+  }
+
+  // Show loading state
+  const saveBtn = document.querySelector('.modal-actions .btn-primary, [onclick="saveItem()"]');
+  const originalText = saveBtn ? saveBtn.innerHTML : '';
+  if (saveBtn) {
+    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+    saveBtn.disabled = true;
+  }
+
   try {
     const res = await fetch(`/admin/save/${currentType}`, {
       method: 'POST',
@@ -539,10 +602,15 @@ async function saveItem() {
       setTimeout(() => location.reload(), 1000);
     } else {
       const err = await res.json();
-      showToast(err.error || 'Error saving', 'error');
+      showToast(err.message || err.error || 'Error saving', 'error');
     }
   } catch (e) {
     showToast(e.message, 'error');
+  } finally {
+    if (saveBtn) {
+      saveBtn.innerHTML = originalText;
+      saveBtn.disabled = false;
+    }
   }
 }
 
@@ -567,7 +635,14 @@ async function deleteUploadedImage(btn, publicId) {
 
 
 async function deleteItem(type, id) {
-  if (!confirm('Are you sure?')) return;
+  if (!confirm(`Are you sure you want to delete this ${type}? This action cannot be undone.`)) return;
+
+  const btn = event && event.target ? event.target.closest('button') || event.target : null;
+  const originalText = btn ? btn.innerHTML : '';
+  if (btn) {
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+    btn.disabled = true;
+  }
 
   try {
     const res = await fetch(`/admin/delete/${type}/${id}`, { method: 'DELETE' });
@@ -575,10 +650,16 @@ async function deleteItem(type, id) {
       showToast('Deleted successfully', 'success');
       setTimeout(() => location.reload(), 1000);
     } else {
-      showToast('Error deleting', 'error');
+      const err = await res.json();
+      showToast(err.message || err.error || 'Error deleting', 'error');
     }
   } catch (e) {
     showToast(e.message, 'error');
+  } finally {
+    if (btn) {
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+    }
   }
 }
 

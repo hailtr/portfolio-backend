@@ -1,6 +1,6 @@
 import os
 import logging
-from flask import Flask, jsonify, abort
+from flask import Flask, jsonify, abort, render_template
 from flask_cors import CORS
 from flask_compress import Compress
 from flask_limiter import Limiter
@@ -69,19 +69,24 @@ app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=7)  # Session lasts 7 
 app.config["SESSION_COOKIE_SECURE"] = os.getenv("FLASK_ENV") == "production"
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
-app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
-    "pool_pre_ping": True,
-    "pool_recycle": 280,  # Recycle connections before Railway's 5min timeout
-    "pool_size": 10,
-    "max_overflow": 20,
-    "connect_args": {
-        "connect_timeout": 10,  # Increased timeout
-        "keepalives": 1,
-        "keepalives_idle": 30,
-        "keepalives_interval": 10,
-        "keepalives_count": 5,
-    },
-}
+# Engine options: only set pool/connection args for PostgreSQL (not SQLite)
+_db_uri = app.config["SQLALCHEMY_DATABASE_URI"]
+if _db_uri.startswith("sqlite"):
+    app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {"pool_pre_ping": True}
+else:
+    app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+        "pool_pre_ping": True,
+        "pool_recycle": 280,
+        "pool_size": 10,
+        "max_overflow": 20,
+        "connect_args": {
+            "connect_timeout": 10,
+            "keepalives": 1,
+            "keepalives_idle": 30,
+            "keepalives_interval": 10,
+            "keepalives_count": 5,
+        },
+    }
 
 oauth.init_app(app)
 
@@ -128,6 +133,34 @@ app.register_blueprint(admin_bp)
 app.register_blueprint(auth_bp)
 app.register_blueprint(index_bp)
 app.register_blueprint(cv_bp)
+
+
+# Error handlers
+@app.errorhandler(404)
+def not_found(e):
+    from flask import request as req
+    if req.path.startswith("/api/"):
+        return jsonify({"error": True, "message": "Resource not found", "status": 404}), 404
+    return render_template("error.html", error="Page not found") if _has_template("error.html") else (jsonify({"error": True, "message": "Not found", "status": 404}), 404)
+
+@app.errorhandler(429)
+def rate_limited(e):
+    return jsonify({"error": True, "message": "Too many requests. Please try again later.", "status": 429}), 429
+
+@app.errorhandler(500)
+def internal_error(e):
+    from flask import request as req
+    db.session.rollback()
+    if req.path.startswith("/api/"):
+        return jsonify({"error": True, "message": "Internal server error", "status": 500}), 500
+    return render_template("error.html", error="Internal server error") if _has_template("error.html") else (jsonify({"error": True, "message": "Internal server error", "status": 500}), 500)
+
+def _has_template(name):
+    try:
+        app.jinja_env.get_template(name)
+        return True
+    except Exception:
+        return False
 
 
 # Enhanced health check endpoint

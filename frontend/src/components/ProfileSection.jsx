@@ -1,7 +1,31 @@
 import { useState, useEffect } from "react";
-import { motion, useMotionValue, useTransform } from "framer-motion";
-import Typewriter from "typewriter-effect";
+import { motion, useMotionValue, useTransform, AnimatePresence } from "framer-motion";
 import API_BASE_URL from "../config";
+
+const RoleCycler = ({ roles }) => {
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIndex((i) => (i + 1) % roles.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [roles.length]);
+
+  return (
+    <AnimatePresence mode="wait">
+      <motion.span
+        key={roles[index]}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
+        transition={{ duration: 0.4 }}
+      >
+        {roles[index]}
+      </motion.span>
+    </AnimatePresence>
+  );
+};
 
 const ProfileSection = ({ language }) => {
   const [profile, setProfile] = useState({
@@ -39,15 +63,41 @@ const ProfileSection = ({ language }) => {
         setProfile(data);
         setLoading(false);
       })
-      .catch((err) => {
-        console.error("Error fetching profile:", err);
+      .catch(() => {
         setLoading(false);
       });
   }, [language]);
 
   if (loading) {
-    return null; // or a skeleton loader
+    return (
+      <section className="section">
+        <div className="home-section" id="home">
+          <div className="profile">
+            <div className="profile-picture-wrapper">
+              <div className="skeleton skeleton-circle" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />
+            </div>
+            <div className="profile-greating" style={{ gap: "1.5rem" }}>
+              <div className="skeleton" style={{ width: "60%", height: "6rem" }} />
+              <div className="skeleton" style={{ width: "80%", height: "4rem" }} />
+              <div className="skeleton" style={{ width: "70%", height: "2rem" }} />
+            </div>
+          </div>
+        </div>
+      </section>
+    );
   }
+
+  const roles = language === "es"
+    ? [
+        profile.role === "Data Engineer" ? "Ingeniero de Datos" : profile.role,
+        "Experto en Python",
+        "Arquitecto Cloud",
+      ]
+    : [
+        profile.role,
+        "Python Expert",
+        "Cloud Architect",
+      ];
 
   return (
     <section className="section">
@@ -68,7 +118,7 @@ const ProfileSection = ({ language }) => {
           >
             <img
               src="/images/profilepicture.jpg"
-              alt="Foto personal"
+              alt={language === "es" ? "Foto personal" : "Profile picture"}
               className="profile-picture"
               style={{ pointerEvents: "none" }}
             />
@@ -79,24 +129,7 @@ const ProfileSection = ({ language }) => {
               {profile.name.split(" ")[1]}
             </h2>
             <h1 style={{ minHeight: "60px" }}>
-              <Typewriter
-                options={{
-                  strings: [
-                    // Translate role if needed
-                    language === "es" && profile.role === "Data Engineer"
-                      ? "Ingeniero de Datos"
-                      : profile.role,
-                    language === "es" ? "Experto en Python" : "Python Expert",
-                    language === "es"
-                      ? "Arquitecto Cloud"
-                      : "Cloud Architect",
-                  ],
-                  autoStart: true,
-                  loop: true,
-                  delay: 50,
-                  deleteSpeed: 30,
-                }}
-              />
+              <RoleCycler roles={roles} />
             </h1>
             <p className="tagline">{profile.tagline}</p>
             <p>

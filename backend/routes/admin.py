@@ -197,14 +197,17 @@ def save_project():
     
     try:
         data = request.json
+        if not data:
+            return jsonify({"error": True, "message": "Request body is required"}), 400
+
         project_id = data.get("id")
-        
+
         # Validation
         title_es = data.get("title_es")
         title_en = data.get("title_en")
-        
+
         if not title_es and not title_en:
-            return jsonify({"error": "Title (ES or EN) is required"}), 400
+            return jsonify({"error": True, "message": "Title (ES or EN) is required"}), 400
             
         # Auto-generate slug if missing
         slug = data.get("slug")
@@ -405,10 +408,20 @@ def delete_project(project_id):
 def save_experience():
     try:
         data = request.json
-        # Debug: Log incoming data for 'current' field
-        current_app.logger.info(f"save_experience received: current={data.get('current')}, type={type(data.get('current'))}")
+        if not data:
+            return jsonify({"error": True, "message": "Request body is required"}), 400
+
         exp_id = data.get("id")
-        
+
+        # Validation
+        if not exp_id:
+            if not data.get("company"):
+                return jsonify({"error": True, "message": "Company is required"}), 400
+            if not data.get("title_es") and not data.get("title_en"):
+                return jsonify({"error": True, "message": "Title (ES or EN) is required"}), 400
+            if not data.get("startDate"):
+                return jsonify({"error": True, "message": "Start date is required"}), 400
+
         if exp_id:
             exp = Experience.query.get_or_404(exp_id)
         else:
@@ -502,8 +515,20 @@ def save_experience():
 def save_education():
     try:
         data = request.json
+        if not data:
+            return jsonify({"error": True, "message": "Request body is required"}), 400
+
         edu_id = data.get("id")
-        
+
+        # Validation
+        if not edu_id:
+            if not data.get("institution"):
+                return jsonify({"error": True, "message": "Institution is required"}), 400
+            if not data.get("title_es") and not data.get("title_en"):
+                return jsonify({"error": True, "message": "Degree title (ES or EN) is required"}), 400
+            if not data.get("startDate"):
+                return jsonify({"error": True, "message": "Start date is required"}), 400
+
         if edu_id:
             edu = Education.query.get_or_404(edu_id)
         else:
@@ -600,8 +625,24 @@ def save_education():
 def save_skill():
     try:
         data = request.json
+        if not data:
+            return jsonify({"error": True, "message": "Request body is required"}), 400
+
         skill_id = data.get("id")
-        
+
+        # Validation
+        if not data.get("name_es") and not data.get("name_en"):
+            return jsonify({"error": True, "message": "Skill name (ES or EN) is required"}), 400
+
+        proficiency = data.get("proficiency")
+        if proficiency is not None:
+            try:
+                proficiency = int(proficiency)
+                if proficiency < 0 or proficiency > 100:
+                    return jsonify({"error": True, "message": "Proficiency must be between 0 and 100"}), 400
+            except (ValueError, TypeError):
+                return jsonify({"error": True, "message": "Proficiency must be a number"}), 400
+
         if skill_id:
             skill = Skill.query.get_or_404(skill_id)
         else:
@@ -665,15 +706,27 @@ def save_skill():
 def save_skill_category():
     try:
         data = request.json
+        if not data:
+            return jsonify({"error": True, "message": "Request body is required"}), 400
+
         cat_id = data.get("id")
-        
+
+        # Validation
+        if not data.get("name_es") and not data.get("name_en"):
+            return jsonify({"error": True, "message": "Category name (ES or EN) is required"}), 400
+
         if cat_id:
             cat = SkillCategory.query.get_or_404(cat_id)
         else:
             cat = SkillCategory()
             db.session.add(cat)
-            
-        cat.slug = data.get("slug")
+
+        slug = data.get("slug")
+        if not slug:
+            import re, unicodedata
+            name = data.get("name_en") or data.get("name_es")
+            slug = re.sub(r'[-\s]+', '-', re.sub(r'[^\w\s-]', '', unicodedata.normalize('NFKD', str(name)).encode('ascii', 'ignore').decode('ascii')).lower()).strip('-')
+        cat.slug = slug
         cat.order = data.get("order", 0)
         
         # Translations
@@ -703,15 +756,29 @@ def save_skill_category():
 def save_certification():
     try:
         data = request.json
+        if not data:
+            return jsonify({"error": True, "message": "Request body is required"}), 400
+
         cert_id = data.get("id")
-        
+
+        # Validation
+        if not cert_id:
+            if not data.get("title_es") and not data.get("title_en"):
+                return jsonify({"error": True, "message": "Certification title (ES or EN) is required"}), 400
+            if not data.get("issuer"):
+                return jsonify({"error": True, "message": "Issuer is required"}), 400
+
+        url = data.get("url")
+        if url and not url.startswith(("http://", "https://")):
+            return jsonify({"error": True, "message": "Credential URL must start with http:// or https://"}), 400
+
         if cert_id:
             cert = Certification.query.get_or_404(cert_id)
             is_new = False
         else:
             cert = Certification()
             is_new = True
-        
+
         # Preserve existing values during updates, auto-generate slug if needed
         issuer = data.get("issuer")
         if cert_id and issuer is None:
@@ -792,6 +859,17 @@ def save_certification():
 def save_profile():
     try:
         data = request.json
+        if not data:
+            return jsonify({"error": True, "message": "Request body is required"}), 400
+
+        # Validation
+        if not data.get("name"):
+            return jsonify({"error": True, "message": "Name is required"}), 400
+
+        email = data.get("email")
+        if email and "@" not in email:
+            return jsonify({"error": True, "message": "Invalid email format"}), 400
+
         profile = Profile.query.first()
         if not profile:
             profile = Profile(slug="rafael-ortiz-profile")
@@ -1019,7 +1097,6 @@ def backup_database():
             backup_data['skills'].append({
                 'id': s.id,
                 'slug': s.slug,
-                'category': s.category,  # Legacy field
                 'category_id': s.category_id,
                 'proficiency': s.proficiency,
                 'icon_url': s.icon_url,

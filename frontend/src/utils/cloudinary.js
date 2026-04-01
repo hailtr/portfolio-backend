@@ -47,16 +47,13 @@ export const transformCloudinaryUrl = (url, transform) => {
 
     // Check if URL already has transformations
     if (url.includes('/upload/') && url.match(/\/upload\/[^/]+\//)) {
-        // URL already has transformations, don't double-transform
-        console.warn('Cloudinary URL already has transformations:', url);
         return url;
     }
 
     try {
         // Insert transformation parameters after '/upload/'
         return url.replace('/upload/', `/upload/${transform}/`);
-    } catch (error) {
-        console.error('Failed to transform Cloudinary URL:', error);
+    } catch {
         return url; // Fallback to original
     }
 };

@@ -29,12 +29,23 @@ const ProjectCard = ({ project, language, debugExpanded }) => {
   // Check if preview_video is a GIF or actual video
   const isGif = project.preview_video?.toLowerCase().endsWith('.gif');
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      handleClick();
+    }
+  };
+
   return (
     <div
       className={`job-card ${debugExpanded ? "debug-expanded" : ""}`}
       onClick={handleClick}
+      onKeyDown={handleKeyDown}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => !debugExpanded && setIsHovered(false)}
+      tabIndex={0}
+      role="link"
+      aria-label={project.title}
     >
       <div className="job-card-inner">
         <div className="job-card-media-container">

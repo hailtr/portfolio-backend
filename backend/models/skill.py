@@ -44,13 +44,9 @@ class Skill(db.Model):
     icon_url = db.Column(db.String(256))
     proficiency = db.Column(db.Integer, default=50)  # 0-100
     
-    # New fields
-    category_id = db.Column(db.Integer, db.ForeignKey("skill_categories.id"), nullable=True) # Nullable for migration
+    category_id = db.Column(db.Integer, db.ForeignKey("skill_categories.id"), nullable=True)
     is_visible_cv = db.Column(db.Boolean, default=True)
     is_visible_portfolio = db.Column(db.Boolean, default=True)
-    
-    # Deprecated (keep for migration)
-    category = db.Column(db.String(64))  
     
     order = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, server_default=func.now())

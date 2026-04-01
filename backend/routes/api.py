@@ -16,10 +16,16 @@ from backend.models.certification import Certification, CertificationTranslation
 from backend.models.tag import Tag
 from backend.services.cache_service import cache_response, cache_key_with_lang, cache_key_simple
 from backend.utils.rate_limit import api_rate_limit, generous_rate_limit
-import os
-import json
 
 api_bp = Blueprint("api", __name__, url_prefix="/api")
+
+
+def error_response(message, status_code, details=None):
+    """Standardized API error response format."""
+    response = {"error": True, "message": message, "status": status_code}
+    if details:
+        response["details"] = details
+    return jsonify(response), status_code
 
 
 @api_bp.route("/health", methods=["GET"])
@@ -124,7 +130,7 @@ def get_project(slug):
     ).filter_by(slug=slug).first()
     
     if not project:
-        return jsonify({"error": "Project not found"}), 404
+        return error_response("Project not found", 404)
         
     trans = next((t for t in project.translations if t.lang == lang), None)
     if not trans and project.translations:
@@ -259,23 +265,30 @@ def get_education():
 def get_skills():
     lang = request.args.get("lang", "es")
     
+    from backend.models.skill import SkillCategory
     skills = Skill.query.options(
-        joinedload(Skill.translations)
+        joinedload(Skill.translations),
+        joinedload(Skill.skill_category).joinedload(SkillCategory.translations)
     ).order_by(Skill.order).all()
-    
+
     result = []
     for s in skills:
         trans = next((t for t in s.translations if t.lang == lang), None)
         if not trans and s.translations:
             trans = s.translations[0]
-            
+
         if trans:
+            cat_name = None
+            if s.skill_category:
+                cat_trans = next((t for t in s.skill_category.translations if t.lang == lang), None)
+                cat_name = cat_trans.name if cat_trans else s.skill_category.slug
             result.append({
                 "id": s.id,
                 "slug": s.slug,
                 "icon_url": s.icon_url,
                 "proficiency": s.proficiency,
-                "category": s.category,
+                "category": cat_name,
+                "category_id": s.category_id,
                 "name": trans.name,
                 "description": trans.description
             })
@@ -333,7 +346,7 @@ def get_profile():
     ).first()  # Assuming single profile
     
     if not profile:
-        return jsonify({"error": "Profile not found"}), 404
+        return error_response("Profile not found", 404)
         
     trans = next((t for t in profile.translations if t.lang == lang), None)
     if not trans and profile.translations:
@@ -351,21 +364,3 @@ def get_profile():
     }), 200
 
 
-# ==========================================
-# CV (Legacy/File based)
-# ==========================================
-
-@api_bp.route("/cv", methods=["GET"])
-@api_rate_limit()
-@cache_response(timeout=600, key_func=cache_key_with_lang)
-def get_cv():
-    lang = request.args.get("lang", "es")
-    json_path = os.path.join(
-        os.path.dirname(os.path.dirname(__file__)), "data", "resume.json"
-    )
-    try:
-        with open(json_path, "r", encoding="utf-8") as f:
-            resume_data = json.load(f)
-        return jsonify(resume_data.get(lang, resume_data.get("es", {}))), 200
-    except Exception as e:
-        return jsonify({"error": "CV data not found"}), 404

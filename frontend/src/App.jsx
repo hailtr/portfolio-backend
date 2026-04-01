@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, lazy, Suspense } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { motion, useScroll, useSpring } from "framer-motion";
 import Navbar from "./components/Navbar";
@@ -9,13 +9,17 @@ import Footer from "./components/Footer";
 import Loader from "./components/Loader";
 import ContactOverlay from "./components/ContactOverlay";
 import BackgroundShapes from "./components/BackgroundShapes";
-import ProjectDetail from "./pages/ProjectDetail";
+import NotFound from "./components/NotFound";
 import API_BASE_URL from "./config";
 import { useCachedFetch } from "./hooks/useCachedFetch";
 import "./App.css";
 
+const ProjectDetail = lazy(() => import("./pages/ProjectDetail"));
+
 function App() {
-  const [language, setLanguage] = useState("es");
+  const [language, setLanguage] = useState(() => {
+    return localStorage.getItem("portfolio_lang") || "es";
+  });
   const [showContact, setShowContact] = useState(false);
   const location = useLocation();
   const { scrollYProgress } = useScroll();
@@ -25,8 +29,11 @@ function App() {
     restDelta: 0.001,
   });
 
-  // DEBUG: Track renders
-  console.log('[App] Rendering...', { language, pathname: location.pathname });
+  // Persist language and set html lang attribute
+  useEffect(() => {
+    localStorage.setItem("portfolio_lang", language);
+    document.documentElement.lang = language;
+  }, [language]);
 
   // Memoize URL to prevent re-fetching on every render
   const projectsUrl = useMemo(
@@ -89,8 +96,8 @@ function App() {
           background: "var(--main-darkblue)",
         }}
       >
-        <h1>Demasiada velocidad</h1>
-        <p>Se han recibido demasiadas peticiones. Espera unos minutos.</p>
+        <h1>{language === "es" ? "Demasiada velocidad" : "Too many requests"}</h1>
+        <p>{language === "es" ? "Se han recibido demasiadas peticiones. Espera unos minutos." : "Too many requests received. Please wait a few minutes."}</p>
       </div>
     );
   }
@@ -148,10 +155,14 @@ function App() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <ProjectDetail language={language} />
+              <Suspense fallback={<Loader language={language} />}>
+                <ProjectDetail language={language} />
+              </Suspense>
             </motion.main>
           }
         />
+
+        <Route path="*" element={<NotFound language={language} />} />
       </Routes>
 
       <Footer language={language} />

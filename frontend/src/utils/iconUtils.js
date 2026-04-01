@@ -112,9 +112,11 @@ export const getIconUrl = (skillName) => {
     }
   }
 
-  console.warn(
-    `No icon found for: ${skillName}. Add inline SVG to svgIcons.js or file to LOCAL_ICONS`,
-  );
+  if (import.meta.env.DEV) {
+    console.warn(
+      `No icon found for: ${skillName}. Add inline SVG to svgIcons.js or file to LOCAL_ICONS`,
+    );
+  }
   return null;
 };
 

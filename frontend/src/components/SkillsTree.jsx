@@ -102,7 +102,6 @@ const SkillsTree = memo(({ language }) => {
             loading="lazy"
             onError={(e) => {
               e.target.style.display = "none";
-              console.warn(`Icon not found for: ${skill.name}`);
             }}
           />
         ) : null}

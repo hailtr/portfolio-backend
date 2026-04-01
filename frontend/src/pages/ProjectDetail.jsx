@@ -20,17 +20,25 @@ const ProjectDetail = ({ language }) => {
     `project_${slug}_${language}`
   );
 
-  if (loading) return <FullScreenLoader message="Cargando proyecto..." />;
+  if (loading) return <FullScreenLoader message={language === "es" ? "Cargando proyecto..." : "Loading project..."} />;
 
   if (error) {
     const isRateLimit = error === "RATELIMIT" || error === "ratelimit";
     return (
       <div className="project-detail-error">
-        <h1>{isRateLimit ? "⏳ Demasiada velocidad" : "Project not found"}</h1>
+        <h1>
+          {isRateLimit
+            ? (language === "es" ? "Demasiada velocidad" : "Too many requests")
+            : (language === "es" ? "Proyecto no encontrado" : "Project not found")}
+        </h1>
         <p>
           {isRateLimit
-            ? "Has hecho muchas peticiones. Por favor espera unos minutos."
-            : "No pudimos encontrar el proyecto que buscas."}
+            ? (language === "es"
+                ? "Has hecho muchas peticiones. Por favor espera unos minutos."
+                : "Too many requests. Please wait a few minutes.")
+            : (language === "es"
+                ? "No pudimos encontrar el proyecto que buscas."
+                : "We couldn't find the project you're looking for.")}
         </p>
         <button className="pd-back-btn" onClick={() => navigate("/#job")}>
           {language === "es" ? "Volver" : "Back"}

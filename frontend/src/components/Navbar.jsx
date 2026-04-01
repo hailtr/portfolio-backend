@@ -68,7 +68,7 @@ const Navbar = ({ language, toggleLanguage, toggleContact }) => {
 
       <button
         className="menu-toggle"
-        aria-label="Abrir menú"
+        aria-label={language === "es" ? "Abrir menú" : "Open menu"}
         onClick={toggleMenu}
       >
         &#9776;
