@@ -36,8 +36,8 @@ body {
 
 /* ===== HEADER ===== */
 .header {
-  margin-bottom: 0.5rem;
-  padding-bottom: 0.4rem;
+  margin-bottom: 0.6rem;
+  padding-bottom: 0.5rem;
   border-bottom: 2px solid var(--accent);
 }
 
@@ -45,7 +45,7 @@ body {
   display: flex;
   align-items: baseline;
   gap: 0.8rem;
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.25rem;
 }
 
 .name {
@@ -68,6 +68,8 @@ body {
   gap: 0.15rem 0;
   font-size: 0.85em;
   color: var(--ink-light);
+  letter-spacing: 0.2px;
+  word-spacing: 0.1rem;
 }
 
 .header-row-2 span,
@@ -80,14 +82,12 @@ body {
   color: var(--accent-light);
 }
 
-.header-row-2 > *:not(:last-child)::after {
-  content: " \00b7\00a0";
-  color: var(--ink-muted);
-}
-
 /* ===== SECTIONS ===== */
+/* #2: Left accent bar on section titles */
+/* #4: More whitespace between sections */
+/* #7: Bolder section dividers */
 .section {
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.6rem;
 }
 
 .section-title {
@@ -96,9 +96,10 @@ body {
   text-transform: uppercase;
   letter-spacing: 1.5px;
   color: var(--accent);
-  padding-bottom: 0.15rem;
-  border-bottom: 1.5px solid var(--border);
-  margin-bottom: 0.3rem;
+  padding: 0.1rem 0 0.1rem 0.5rem;
+  border-left: 3px solid var(--accent-light);
+  border-bottom: none;
+  margin-bottom: 0.35rem;
 }
 
 /* ===== SUMMARY ===== */
@@ -110,41 +111,92 @@ body {
 }
 
 /* ===== SKILLS (pills) ===== */
+/* #6: Alternating subtle background */
+/* #9: Proficiency-based pill colors */
 .skills-row {
-  margin-bottom: 0.15rem;
-  display: flex;
-  align-items: baseline;
-  gap: 0.3rem;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 7.5rem 1fr;
+  gap: 0 0.6rem;
+  padding: 0.28rem 0.4rem;
+  align-items: center;
+  border-bottom: 1px solid #eef1f5;
+}
+
+.skills-row:last-child {
+  border-bottom: none;
+}
+
+.skills-row.even {
+  background: #f8fafc;
 }
 
 .skills-cat {
-  font-size: 0.72em;
+  font-size: 0.75em;
   font-weight: 700;
   color: var(--accent);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   white-space: nowrap;
-  min-width: 5.5rem;
+}
+
+.skills-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
 }
 
 .pill {
-  font-size: 0.72em;
+  font-size: 0.73em;
   font-weight: 500;
-  padding: 0.12rem 0.4rem;
+  padding: 0.15rem 0.5rem;
   border-radius: 3px;
   background: var(--accent-bg);
   color: var(--ink);
-  display: inline-block;
-  margin: 0.05rem 0;
 }
 
-/* ===== JOBS ===== */
+.pill.key {
+  background: var(--accent);
+  color: var(--white);
+  font-weight: 600;
+}
+
+/* ===== EXPERIENCE ===== */
+/* #5: Job title + company on one line */
+/* #8: Timeline connector */
+.timeline {
+  position: relative;
+  padding-left: 1rem;
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 0.25rem;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  width: 2px;
+  background: var(--border);
+}
+
 .job {
-  margin-bottom: 0.35rem;
-  padding-bottom: 0.3rem;
+  position: relative;
+  margin-bottom: 0.4rem;
+  padding-bottom: 0.35rem;
   border-bottom: 1px solid #eef1f5;
   page-break-inside: avoid;
+}
+
+.job::before {
+  content: "";
+  position: absolute;
+  left: -0.85rem;
+  top: 0.45em;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-light);
+  border: 2px solid var(--white);
+  box-shadow: 0 0 0 1px var(--accent-light);
 }
 
 .job:last-child {
@@ -152,42 +204,51 @@ body {
   padding-bottom: 0;
 }
 
-.job-top {
+.job-header {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-}
-
-.job-top h3 {
-  font-size: 0.95em;
-  font-weight: 700;
-  color: var(--ink);
-}
-
-.job-dates {
-  font-size: 0.8em;
-  color: var(--ink-muted);
-  font-weight: 500;
-  white-space: nowrap;
-  margin-left: 0.5rem;
-}
-
-.job-mid {
-  display: flex;
-  align-items: baseline;
-  gap: 0.4rem;
   margin-bottom: 0.12rem;
 }
 
-.job-company {
+.job-title-line {
+  flex: 1;
+  min-width: 0;
+}
+
+.job-title-line h3 {
+  font-size: 0.95em;
+  font-weight: 700;
+  color: var(--ink);
+  display: inline;
+}
+
+.job-at {
   font-size: 0.85em;
+  color: var(--ink-muted);
+}
+
+.job-company {
+  font-size: 0.88em;
   font-weight: 600;
   color: var(--accent-light);
 }
 
 .job-location {
-  font-size: 0.8em;
+  font-size: 0.82em;
   color: var(--ink-muted);
+}
+
+/* #3: Date as subtle badge */
+.job-dates {
+  font-size: 0.75em;
+  color: var(--ink-light);
+  font-weight: 600;
+  white-space: nowrap;
+  margin-left: 0.5rem;
+  background: #f1f5f9;
+  padding: 0.12rem 0.5rem;
+  border-radius: 3px;
 }
 
 .job-highlights {
@@ -195,6 +256,7 @@ body {
   padding: 0;
 }
 
+/* #1: Color key metrics in highlights */
 .job-highlights li {
   font-size: 0.85em;
   padding-left: 0.75rem;
@@ -217,16 +279,17 @@ body {
 
 .job-highlights strong {
   font-weight: 700;
+  color: var(--accent-light);
 }
 
-/* ===== BOTTOM GRID (Education + Languages) ===== */
+/* ===== BOTTOM GRID (Education + Certs + Languages) ===== */
 .bottom-grid {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 1rem;
-  margin-bottom: 0.5rem;
-  padding-top: 0.2rem;
-  border-top: 1.5px solid var(--border);
+  margin-bottom: 0.6rem;
+  padding-top: 0.3rem;
+  border-top: 2px solid var(--border);
   page-break-inside: avoid;
 }
 
@@ -246,16 +309,6 @@ body {
 }
 
 /* ===== CERTIFICATIONS ===== */
-.certs-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.2rem 1.2rem;
-}
-
-.cert-item {
-  font-size: 0.85em;
-}
-
 .cert-item a {
   color: var(--accent-light);
   text-decoration: none;
@@ -282,7 +335,6 @@ body {
     display: none !important;
   }
 
-
   .job {
     page-break-inside: avoid;
   }
@@ -291,9 +343,26 @@ body {
     page-break-inside: avoid;
   }
 
-  .metrics {
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+  .pill.key {
+    background: var(--accent) !important;
+    color: var(--white) !important;
+  }
+
+  .skills-row.even {
+    background: #f8fafc !important;
+  }
+
+  .job-dates {
+    background: #f1f5f9 !important;
+  }
+
+  .timeline::before {
+    background: var(--border) !important;
+  }
+
+  .job::before {
+    background: var(--accent-light) !important;
+    box-shadow: 0 0 0 1px var(--accent-light) !important;
   }
 }
 

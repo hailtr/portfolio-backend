@@ -21,10 +21,12 @@
         <span class="role">{{ cv_data.basics.label }}</span>
       </div>
       <div class="header-row-2">
-        {% if cv_data.basics.email %}<span>{{ cv_data.basics.email }}</span>{% endif %}
-        {% if cv_data.basics.phone %}<span>{{ cv_data.basics.phone }}</span>{% endif %}
-        {% if cv_data.basics.location.city %}<span>{{ cv_data.basics.location.city }}{% if cv_data.basics.location.region %}, {{ cv_data.basics.location.region }}{% endif %}</span>{% endif %}
-        {% for profile in cv_data.basics.profiles %}<a href="{{ profile.url }}">{{ profile.username }}</a>{% endfor %}
+        {% set contact_items = [] %}
+        {% if cv_data.basics.email %}{% set _ = contact_items.append('<span>' ~ cv_data.basics.email ~ '</span>') %}{% endif %}
+        {% if cv_data.basics.phone %}{% set _ = contact_items.append('<span>' ~ cv_data.basics.phone ~ '</span>') %}{% endif %}
+        {% if cv_data.basics.location.city %}{% set loc = cv_data.basics.location.city %}{% if cv_data.basics.location.region %}{% set loc = loc ~ ', ' ~ cv_data.basics.location.region %}{% endif %}{% set _ = contact_items.append('<span>' ~ loc ~ '</span>') %}{% endif %}
+        {% for profile in cv_data.basics.profiles %}{% set _ = contact_items.append('<a href="' ~ profile.url ~ '">' ~ profile.username ~ '</a>') %}{% endfor %}
+        {{ contact_items|join(' &middot; ')|safe }}
       </div>
     </header>
 
@@ -41,11 +43,13 @@
     <section class="section">
       <h2 class="section-title">{% if lang == 'es' %}Habilidades{% else %}Skills{% endif %}</h2>
       {% for skill in cv_data.skills %}
-      <div class="skills-row">
+      <div class="skills-row{% if loop.index is even %} even{% endif %}">
         <span class="skills-cat">{{ skill.name }}</span>
-        {% for kw in skill.keywords %}
-        <span class="pill">{{ kw }}</span>
-        {% endfor %}
+        <div class="skills-pills">
+          {% for item in skill.skill_items %}
+          <span class="pill{% if item.proficiency >= 80 %} key{% endif %}">{{ item.name }}</span>
+          {% endfor %}
+        </div>
       </div>
       {% endfor %}
     </section>
@@ -93,15 +97,17 @@
     {% if cv_data.work %}
     <section class="section">
       <h2 class="section-title">{% if lang == 'es' %}Experiencia Laboral{% else %}Work Experience{% endif %}</h2>
+      <div class="timeline">
       {% for job in cv_data.work %}
       <div class="job">
-        <div class="job-top">
-          <h3>{{ job.position }}</h3>
+        <div class="job-header">
+          <div class="job-title-line">
+            <h3>{{ job.position }}</h3>
+            <span class="job-at"> {% if lang == 'es' %}en{% else %}at{% endif %} </span>
+            <span class="job-company">{{ job.company }}</span>
+            {% if job.location %}<span class="job-location">&mdash; {{ job.location }}</span>{% endif %}
+          </div>
           <span class="job-dates">{{ job.startDate }} &ndash; {{ job.endDate }}</span>
-        </div>
-        <div class="job-mid">
-          <span class="job-company">{{ job.company }}</span>
-          {% if job.location %}<span class="job-location">&mdash; {{ job.location }}</span>{% endif %}
         </div>
         {% if job.highlights %}
         <ul class="job-highlights">
@@ -112,12 +118,13 @@
         {% endif %}
       </div>
       {% endfor %}
+      </div>
     </section>
     {% endif %}
 
   </div>
 
-  <button id="print-btn" onclick="window.location.href='{{ url_for('cv.cv_pdf', lang=lang) }}'">
+  <button id="print-btn" onclick="window.open('{{ url_for('cv.cv_pdf', lang=lang, preview=1) }}', '_blank')">
     &#128438; PDF
   </button>
 </body>

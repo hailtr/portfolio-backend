@@ -299,7 +299,8 @@ def build_cv_from_models(lang="es"):
 
             skills_by_category[cat_name]["keywords"].append(name)
             skills_by_category[cat_name]["entries"].append({
-                "name": name, "description": description
+                "name": name, "description": description,
+                "proficiency": skill.proficiency or 50
             })
 
         # Sort categories by order
@@ -320,7 +321,9 @@ def build_cv_from_models(lang="es"):
             else:
                 cv_data["skills"].append({
                     "name": cat_name,
-                    "keywords": data["keywords"]
+                    "keywords": data["keywords"],
+                    "skill_items": [{"name": e["name"], "proficiency": e["proficiency"]}
+                                    for e in data["entries"]]
                 })
 
         # Fallback if no languages category exists in DB
@@ -386,6 +389,7 @@ def cv_pdf():
         from io import BytesIO
         
         lang = request.args.get("lang", "es")
+        preview = request.args.get("preview", "0") == "1"
         cv_data = build_cv_from_models(lang)
 
         if not cv_data:
@@ -399,15 +403,15 @@ def cv_pdf():
             return send_file(
                 BytesIO(cached_pdf),
                 mimetype="application/pdf",
-                as_attachment=True,
+                as_attachment=not preview,
                 download_name=filename,
             )
-        
+
         # Cache miss - generate PDF
         current_app.logger.info(f"PDF cache MISS for lang={lang}, generating...")
         pdf_service = PDFService()
         pdf_bytes = pdf_service.generate_cv_pdf(cv_data, lang)
-        
+
         # Store in cache for next time
         set_cached_pdf(lang, cv_data, pdf_bytes)
         current_app.logger.info(f"PDF cached for lang={lang}")
@@ -417,7 +421,7 @@ def cv_pdf():
         return send_file(
             pdf_bytes,
             mimetype="application/pdf",
-            as_attachment=True,
+            as_attachment=not preview,
             download_name=filename,
         )
     except Exception as e:
