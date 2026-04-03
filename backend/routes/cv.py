@@ -156,7 +156,6 @@ def build_cv_from_models(lang="es"):
         }
 
         # 2. Fetch Experience with eager loading
-        # Limit to 3 most recent items as requested
         experiences = Experience.query.options(joinedload(Experience.translations)).order_by(desc(Experience.start_date)).all()
         for exp in experiences:
             trans = next((t for t in exp.translations if t.lang == lang), None)
@@ -273,40 +272,65 @@ def build_cv_from_models(lang="es"):
         ).order_by(Skill.order).all()
         
         skills_by_category = {}
-        
+
         for skill in skills:
-            # Get skill name
+            # Get skill name and description
             trans = next((t for t in skill.translations if t.lang == lang), None)
             name = trans.name if trans else skill.slug
-            
+            description = trans.description if trans else ""
+
             # Get category
             if skill.skill_category:
                 cat_obj = skill.skill_category
                 cat_trans = next((t for t in cat_obj.translations if t.lang == lang), None)
                 cat_name = cat_trans.name if cat_trans else cat_obj.slug
+                cat_slug = cat_obj.slug
                 cat_order = cat_obj.order
             else:
-                # Fallback for uncategorized or legacy
                 cat_name = "Other" if lang == "en" else "Otros"
+                cat_slug = "other"
                 cat_order = 999
-            
+
             if cat_name not in skills_by_category:
-                skills_by_category[cat_name] = {"keywords": [], "order": cat_order}
-            
+                skills_by_category[cat_name] = {
+                    "keywords": [], "entries": [],
+                    "order": cat_order, "slug": cat_slug
+                }
+
             skills_by_category[cat_name]["keywords"].append(name)
+            skills_by_category[cat_name]["entries"].append({
+                "name": name, "description": description
+            })
 
         # Sort categories by order
         sorted_categories = sorted(skills_by_category.items(), key=lambda x: x[1]["order"])
 
+        # Separate spoken languages from technical skills
+        SPOKEN_LANG_SLUGS = {"spoken-languages", "idiomas"}
         for cat_name, data in sorted_categories:
-            # Skip "Other" category as requested
             if cat_name in ["Other", "Otros"]:
                 continue
-                
-            cv_data["skills"].append({
-                "name": cat_name,
-                "keywords": data["keywords"]
-            })
+
+            if data.get("slug") in SPOKEN_LANG_SLUGS:
+                for entry in data["entries"]:
+                    cv_data["languages"].append({
+                        "language": entry["name"],
+                        "fluency": entry["description"] or ""
+                    })
+            else:
+                cv_data["skills"].append({
+                    "name": cat_name,
+                    "keywords": data["keywords"]
+                })
+
+        # Fallback if no languages category exists in DB
+        if not cv_data["languages"]:
+            cv_data["languages"] = [
+                {"language": "Español" if lang == "es" else "Spanish",
+                 "fluency": "Nativo" if lang == "es" else "Native"},
+                {"language": "Inglés" if lang == "es" else "English",
+                 "fluency": "Fluido" if lang == "es" else "Fluent"}
+            ]
 
         # 5. Fetch Certifications (Awards) with eager loading
         certs = Certification.query.options(joinedload(Certification.translations)).order_by(desc(Certification.issue_date)).all()
@@ -321,21 +345,6 @@ def build_cv_from_models(lang="es"):
                 "summary": trans.description,
                 "link": cert.credential_url
             })
-
-        # 6. Languages (Hardcoded for now as they aren't in a model yet, or use Skills?)
-        # User has 'languages' in skills usually, but CV template expects separate 'languages' key
-        # We can try to extract from skills if category is 'languages'
-        # For now, let's leave it empty or add a default
-        cv_data["languages"] = [
-            {
-                "language": "Español" if lang == "es" else "Spanish",
-                "fluency": "Nativo" if lang == "es" else "Native"
-            },
-            {
-                "language": "Inglés" if lang == "es" else "English",
-                "fluency": "Fluido" if lang == "es" else "Fluent" # Assumption
-            }
-        ]
 
         return cv_data
 

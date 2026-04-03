@@ -7,203 +7,119 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='styles/cv.css') }}">
 </head>
 
-<body class="cv-mode">
-  <div class="cv-container">
-    <!-- Sidebar (Left Column) -->
-    <aside class="cv-sidebar">
-      <div class="profile-section">
-        <div class="profile-photo">
-          {% if cv_data.basics.image and (cv_data.basics.image.startswith('http://') or
-          cv_data.basics.image.startswith('https://')) %}
-          <img src="{{ cv_data.basics.image }}" alt="Profile Photo">
-          {% elif profile_img_abs_path %}
-          <img src="{{ profile_img_abs_path }}" alt="Profile Photo">
-          {% else %}
-          <img src="{{ url_for('static', filename='images/profilepicture.jpg') }}" alt="Profile Photo">
-          {% endif %}
-        </div>
+<body>
+  <div class="page">
+
+    <!-- HEADER -->
+    <header class="header">
+      <div class="header-row-1">
         <h1 class="name">{{ cv_data.basics.name }}</h1>
-        <h2 class="role">{{ cv_data.basics.label }}</h2>
+        <span class="role">{{ cv_data.basics.label }}</span>
       </div>
-
-      <div class="contact-section">
-        <div class="contact-item">
-          <i class="fas fa-envelope"></i>
-          <span>{{ cv_data.basics.email }}</span>
-        </div>
-        <div class="contact-item">
-          <i class="fas fa-phone"></i>
-          <span>{{ cv_data.basics.phone }}</span>
-        </div>
-        <div class="contact-item">
-          <i class="fas fa-map-marker-alt"></i>
-          <span>{{ cv_data.basics.location.city }}, {{ cv_data.basics.location.region }}</span>
-        </div>
-
-        {% if cv_data.basics.profiles %}
-        <div class="social-links">
-          {% for profile in cv_data.basics.profiles %}
-          <a href="{{ profile.url }}" target="_blank" class="social-link">
-            {% if profile.network == 'LinkedIn' %}<i class="fab fa-linkedin"></i>
-            {% elif profile.network == 'GitHub' %}<i class="fab fa-github"></i>
-            {% elif profile.network == 'Website' %}<i class="fas fa-globe"></i>
-            {% else %}<i class="fas fa-link"></i>{% endif %}
-            <span>{{ profile.username }}</span>
-          </a>
-          {% endfor %}
-        </div>
-        {% endif %}
+      <div class="header-row-2">
+        {% if cv_data.basics.email %}<span>{{ cv_data.basics.email }}</span>{% endif %}
+        {% if cv_data.basics.phone %}<span>{{ cv_data.basics.phone }}</span>{% endif %}
+        {% if cv_data.basics.location.city %}<span>{{ cv_data.basics.location.city }}{% if cv_data.basics.location.region %}, {{ cv_data.basics.location.region }}{% endif %}</span>{% endif %}
+        {% for profile in cv_data.basics.profiles %}<a href="{{ profile.url }}">{{ profile.username }}</a>{% endfor %}
       </div>
+    </header>
 
-      {% if cv_data.skills %}
-      <div class="sidebar-section">
-        <h3 class="section-title">{% if lang == 'es' %}Habilidades{% else %}Skills{% endif %}</h3>
-        <div class="skills-list">
-          {% for skill in cv_data.skills %}
-          <div class="skill-category">
-            <h4>{{ skill.name }}</h4>
-            <div class="skill-tags">
-              {% for keyword in skill.keywords %}
-              <span class="skill-tag">{{ keyword }}</span>
-              {% endfor %}
-            </div>
-          </div>
-          {% endfor %}
-        </div>
+    <!-- PROFESSIONAL PROFILE -->
+    {% if cv_data.basics.summary %}
+    <section class="section">
+      <h2 class="section-title">{% if lang == 'es' %}Perfil Profesional{% else %}Professional Profile{% endif %}</h2>
+      <p class="summary">{{ cv_data.basics.summary|safe }}</p>
+    </section>
+    {% endif %}
+
+    <!-- SKILLS -->
+    {% if cv_data.skills %}
+    <section class="section">
+      <h2 class="section-title">{% if lang == 'es' %}Habilidades{% else %}Skills{% endif %}</h2>
+      {% for skill in cv_data.skills %}
+      <div class="skills-row">
+        <span class="skills-cat">{{ skill.name }}</span>
+        {% for kw in skill.keywords %}
+        <span class="pill">{{ kw }}</span>
+        {% endfor %}
       </div>
-      {% endif %}
-      <!-- Education (Moved to Sidebar) -->
+      {% endfor %}
+    </section>
+    {% endif %}
+
+    <!-- EDUCATION + CERTIFICATIONS + LANGUAGES -->
+    <div class="bottom-grid">
       {% if cv_data.education %}
-      <div class="sidebar-section">
-        <h3 class="section-title">{% if lang == 'es' %}Educación{% else %}Education{% endif %}</h3>
-        <div class="education-list">
-          {% for edu in cv_data.education %}
-          <div class="education-item">
-            <h4 class="institution">{{ edu.institution }}</h4>
-            <div class="degree">
-              {{ edu.studyType }} {% if edu.area %}{% if lang == 'es' %}en{% else %}in{% endif %} {{ edu.area }}{% endif
-              %}
-            </div>
-            <div class="date">{{ edu.startDate }} - {{ edu.endDate if edu.endDate else
-              ('Presente' if lang == 'es' else 'Present') }}</div>
-          </div>
-          {% endfor %}
+      <div class="bottom-col">
+        <h2 class="section-title">{% if lang == 'es' %}Educaci&oacute;n{% else %}Education{% endif %}</h2>
+        {% for edu in cv_data.education %}
+        <div class="bottom-item">
+          <strong>{{ edu.institution }}</strong> &mdash; {{ edu.studyType }}{% if edu.area %} {% if lang == 'es' %}en{% else %}in{% endif %} {{ edu.area }}{% endif %}<br>
+          <span class="muted">{% if edu.location %}{{ edu.location }} &bull; {% endif %}{{ edu.startDate }} &ndash; {{ edu.endDate }}</span>
         </div>
+        {% endfor %}
       </div>
       {% endif %}
 
-      <!-- Certifications (Moved to Sidebar) -->
       {% if cv_data.awards %}
-      <div class="sidebar-section">
-        <h3 class="section-title">{% if lang == 'es' %}Certificaciones{% else %}Certifications{% endif %}</h3>
-        <div class="skill-tags" style="gap: 0.4rem;">
-          {% for award in cv_data.awards %}
-          {% if award.link %}
-          <a href="{{ award.link }}" target="_blank" class="skill-tag"
-            style="text-decoration: none; color: inherit;">{{ award.title }}</a>
-          {% else %}
-          <span class="skill-tag">{{ award.title }}</span>
-          {% endif %}
-          {% endfor %}
+      <div class="bottom-col">
+        <h2 class="section-title">{% if lang == 'es' %}Certificaciones{% else %}Certifications{% endif %}</h2>
+        {% for award in cv_data.awards %}
+        <div class="bottom-item">
+          {% if award.link %}<a href="{{ award.link }}"><strong>{{ award.title }}</strong></a>{% else %}<strong>{{ award.title }}</strong>{% endif %}
+          {% if award.awarder %}<br><span class="muted">{{ award.awarder }}</span>{% endif %}
         </div>
+        {% endfor %}
       </div>
       {% endif %}
 
       {% if cv_data.languages %}
-      <div class="sidebar-section">
-        <h3 class="section-title">{% if lang == 'es' %}Idiomas{% else %}Languages{% endif %}</h3>
-        <div class="languages-list">
-          {% for lang_item in cv_data.languages %}
-          <div class="language-item">
-            <span class="lang-name">{{ lang_item.language }}</span>
-            <span class="lang-fluency">{{ lang_item.fluency }}</span>
-          </div>
-          {% endfor %}
+      <div class="bottom-col">
+        <h2 class="section-title">{% if lang == 'es' %}Idiomas{% else %}Languages{% endif %}</h2>
+        {% for lang_item in cv_data.languages %}
+        <div class="bottom-item">
+          <strong>{{ lang_item.language }}</strong> &mdash; <span class="muted">{{ lang_item.fluency }}</span>
         </div>
+        {% endfor %}
       </div>
       {% endif %}
-    </aside>
+    </div>
 
-    <!-- Main Content (Right Column) -->
-    <main class="cv-main">
-      <!-- Summary -->
-      <section class="main-section">
-        <h3 class="section-title">{% if lang == 'es' %}Perfil Profesional{% else %}Professional Profile{% endif %}</h3>
-        <p class="summary-text">{{ cv_data.basics.summary|safe }}</p>
-      </section>
-
-      <!-- Featured Project -->
-      {% if cv_data.featured_project %}
-      <section class="main-section">
-        <h3 class="section-title">{% if lang == 'es' %}Proyecto Destacado{% else %}Featured Project{% endif %}</h3>
-        <div class="timeline-item">
-          <div class="timeline-header">
-            <h4 class="position">{{ cv_data.featured_project.title }}</h4>
-            <span class="date">{% if lang == 'es' %}Destacado{% else %}Featured{% endif %}</span>
-          </div>
-          {% if cv_data.featured_project.url %}
-          <div class="company-name">
-            <a href="{{ cv_data.featured_project.url }}" target="_blank">{{ cv_data.featured_project.subtitle or 'View
-              Project' }} <i class="fas fa-external-link-alt" style="font-size: 0.7em;"></i></a>
-          </div>
-          {% elif cv_data.featured_project.subtitle %}
-          <div class="company-name">
-            {{ cv_data.featured_project.subtitle }}
-          </div>
-          {% endif %}
-
-          <p class="job-summary">{{ cv_data.featured_project.description|safe }}</p>
+    <!-- WORK EXPERIENCE -->
+    {% if cv_data.work %}
+    <section class="section">
+      <h2 class="section-title">{% if lang == 'es' %}Experiencia Laboral{% else %}Work Experience{% endif %}</h2>
+      {% for job in cv_data.work %}
+      <div class="job">
+        <div class="job-top">
+          <h3>{{ job.position }}</h3>
+          <span class="job-dates">{{ job.startDate }} &ndash; {{ job.endDate }}</span>
         </div>
-      </section>
-      {% endif %}
-
-      <!-- Experience -->
-      {% if cv_data.work %}
-      <section class="main-section">
-        <h3 class="section-title">{% if lang == 'es' %}Experiencia Laboral{% else %}Work Experience{% endif %}
-        </h3>
-        <div class="timeline">
-          {% for job in cv_data.work %}
-          <div class="timeline-item">
-            <div class="timeline-header">
-              <h4 class="position">{{ job.position }}</h4>
-              <span class="date">{{ job.startDate }} - {{ job.endDate if job.endDate else ('Presente' if lang ==
-                'es' else 'Present') }}</span>
-            </div>
-            <div class="company-name">
-              <a href="{{ job.url }}" target="_blank">{{ job.company }}</a>
-            </div>
-            <p class="job-summary">{{ job.summary|safe }}</p>
-            {% if job.highlights %}
-            <ul class="job-highlights">
-              {% for highlight in job.highlights %}
-              <li>{{ highlight|safe }}</li>
-              {% endfor %}
-            </ul>
-            {% endif %}
-          </div>
+        <div class="job-mid">
+          <span class="job-company">{{ job.company }}</span>
+          {% if job.location %}<span class="job-location">&mdash; {{ job.location }}</span>{% endif %}
+        </div>
+        {% if job.highlights %}
+        <ul class="job-highlights">
+          {% for hl in job.highlights %}
+          <li>{{ hl|safe }}</li>
           {% endfor %}
-        </div>
-      </section>
-      {% endif %}
+        </ul>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </section>
+    {% endif %}
 
-    </main>
   </div>
 
-  <button id="download-pdf" onclick="downloadPdf()">
-    <i class="fas fa-download"></i> PDF
+  <button id="print-btn" onclick="window.location.href='{{ url_for('cv.cv_pdf', lang=lang) }}'">
+    &#128438; PDF
   </button>
-
-  <script>
-    function downloadPdf() {
-      window.location.href = "{{ url_for('cv.cv_pdf', lang=lang) }}";
-    }
-  </script>
 </body>
 
 </html>
