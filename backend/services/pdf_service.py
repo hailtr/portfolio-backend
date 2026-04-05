@@ -65,42 +65,22 @@ class PDFService:
 
     def _prepare_html(self, cv_data, lang):
         """Prepare HTML and CSS content for PDF generation"""
-        import base64
-        
         # Get absolute paths for static files
         backend_dir = os.path.dirname(os.path.dirname(__file__))
         static_dir = os.path.join(backend_dir, "static")
         css_path = os.path.join(static_dir, "styles", "cv.css")
-        images_dir = os.path.join(static_dir, "images")
-
-        # Prepare image - use base64 for microservice, file:// for local
-        profile_img_path = os.path.join(images_dir, "profilepicture.jpg")
-        if os.path.exists(profile_img_path):
-            if self.use_microservice:
-                # Embed as base64 for microservice (Cloud Run doesn't have the file)
-                with open(profile_img_path, 'rb') as img_file:
-                    img_data = base64.b64encode(img_file.read()).decode('utf-8')
-                profile_img_url = f"data:image/jpeg;base64,{img_data}"
-            else:
-                # Use file:// URL for local WeasyPrint
-                profile_img_url = f"file://{profile_img_path}".replace("\\", "/")
-        else:
-            profile_img_url = None
 
         # Render HTML template with CV data
         from flask import render_template
-        html_string = render_template(
-            "cv.html", cv_data=cv_data, lang=lang, profile_img_abs_path=profile_img_url
-        )
+        html_string = render_template("cv.html", cv_data=cv_data, lang=lang)
 
         # Load CSS
         css_content = ""
         if os.path.exists(css_path):
             with open(css_path, 'r', encoding='utf-8') as f:
                 css_content = f.read()
-            
-            # Add font import
-            font_import = "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');\n"
+
+            font_import = "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');\n"
             css_content = font_import + css_content
 
         return html_string, css_content

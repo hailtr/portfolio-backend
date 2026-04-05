@@ -69,13 +69,13 @@
       </div>
       {% endif %}
 
-      {% if cv_data.awards %}
+      {% if cv_data.certifications %}
       <div class="bottom-col">
         <h2 class="section-title">{% if lang == 'es' %}Certificaciones{% else %}Certifications{% endif %}</h2>
-        {% for award in cv_data.awards %}
+        {% for cert in cv_data.certifications %}
         <div class="bottom-item">
-          {% if award.link %}<a href="{{ award.link }}"><strong>{{ award.title }}</strong></a>{% else %}<strong>{{ award.title }}</strong>{% endif %}
-          {% if award.awarder %}<br><span class="muted">{{ award.awarder }}</span>{% endif %}
+          {% if cert.link %}<a href="{{ cert.link }}"><strong>{{ cert.title }}</strong></a>{% else %}<strong>{{ cert.title }}</strong>{% endif %}
+          {% if cert.awarder %}<br><span class="muted">{{ cert.awarder }}</span>{% endif %}
         </div>
         {% endfor %}
       </div>

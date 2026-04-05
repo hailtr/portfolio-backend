@@ -1,6 +1,6 @@
 """
-Database backup script for Railway PostgreSQL
-Creates a JSON backup of all portfolio data
+DEPRECATED: Use the admin panel backup instead (GET /admin/backup).
+This script references outdated model attributes and will not work.
 """
 import json
 import os

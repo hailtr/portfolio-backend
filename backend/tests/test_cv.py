@@ -32,13 +32,14 @@ def test_build_cv_no_profile(client):
     assert cv is None
 
 
-def test_build_cv_featured_project(client, seed_data):
-    """Test that featured project is included in CV."""
+def test_build_cv_certifications(client, seed_data):
+    """Test that certifications are included in CV."""
     from backend.routes.cv import build_cv_from_models
 
     cv = build_cv_from_models(lang="en")
-    assert "featured_project" in cv
-    assert cv["featured_project"]["title"] == "Test Project"
+    assert "certifications" in cv
+    assert len(cv["certifications"]) >= 1
+    assert cv["certifications"][0]["title"] == "Certification"
 
 
 def test_build_cv_work_experience_format(client, seed_data):
