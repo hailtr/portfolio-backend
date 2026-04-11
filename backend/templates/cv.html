@@ -99,7 +99,7 @@
       <h2 class="section-title">{% if lang == 'es' %}Experiencia Laboral{% else %}Work Experience{% endif %}</h2>
       <div class="timeline">
       {% for job in cv_data.work %}
-      <div class="job">
+      <div class="job{% if not job.highlights %} job-compact{% endif %}">
         <div class="job-header">
           <div class="job-title-line">
             <h3>{{ job.position }}</h3>
@@ -109,6 +109,9 @@
           </div>
           <span class="job-dates">{{ job.startDate }} &ndash; {{ job.endDate }}</span>
         </div>
+        {% if job.summary %}
+        <p class="job-summary">{{ job.summary|safe }}</p>
+        {% endif %}
         {% if job.highlights %}
         <ul class="job-highlights">
           {% for hl in job.highlights %}

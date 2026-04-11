@@ -151,7 +151,10 @@ def build_cv_from_models(lang="es"):
         }
 
         # 2. Fetch Experience
-        experiences = Experience.query.options(joinedload(Experience.translations)).order_by(desc(Experience.start_date)).all()
+        experiences = Experience.query.options(
+            joinedload(Experience.translations),
+            joinedload(Experience.tags),
+        ).order_by(desc(Experience.start_date)).all()
         for exp in experiences:
             trans = next((t for t in exp.translations if t.lang == lang), None)
             if not trans: continue
@@ -179,6 +182,8 @@ def build_cv_from_models(lang="es"):
 
             end_date_display = ("Presente" if lang == "es" else "Present") if exp.current else format_date(exp.end_date, lang)
 
+            tag_names = sorted([t.name for t in exp.tags]) if exp.tags else []
+
             cv_data["work"].append({
                 "company": trans.title,
                 "position": trans.subtitle,
@@ -186,7 +191,8 @@ def build_cv_from_models(lang="es"):
                 "endDate": end_date_display,
                 "location": exp.location,
                 "summary": summary,
-                "highlights": highlights
+                "highlights": highlights,
+                "tags": tag_names,
             })
 
         # 3. Fetch Education

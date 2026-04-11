@@ -63,13 +63,10 @@ body {
 }
 
 .header-row-2 {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.15rem 0;
   font-size: 0.85em;
   color: var(--ink-light);
+  line-height: 1.55;
   letter-spacing: 0.2px;
-  word-spacing: 0.1rem;
 }
 
 .header-row-2 span,
@@ -110,7 +107,7 @@ body {
 /* ===== SKILLS (pills) ===== */
 .skills-row {
   display: grid;
-  grid-template-columns: 7.5rem 1fr;
+  grid-template-columns: 12rem 1fr;
   gap: 0 0.6rem;
   padding: 0.28rem 0.4rem;
   align-items: center;
@@ -247,6 +244,18 @@ body {
   border-radius: 3px;
 }
 
+.job-summary {
+  font-size: 0.85em;
+  color: var(--ink);
+  line-height: 1.4;
+  margin-top: 0.1rem;
+}
+
+.job-compact {
+  margin-bottom: 0.25rem;
+  padding-bottom: 0.2rem;
+}
+
 .job-highlights {
   list-style: none;
   padding: 0;
@@ -288,9 +297,16 @@ body {
   page-break-inside: avoid;
 }
 
+.bottom-col {
+  min-width: 0;
+}
+
 .bottom-item {
   font-size: 0.85em;
   margin-bottom: 0.15rem;
+  min-width: 0;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .bottom-item strong {
