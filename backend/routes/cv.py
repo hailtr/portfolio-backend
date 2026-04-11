@@ -325,7 +325,12 @@ def cv_view():
                 error="CV data not found. Please ensure your profile is set up in the Admin Panel."
             ), 404
 
-        return render_template("cv.html", cv_data=cv_data, lang=lang)
+        from flask import make_response
+        resp = make_response(render_template("cv.html", cv_data=cv_data, lang=lang))
+        resp.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+        resp.headers["Pragma"] = "no-cache"
+        resp.headers["Expires"] = "0"
+        return resp
     except Exception as e:
         current_app.logger.error(f"CV view error: {traceback.format_exc()}")
         return render_template("error.html", error="Error generating CV"), 500
