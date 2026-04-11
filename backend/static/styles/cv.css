@@ -251,6 +251,11 @@ body {
   margin-top: 0.1rem;
 }
 
+.job-summary strong {
+  font-weight: 700;
+  color: var(--accent-light);
+}
+
 .job-compact {
   margin-bottom: 0.25rem;
   padding-bottom: 0.2rem;
