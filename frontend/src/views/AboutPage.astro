@@ -1,0 +1,262 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { fetchProfile, fetchSkills, fetchEducation, fetchCertifications, fetchExperience, groupSkillsByCategory } from '../lib/api';
+import { getLocale, t, localePath } from '../lib/i18n';
+
+const locale = getLocale(Astro.currentLocale);
+const [profile, skills, education, certifications, experiences] = await Promise.all([
+  fetchProfile(locale),
+  fetchSkills(locale),
+  fetchEducation(locale),
+  fetchCertifications(locale),
+  fetchExperience(locale),
+]);
+
+const skillGroups = groupSkillsByCategory(skills);
+
+function formatDate(dateStr: string, loc: string): string {
+  return new Date(dateStr).toLocaleDateString(loc === 'es' ? 'es-ES' : 'en-US', {
+    year: 'numeric',
+    month: 'short',
+  });
+}
+
+function parseDescription(html: string): { summary: string; highlights: string[] } {
+  const lines = html.split('\n').map((l) => l.trim()).filter(Boolean);
+  const highlights: string[] = [];
+  const summaryParts: string[] = [];
+  for (const line of lines) {
+    if (line.startsWith('- ') || line.startsWith('* ') || line.startsWith('• ')) {
+      highlights.push(line.replace(/^[-*•]\s*/, ''));
+    } else {
+      summaryParts.push(line);
+    }
+  }
+  return { summary: summaryParts.join(' '), highlights };
+}
+---
+
+<BaseLayout
+  title={`${t('about.title', locale)} — Rafael Ortiz`}
+  description={profile.bio.slice(0, 160)}
+>
+  <!-- ─── Hero / Bio ─── -->
+  <section class="relative overflow-hidden pt-32 pb-20 md:pt-40">
+    <div class="pointer-events-none absolute -top-32 right-0 h-[400px] w-[400px] rounded-full bg-[var(--color-accent)] opacity-[0.03] blur-[120px]" />
+
+    <div class="relative mx-auto max-w-4xl px-[var(--container-px)]">
+      <h1 class="section-heading text-3xl font-bold tracking-tight md:text-4xl">
+        {t('about.title', locale)}
+      </h1>
+
+      <div class="mt-10 space-y-4 text-base leading-[1.8] text-[var(--color-fg-muted)]">
+        {profile.bio.split('\n').filter(Boolean).map((p) => (
+          <p>{p}</p>
+        ))}
+      </div>
+
+      <!-- Quick facts -->
+      <div class="mt-12 grid gap-4 sm:grid-cols-3">
+        {[
+          {
+            label: locale === 'es' ? 'Ubicación' : 'Location',
+            value: `${profile.location.city}, ${profile.location.country}`,
+            icon: 'M15 10.5a3 3 0 11-6 0 3 3 0 016 0z M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z',
+          },
+          {
+            label: locale === 'es' ? 'Idiomas' : 'Languages',
+            value: locale === 'es' ? 'Español (nativo), Inglés (fluido)' : 'Spanish (native), English (fluent)',
+            icon: 'M10.5 21l5.25-11.25L21 21m-9-3h7.5M3 5.621a48.474 48.474 0 016-.371m0 0c1.12 0 2.233.038 3.334.114M9 5.25V3m3.334 2.364C11.176 10.658 7.69 15.08 3 17.502m9.334-12.138c.896.061 1.785.147 2.666.257m-4.589 8.495a18.023 18.023 0 01-3.827-5.802',
+          },
+          {
+            label: locale === 'es' ? 'Disponibilidad' : 'Availability',
+            value: locale === 'es' ? 'Contrato / Senior-Lead' : 'Contract / Senior-Lead',
+            icon: 'M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
+          },
+        ].map((fact) => (
+          <div class="card p-5">
+            <div class="flex items-center gap-2 mb-2">
+              <svg class="h-4 w-4 text-[var(--color-accent)]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d={fact.icon} />
+              </svg>
+              <p class="text-xs font-bold uppercase tracking-wider text-[var(--color-fg-faint)]">{fact.label}</p>
+            </div>
+            <p class="font-medium text-sm">{fact.value}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider" />
+
+  <!-- ─── Experience Timeline ─── -->
+  <section class="py-20 md:py-24">
+    <div class="mx-auto max-w-4xl px-[var(--container-px)]">
+      <h2 class="section-heading text-2xl font-bold tracking-tight md:text-3xl">
+        {t('experience.title', locale)}
+      </h2>
+
+      <div class="mt-12 space-y-0">
+        {experiences.map((exp, idx) => {
+          const { summary, highlights } = parseDescription(exp.description);
+          const isLast = idx === experiences.length - 1;
+          const isCurrent = exp.current;
+
+          return (
+            <div class="relative pl-8 pb-10 last:pb-0">
+              {!isLast && (
+                <div class="absolute left-[7px] top-4 bottom-0 w-px bg-gradient-to-b from-[var(--color-border-hover)] to-[var(--color-border)]" />
+              )}
+              <div class:list={[
+                'absolute left-0 top-2.5 h-[15px] w-[15px] rounded-full border-2 bg-[var(--color-bg)]',
+                isCurrent
+                  ? 'border-[var(--color-accent)] shadow-[0_0_12px_rgba(34,211,238,0.3)]'
+                  : 'border-[var(--color-border-hover)]'
+              ]} />
+
+              <div class="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
+                <div>
+                  <h3 class="text-base font-bold">{exp.title}</h3>
+                  <p class="text-sm text-[var(--color-fg-muted)]">
+                    {exp.company}
+                    {exp.location && <span class="text-[var(--color-fg-faint)]"> &middot; {exp.location}</span>}
+                  </p>
+                </div>
+                <p class:list={[
+                  'text-xs font-medium whitespace-nowrap',
+                  isCurrent ? 'text-[var(--color-accent)]' : 'text-[var(--color-fg-faint)]'
+                ]}>
+                  {formatDate(exp.startDate, locale)} – {exp.current
+                    ? t('experience.present', locale)
+                    : exp.endDate ? formatDate(exp.endDate, locale) : ''}
+                </p>
+              </div>
+
+              {summary && (
+                <p class="mt-2.5 text-sm leading-relaxed text-[var(--color-fg-muted)]" set:html={summary} />
+              )}
+
+              {highlights.length > 0 && (
+                <ul class="mt-2.5 space-y-1.5">
+                  {highlights.map((h) => (
+                    <li class="flex gap-2.5 text-sm leading-relaxed text-[var(--color-fg-muted)]">
+                      <span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-[var(--color-accent)]" />
+                      <span set:html={h} />
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              {exp.tags.length > 0 && (
+                <div class="mt-3 flex flex-wrap gap-1.5">
+                  {exp.tags.map((tag) => (
+                    <span class="tag">{tag}</span>
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider" />
+
+  <!-- ─── Skills ─── -->
+  <section class="py-20 md:py-24">
+    <div class="mx-auto max-w-4xl px-[var(--container-px)]">
+      <h2 class="section-heading text-2xl font-bold tracking-tight md:text-3xl">
+        {t('about.skills', locale)}
+      </h2>
+      <div class="mt-10 space-y-8">
+        {[...skillGroups.entries()].map(([category, items]) => (
+          <div>
+            <h3 class="flex items-center gap-3 text-xs font-bold uppercase tracking-[0.15em] text-[var(--color-accent)]">
+              <span class="h-px w-4 bg-[var(--color-accent)] opacity-50" />
+              {category}
+            </h3>
+            <div class="mt-3 flex flex-wrap gap-2">
+              {items.map((skill) => (
+                <span class="tag">{skill.name}</span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider" />
+
+  <!-- ─── Education + Certifications ─── -->
+  <section class="py-20 md:py-24">
+    <div class="mx-auto max-w-4xl px-[var(--container-px)]">
+      <div class="grid gap-16 md:grid-cols-2">
+        {/* Education */}
+        <div>
+          <h2 class="section-heading text-2xl font-bold tracking-tight">
+            {locale === 'es' ? 'Educación' : 'Education'}
+          </h2>
+          <div class="mt-8 space-y-6">
+            {education.map((edu) => (
+              <div class="relative pl-5 border-l-2 border-[var(--color-border)] hover:border-[var(--color-accent)] transition-colors">
+                <p class="text-xs font-medium text-[var(--color-fg-faint)]">
+                  {new Date(edu.startDate).getFullYear()} – {edu.current
+                    ? t('experience.present', locale)
+                    : new Date(edu.endDate).getFullYear()}
+                </p>
+                <h3 class="mt-1 font-semibold text-sm">{edu.title}</h3>
+                <p class="text-xs text-[var(--color-fg-muted)]">{edu.institution} &middot; {edu.location}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Certifications */}
+        {certifications.length > 0 && (
+          <div>
+            <h2 class="section-heading text-2xl font-bold tracking-tight">
+              {locale === 'es' ? 'Certificaciones' : 'Certifications'}
+            </h2>
+            <div class="mt-8 space-y-4">
+              {certifications.map((cert) => (
+                <div class="flex items-start gap-3">
+                  <div class="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[var(--color-accent)]" />
+                  <div>
+                    <p class="font-semibold text-sm">{cert.title}</p>
+                    <p class="text-xs text-[var(--color-fg-faint)]">{cert.issuer} &middot; {new Date(cert.issueDate).getFullYear()}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider" />
+
+  <!-- ─── Connect ─── -->
+  <section class="py-20 md:py-24">
+    <div class="mx-auto max-w-4xl px-[var(--container-px)]">
+      <div class="flex flex-wrap gap-3">
+        {Object.entries(profile.social).map(([key, url]) => (
+          <a
+            href={url as string}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-outline"
+          >
+            {key.charAt(0).toUpperCase() + key.slice(1)}
+            <svg class="h-3.5 w-3.5 opacity-40" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

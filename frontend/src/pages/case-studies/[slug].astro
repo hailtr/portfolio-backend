@@ -1,0 +1,16 @@
+---
+import { getCollection } from 'astro:content';
+import CaseStudyDetail from '../../views/CaseStudyDetail.astro';
+
+export async function getStaticPaths() {
+  const cases = await getCollection('case-studies');
+  const esCases = cases.filter((c) => c.id.startsWith('es/'));
+  return esCases.map((entry) => ({
+    params: { slug: entry.id.replace('es/', '') },
+    props: { slug: entry.id.replace('es/', '') },
+  }));
+}
+
+const { slug } = Astro.props;
+---
+<CaseStudyDetail slug={slug} />

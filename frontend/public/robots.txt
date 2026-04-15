@@ -1,5 +1,4 @@
 User-agent: *
 Allow: /
-Disallow: /admin
 
-Sitemap: https://rfo-portfolio.vercel.app/sitemap.xml
+Sitemap: https://rafaelortiz.dev/sitemap-index.xml

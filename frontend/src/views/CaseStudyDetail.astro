@@ -1,0 +1,170 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+import { getLocale, t, localePath } from '../lib/i18n';
+
+interface Props {
+  slug: string;
+}
+
+const locale = getLocale(Astro.currentLocale);
+const { slug } = Astro.props;
+
+const allCases = await getCollection('case-studies');
+const entry = allCases.find((c) => c.id === `${locale}/${slug}`);
+
+if (!entry) {
+  return Astro.redirect(localePath('/case-studies', locale));
+}
+
+const { Content } = await render(entry);
+const title = entry.data.title[locale];
+const summary = entry.data.summary[locale];
+---
+
+<BaseLayout
+  title={`${title} — Rafael Ortiz`}
+  description={summary}
+>
+  <article class="pt-32 pb-20 md:pt-40">
+    <div class="mx-auto max-w-3xl px-[var(--container-px)]">
+      <!-- Back link -->
+      <a
+        href={localePath('/case-studies', locale)}
+        class="inline-flex items-center gap-1.5 text-sm text-[var(--color-fg-faint)] transition-colors hover:text-[var(--color-accent)]"
+      >
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+        {t('caseStudies.title', locale)}
+      </a>
+
+      <!-- Header -->
+      <div class="mt-8">
+        <div class="flex items-baseline gap-3">
+          <span class="metric text-3xl sm:text-4xl md:text-5xl">{entry.data.metric.value}</span>
+          <span class="text-sm text-[var(--color-fg-muted)]">{entry.data.metric.label[locale]}</span>
+        </div>
+        <h1 class="mt-5 text-3xl font-bold tracking-tight leading-tight md:text-4xl">
+          {title}
+        </h1>
+        <p class="mt-3 text-sm text-[var(--color-fg-faint)]">
+          {entry.data.client} &middot; {entry.data.dates} &middot; {entry.data.location}
+        </p>
+      </div>
+
+      <!-- Stack -->
+      <div class="mt-6 flex flex-wrap gap-2">
+        {entry.data.stack.map((tech) => (
+          <span class="tag">{tech}</span>
+        ))}
+      </div>
+
+      <div class="section-divider mt-10" />
+
+      <!-- MDX content -->
+      <div class="prose-custom mt-10">
+        <Content />
+      </div>
+    </div>
+  </article>
+</BaseLayout>
+
+<style is:global>
+  .prose-custom {
+    color: var(--color-fg-muted);
+    line-height: 1.8;
+    font-size: 0.9375rem;
+  }
+  .prose-custom h2 {
+    color: var(--color-fg);
+    font-size: 1.375rem;
+    font-weight: 700;
+    margin-top: 2.5rem;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.01em;
+  }
+  .prose-custom h3 {
+    color: var(--color-fg);
+    font-size: 1.0625rem;
+    font-weight: 600;
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+  }
+  .prose-custom p {
+    margin-bottom: 1rem;
+  }
+  .prose-custom strong {
+    color: var(--color-fg);
+    font-weight: 600;
+  }
+  .prose-custom ul,
+  .prose-custom ol {
+    padding-left: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  .prose-custom li {
+    margin-bottom: 0.375rem;
+  }
+  .prose-custom li::marker {
+    color: var(--color-accent);
+  }
+  .prose-custom code {
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: 0.25rem;
+    padding: 0.125rem 0.375rem;
+    font-size: 0.8125rem;
+    font-family: var(--font-mono);
+  }
+  .prose-custom pre {
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: 0.75rem;
+    padding: 1rem 1.25rem;
+    overflow-x: auto;
+    margin-bottom: 1.25rem;
+    font-size: 0.8125rem;
+  }
+  .prose-custom pre code {
+    background: none;
+    border: none;
+    padding: 0;
+  }
+  .prose-custom blockquote {
+    border-left: 3px solid var(--color-accent);
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+    color: var(--color-fg-muted);
+    font-style: italic;
+  }
+  .prose-custom a {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .prose-custom a:hover {
+    color: var(--color-accent-hover, #67e8f9);
+  }
+  .prose-custom hr {
+    border-color: var(--color-border);
+    margin: 2rem 0;
+  }
+  .prose-custom table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.25rem;
+    font-size: 0.875rem;
+  }
+  .prose-custom th {
+    text-align: left;
+    font-weight: 600;
+    color: var(--color-fg);
+    padding: 0.5rem 0.75rem;
+    border-bottom: 2px solid var(--color-border);
+  }
+  .prose-custom td {
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+</style>

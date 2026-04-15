@@ -1,0 +1,48 @@
+---
+title:
+  es: "Motor de Analítica en Streaming para SaaS de Data Quality"
+  en: "Streaming Analytics Engine for Data Quality SaaS"
+client: "Tag Insight (EU)"
+dates: "Feb 2026 – Mar 2026"
+location: "Remote"
+metric:
+  value: "NRT"
+  label:
+    es: "near-real-time"
+    en: "near-real-time"
+summary:
+  es: "Arquitectura ClickHouse + Redpanda end-to-end: 26 objetos, 7 MVs de ruteo, marts NRT."
+  en: "ClickHouse + Redpanda end-to-end: 26 schema objects, 7 routing MVs, NRT marts."
+stack: ["ClickHouse", "Redpanda", "Python", "SQL", "Materialized Views", "ReplacingMergeTree"]
+tags: ["ClickHouse", "Redpanda", "Python"]
+order: 3
+---
+
+import StreamingPipeline from '../../../components/visuals/StreamingPipeline.tsx';
+import MatViewChain from '../../../components/visuals/MatViewChain.tsx';
+
+## El Problema
+
+Una startup SaaS francesa necesitaba un motor de analítica near-real-time para su producto de monitoreo de calidad de datos. Su plataforma QA captura eventos de navegador en sitios de e-commerce y muestra métricas de calidad en dashboards orientados al cliente. Necesitaban una arquitectura capaz de manejar streams de eventos de alto throughput, deduplicar de forma confiable y servir agregados frescos — sin reprocesar eventos raw en cada query.
+
+<StreamingPipeline client:visible />
+
+## Enfoque
+
+Diseñé y construí la arquitectura completa de streaming ClickHouse + Redpanda end-to-end — 26 objetos de schema en 4 bases de datos, enteramente sobre componentes open-source.
+
+**Fan-out de ruteo.** Una sola tabla Kafka Engine landing recibe todos los eventos desde Redpanda. Siete materialized views parsean el campo `_type` y rutean cada evento a la tabla core correcta — jobs, tests, assertions, results y más. Un insert, siete destinos, cero lógica del lado de la aplicación.
+
+**Capa core.** 13 tablas ReplacingMergeTree con claves primarias naturales y versionado `updated_at` para dedup-on-write. Sin overhead explícito de merge — ClickHouse lo maneja transparentemente.
+
+**Capa de marts.** Cuatro VIEWs regulares (no materialized views) que hacen joins entre tablas core al momento del query. Esta decisión deliberada evita race conditions de joins en MVs — los joins siempre leen datos ya deduplicados.
+
+<MatViewChain client:visible />
+
+## Resultados
+
+- **26 objetos de schema desplegados** en las capas raw, core, dim y mart
+- **Pipeline near-real-time** — de evento a mart consultable en sub-segundos
+- **Cero costo de reprocesamiento** — las materialized views manejan el ruteo incremental automáticamente
+- **Completamente documentado, listo para producción** — el equipo del cliente puede operar y extender independientemente
+- Construido sobre componentes open-source (ClickHouse + Redpanda) — sin vendor lock-in

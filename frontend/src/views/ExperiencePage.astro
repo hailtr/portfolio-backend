@@ -1,0 +1,10 @@
+---
+/**
+ * Experience is now part of the About page.
+ * This view redirects to /about#experience for backwards compatibility.
+ */
+import { getLocale, localePath } from '../lib/i18n';
+
+const locale = getLocale(Astro.currentLocale);
+return Astro.redirect(localePath('/about', locale));
+---

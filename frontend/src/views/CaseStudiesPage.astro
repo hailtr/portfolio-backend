@@ -1,0 +1,84 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { getLocale, t, localePath } from '../lib/i18n';
+
+const locale = getLocale(Astro.currentLocale);
+const allCases = await getCollection('case-studies');
+const cases = allCases
+  .filter((c) => c.id.startsWith(`${locale}/`))
+  .sort((a, b) => (a.data.order ?? 99) - (b.data.order ?? 99));
+---
+
+<BaseLayout
+  title={`${t('caseStudies.title', locale)} — Rafael Ortiz`}
+  description={locale === 'es'
+    ? 'Casos de estudio reales: migraciones, cost-out, streaming, lakehouses.'
+    : 'Real case studies: migrations, cost-out, streaming, lakehouses.'}
+>
+  <section class="pt-32 pb-20 md:pt-40">
+    <div class="mx-auto max-w-6xl px-[var(--container-px)]">
+      <!-- Header -->
+      <div class="max-w-2xl">
+        <h1 class="section-heading text-3xl font-bold tracking-tight md:text-4xl">
+          {t('caseStudies.title', locale)}
+        </h1>
+        <p class="mt-6 text-[var(--color-fg-muted)] leading-relaxed">
+          {locale === 'es'
+            ? 'Engagements reales con resultados medibles. Cada caso documenta el problema, el enfoque y el resultado.'
+            : 'Real engagements with measurable results. Each case documents the problem, approach, and outcome.'}
+        </p>
+      </div>
+
+      <!-- Cases -->
+      <div class="mt-14 space-y-5">
+        {cases.map((cs) => {
+          const title = cs.data.title[locale];
+          const summary = cs.data.summary[locale];
+          return (
+            <a
+              href={localePath(`/case-studies/${cs.id.replace(`${locale}/`, '')}`, locale)}
+              class="card group flex flex-col gap-5 p-6 md:flex-row md:items-center"
+            >
+              {/* Metric — large and glowing */}
+              <div class="shrink-0 md:w-40 md:text-center">
+                <span class="metric whitespace-nowrap">{cs.data.metric.value}</span>
+                <p class="mt-1 text-xs font-medium uppercase tracking-wider text-[var(--color-fg-faint)]">
+                  {cs.data.metric.label[locale]}
+                </p>
+              </div>
+
+              {/* Divider (desktop) */}
+              <div class="hidden h-20 w-px bg-gradient-to-b from-transparent via-[var(--color-accent-dim)]/30 to-transparent md:block" />
+
+              {/* Content */}
+              <div class="flex-1 min-w-0">
+                <h2 class="text-lg font-bold leading-snug transition-colors group-hover:text-[var(--color-accent)]">
+                  {title}
+                </h2>
+                <p class="mt-1 text-xs font-medium text-[var(--color-fg-faint)]">
+                  {cs.data.client} &middot; {cs.data.dates} &middot; {cs.data.location}
+                </p>
+                <p class="mt-2.5 text-sm leading-relaxed text-[var(--color-fg-muted)]">
+                  {summary}
+                </p>
+                <div class="mt-3 flex flex-wrap gap-1.5">
+                  {cs.data.tags.map((tag) => (
+                    <span class="tag">{tag}</span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Arrow */}
+              <div class="hidden shrink-0 md:flex md:items-center">
+                <svg class="h-5 w-5 text-[var(--color-fg-faint)] transition-all group-hover:translate-x-1 group-hover:text-[var(--color-accent)]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </a>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

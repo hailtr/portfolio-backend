@@ -1,0 +1,80 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { fetchProjects } from '../lib/api';
+import { getLocale, t, localePath } from '../lib/i18n';
+
+const locale = getLocale(Astro.currentLocale);
+const projects = await fetchProjects(locale);
+---
+
+<BaseLayout
+  title={`${t('projects.title', locale)} — Rafael Ortiz`}
+  description={locale === 'es'
+    ? 'Proyectos open-source y personales de Rafael Ortiz.'
+    : 'Open-source and personal projects by Rafael Ortiz.'}
+>
+  <section class="pt-32 pb-20 md:pt-40">
+    <div class="mx-auto max-w-6xl px-[var(--container-px)]">
+      <h1 class="section-heading text-3xl font-bold tracking-tight md:text-4xl">
+        {t('projects.title', locale)}
+      </h1>
+      <p class="mt-6 max-w-2xl text-[var(--color-fg-muted)]">
+        {locale === 'es'
+          ? 'Proyectos open-source, demos técnicos y herramientas que he construido.'
+          : 'Open-source projects, technical demos, and tools I\'ve built.'}
+      </p>
+
+      <div class="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {projects.length === 0 && (
+          <p class="col-span-full text-center text-sm text-[var(--color-fg-faint)] py-12">
+            {locale === 'es' ? 'No hay proyectos disponibles.' : 'No projects available.'}
+          </p>
+        )}
+        {projects.map((project) => {
+          const featuredImage = project.images?.find((img) => img.is_featured) ?? project.images?.[0];
+          return (
+            <a
+              href={localePath(`/projects/${project.slug}`, locale)}
+              class="card group flex flex-col overflow-hidden"
+            >
+              {featuredImage && (
+                <div class="aspect-video overflow-hidden bg-[var(--color-bg-subtle)]">
+                  <img
+                    src={featuredImage.url}
+                    alt={featuredImage.alt_text || project.title}
+                    width={featuredImage.width}
+                    height={featuredImage.height}
+                    class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.05]"
+                    loading="lazy"
+                  />
+                </div>
+              )}
+
+              <div class="flex flex-1 flex-col p-5">
+                <h2 class="font-bold leading-snug transition-colors group-hover:text-[var(--color-accent)]">
+                  {project.title}
+                </h2>
+                {project.subtitle && (
+                  <p class="mt-1 text-xs text-[var(--color-fg-faint)]">{project.subtitle}</p>
+                )}
+                {project.summary && (
+                  <p class="mt-2 line-clamp-3 text-sm leading-relaxed text-[var(--color-fg-muted)]">
+                    {project.summary}
+                  </p>
+                )}
+
+                {project.tags.length > 0 && (
+                  <div class="mt-auto pt-4 flex flex-wrap gap-1.5">
+                    {project.tags.slice(0, 5).map((tag) => (
+                      <span class="tag">{tag}</span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </a>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

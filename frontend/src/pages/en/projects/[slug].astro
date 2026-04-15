@@ -1,0 +1,113 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { fetchProjects } from '../../../lib/api';
+import { getLocale, t, localePath } from '../../../lib/i18n';
+
+export async function getStaticPaths() {
+  const projects = await fetchProjects('es');
+  return projects.map((p) => ({
+    params: { slug: p.slug },
+    props: { slug: p.slug },
+  }));
+}
+
+const locale = getLocale(Astro.currentLocale);
+const { slug } = Astro.props;
+const projects = await fetchProjects(locale);
+const project = projects.find((p) => p.slug === slug);
+
+if (!project) {
+  return Astro.redirect(localePath('/projects', locale));
+}
+
+const featuredImage = project.images?.find((img) => img.is_featured) ?? project.images?.[0];
+---
+
+<BaseLayout
+  title={`${project.title} — Rafael Ortiz`}
+  description={project.summary || project.subtitle || ''}
+>
+  <article class="pt-28 pb-20 md:pt-36">
+    <div class="mx-auto max-w-4xl px-[var(--container-px)]">
+      <a
+        href={localePath('/projects', locale)}
+        class="inline-flex items-center gap-1.5 text-sm text-[var(--color-fg-faint)] transition-colors hover:text-[var(--color-accent)]"
+      >
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+        {t('projects.title', locale)}
+      </a>
+
+      <h1 class="mt-6 text-3xl font-bold tracking-tight md:text-4xl">
+        {project.title}
+      </h1>
+      {project.subtitle && (
+        <p class="mt-2 text-lg text-[var(--color-fg-muted)]">{project.subtitle}</p>
+      )}
+
+      {project.tags.length > 0 && (
+        <div class="mt-4 flex flex-wrap gap-2">
+          {project.tags.map((tag) => (
+            <span class="tag">{tag}</span>
+          ))}
+        </div>
+      )}
+
+      {featuredImage && (
+        <div class="mt-8 overflow-hidden rounded-xl border border-[var(--color-border)]">
+          <img
+            src={featuredImage.url}
+            alt={featuredImage.alt_text || project.title}
+            width={featuredImage.width}
+            height={featuredImage.height}
+            class="w-full"
+            loading="lazy"
+          />
+        </div>
+      )}
+
+      {project.urls && project.urls.length > 0 && (
+        <div class="mt-6 flex flex-wrap gap-3">
+          {project.urls.map((link) => (
+            <a
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 rounded-lg border border-[var(--color-border)] px-4 py-2 text-sm transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
+            >
+              {link.label || link.type}
+              <svg class="h-3.5 w-3.5 opacity-50" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </a>
+          ))}
+        </div>
+      )}
+
+      {project.description && (
+        <div class="prose-custom mt-10" set:html={project.description} />
+      )}
+
+      {project.images.length > 1 && (
+        <div class="mt-10 grid gap-4 sm:grid-cols-2">
+          {project.images.filter((_, i) => i > 0).map((img) => (
+            <div class="overflow-hidden rounded-lg border border-[var(--color-border)]">
+              <img
+                src={img.url}
+                alt={img.alt_text || ''}
+                width={img.width}
+                height={img.height}
+                class="w-full"
+                loading="lazy"
+              />
+              {img.caption && (
+                <p class="px-3 py-2 text-xs text-[var(--color-fg-faint)]">{img.caption}</p>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  </article>
+</BaseLayout>

@@ -1,0 +1,63 @@
+---
+title:
+  es: "Migración Snowflake → ClickHouse para retail en EE.UU."
+  en: "Snowflake → ClickHouse Migration for US Retail"
+client: "US Retail Client (Contract)"
+dates: "Dec 2025 – Feb 2026"
+location: "Remote"
+metric:
+  value: "$60K/mo"
+  label:
+    es: "reducción de costos"
+    en: "cost reduction"
+summary:
+  es: "Rebuild del stack completo: 1,200 Workato recipes → 10 Airflow DAGs, lakehouse medallion sobre S3 + ClickHouse."
+  en: "Full stack rebuild: 1,200 Workato recipes → 10 Airflow DAGs, medallion lakehouse on S3 + ClickHouse."
+stack: ["Snowflake", "ClickHouse", "Airflow", "dbt", "S3", "Python", "SQL"]
+tags: ["ClickHouse", "Airflow", "dbt", "S3", "Snowflake"]
+order: 1
+---
+
+import CostMeter from '../../../components/visuals/CostMeter.tsx';
+import PipelineCollapse from '../../../components/visuals/PipelineCollapse.tsx';
+import MedallionFlow from '../../../components/visuals/MedallionFlow.tsx';
+
+## El Problema
+
+Un cliente de retail en EE.UU. estaba ahogándose en costos de Snowflake — **$60K/mes y subiendo**. La causa raíz: 1,200 recetas de Workato ejecutando ETL full-refresh contra Snowflake, más 124 stored procedures sin dueño. Nadie sabía qué hacía la mitad de ellos.
+
+<CostMeter client:visible />
+
+## Reestructuración de Orquestación
+
+Lideré las decisiones de arquitectura del rebuild completo. Reemplacé toda la capa de Workato con Airflow y eliminé el ETL full-refresh mediante CDC.
+
+<PipelineCollapse client:visible />
+
+Colapsé **1,200 recetas Workato + 124 stored procedures de Snowflake** en 10 DAGs de Airflow (~50 tareas cada uno). Cada pipeline quedó versionado, observable y mantenible.
+
+## Migración del Warehouse
+
+Reconstruí la capa analítica como un **lakehouse medallion sobre S3 + ClickHouse**:
+
+<MedallionFlow client:visible />
+
+- **ClickPipes** para ingesta en ClickHouse
+- Tablas **ReplacingMergeTree** + materialized views para dedup y agregación incremental
+- Transformaciones y migraciones de schema **gestionadas con dbt**
+- **Projections** para aceleración de queries
+
+## Tooling de Migración
+
+Migré ~1,350 objetos de datos en ~5 días usando tooling custom de **Python + Gemini/Claude** para:
+- Traducción de dialecto SQL de Snowflake → ClickHouse
+- Generación de DDL desde metadata de Snowflake
+- Debugging automático de errores y reintentos
+
+## Resultados
+
+- **$60K/mes** eliminados del stack de datos del cliente
+- **1,200 → 10** pipelines de orquestación, completamente observables
+- **124 stored procedures → modelos dbt** con lineage tracking
+- **~1,350 objetos migrados en ~5 días** usando tooling asistido por LLM
+- Mentoré al equipo de Workato del cliente durante la transición a Airflow

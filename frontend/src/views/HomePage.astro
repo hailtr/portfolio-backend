@@ -1,0 +1,244 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { fetchProfile } from '../lib/api';
+import { getLocale, t, localePath } from '../lib/i18n';
+
+const locale = getLocale(Astro.currentLocale);
+const profile = await fetchProfile(locale);
+
+const featuredCases = [
+  {
+    slug: 'us-retail-snowflake-to-clickhouse',
+    metric: '$60K',
+    metricUnit: '/mo',
+    metricLabel: locale === 'es' ? 'reducción de costos' : 'cost reduction',
+    title: locale === 'es'
+      ? 'Snowflake → ClickHouse'
+      : 'Snowflake → ClickHouse',
+    subtitle: locale === 'es'
+      ? 'Retail en EE.UU.'
+      : 'US Retail',
+    summary: locale === 'es'
+      ? '1,200 Workato recipes → 10 Airflow DAGs. Lakehouse medallion sobre S3 + ClickHouse.'
+      : '1,200 Workato recipes → 10 Airflow DAGs. Medallion lakehouse on S3 + ClickHouse.',
+    tags: ['ClickHouse', 'Airflow', 'dbt', 'S3'],
+    accent: 'cyan',
+  },
+  {
+    slug: 'honor-fabric-lakehouse',
+    metric: '1,200+',
+    metricUnit: '',
+    metricLabel: locale === 'es' ? 'tiendas' : 'stores',
+    title: locale === 'es'
+      ? 'Excel → Microsoft Fabric'
+      : 'Excel → Microsoft Fabric',
+    subtitle: 'HONOR',
+    summary: locale === 'es'
+      ? 'Lakehouse + Power BI con Row-Level Security + app operacional Flask.'
+      : 'Lakehouse + Power BI with Row-Level Security + Flask operational app.',
+    tags: ['Fabric', 'Power BI', 'RLS', 'Flask'],
+    accent: 'warm',
+  },
+  {
+    slug: 'tag-insight-streaming',
+    metric: 'NRT',
+    metricUnit: '',
+    metricLabel: locale === 'es' ? 'near-real-time' : 'near-real-time',
+    title: locale === 'es'
+      ? 'Streaming Analytics Engine'
+      : 'Streaming Analytics Engine',
+    subtitle: 'Tag Insight',
+    summary: locale === 'es'
+      ? 'ClickHouse + Redpanda end-to-end: pixel events → medallion → marts frescos.'
+      : 'ClickHouse + Redpanda end-to-end: pixel events → medallion → fresh marts.',
+    tags: ['ClickHouse', 'Redpanda', 'Python'],
+    accent: 'cyan',
+  },
+];
+---
+
+<BaseLayout
+  title={`Rafael Ortiz — ${profile.role}`}
+  description={profile.bio.slice(0, 160)}
+>
+  <!-- ─── Hero ─── -->
+  <section class="relative overflow-hidden pt-32 pb-28 md:pt-44 md:pb-36">
+    <!-- Background layers -->
+    <div class="bg-grid pointer-events-none absolute inset-0" />
+    <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[var(--color-bg)]" />
+
+    <!-- Large glow orbs -->
+    <div class="pointer-events-none absolute -top-32 left-1/4 h-[600px] w-[600px] rounded-full bg-[var(--color-accent)] opacity-[0.04] blur-[150px]" />
+    <div class="pointer-events-none absolute -top-16 right-1/4 h-[400px] w-[400px] rounded-full bg-[var(--color-warm)] opacity-[0.03] blur-[120px]" />
+
+    <div class="relative mx-auto max-w-6xl px-[var(--container-px)]">
+      <div class="max-w-3xl">
+        <!-- Role label -->
+        <div class="animate-fade-in-up flex items-center gap-3">
+          <span class="h-px w-8 bg-[var(--color-accent)]"></span>
+          <span class="text-xs font-bold uppercase tracking-[0.25em] text-[var(--color-accent)]">
+            {profile.role}
+          </span>
+        </div>
+
+        <!-- Name -->
+        <h1 class="animate-fade-in-up animate-delay-100 mt-6 text-4xl font-extrabold tracking-[-0.03em] leading-[1.05] sm:text-5xl md:text-6xl lg:text-8xl">
+          <span class="text-gradient">{profile.name.split(' ')[0]}</span>
+          <br />
+          <span class="text-[var(--color-fg)]">{profile.name.split(' ').slice(1).join(' ')}</span>
+        </h1>
+
+        <!-- Tagline -->
+        <p class="animate-fade-in-up animate-delay-200 mt-6 max-w-xl text-lg leading-relaxed text-[var(--color-fg-muted)] md:text-xl">
+          {profile.tagline}
+        </p>
+
+        <!-- CTAs -->
+        <div class="animate-fade-in-up animate-delay-300 mt-10 flex flex-wrap gap-4">
+          <a href={localePath('/case-studies', locale)} class="btn-primary">
+            {t('hero.cta.caseStudies', locale)}
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </a>
+          <a
+            href={`https://api.rafaelortiz.dev/cv?lang=${locale}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-outline"
+          >
+            {t('hero.cta.cv', locale)}
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Featured Case Studies ─── -->
+  <div class="section-divider" />
+
+  <section class="py-24 md:py-28">
+    <div class="mx-auto max-w-6xl px-[var(--container-px)]">
+      <div class="flex items-end justify-between gap-4">
+        <div>
+          <h2 class="section-heading text-2xl font-bold tracking-tight md:text-3xl">
+            {t('caseStudies.title', locale)}
+          </h2>
+          <p class="mt-4 text-sm text-[var(--color-fg-faint)]">
+            {locale === 'es' ? 'Resultados medibles en engagements reales.' : 'Measurable results from real engagements.'}
+          </p>
+        </div>
+        <a
+          href={localePath('/case-studies', locale)}
+          class="hidden shrink-0 text-sm font-medium text-[var(--color-accent)] transition-colors hover:text-[var(--color-accent)] sm:inline-flex items-center gap-1"
+        >
+          {t('caseStudies.viewAll', locale)}
+          <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+          </svg>
+        </a>
+      </div>
+
+      <div class="mt-12 grid gap-5 md:grid-cols-3">
+        {featuredCases.map((cs, i) => (
+          <a
+            href={localePath(`/case-studies/${cs.slug}`, locale)}
+            class:list={[
+              'card group flex flex-col p-6',
+              `animate-fade-in-up animate-delay-${(i + 2) * 100}`,
+            ]}
+          >
+            {/* Metric */}
+            <div class="mb-5">
+              <div class="flex items-baseline gap-0.5">
+                <span class="metric">{cs.metric}</span>
+                {cs.metricUnit && <span class="text-lg font-bold text-[var(--color-accent-dim)]">{cs.metricUnit}</span>}
+              </div>
+              <p class="mt-1 text-xs font-medium uppercase tracking-wider text-[var(--color-fg-faint)]">
+                {cs.metricLabel}
+              </p>
+            </div>
+
+            {/* Title + subtitle */}
+            <h3 class="text-lg font-bold leading-snug transition-colors group-hover:text-[var(--color-accent)]">
+              {cs.title}
+            </h3>
+            <p class="mt-0.5 text-xs font-medium text-[var(--color-fg-faint)]">{cs.subtitle}</p>
+
+            {/* Summary */}
+            <p class="mt-3 flex-1 text-sm leading-relaxed text-[var(--color-fg-muted)]">
+              {cs.summary}
+            </p>
+
+            {/* Tags */}
+            <div class="mt-5 flex flex-wrap gap-1.5">
+              {cs.tags.map((tag) => (
+                <span class="tag">{tag}</span>
+              ))}
+            </div>
+
+            {/* Read more indicator */}
+            <div class="mt-5 flex items-center gap-2 text-xs font-medium text-[var(--color-fg-faint)] transition-colors group-hover:text-[var(--color-accent)]">
+              <span>{locale === 'es' ? 'Leer caso' : 'Read case'}</span>
+              <svg class="h-3 w-3 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </a>
+        ))}
+      </div>
+
+      {/* Mobile "View all" link */}
+      <a
+        href={localePath('/case-studies', locale)}
+        class="mt-8 flex items-center justify-center gap-2 text-sm font-medium text-[var(--color-accent)] sm:hidden"
+      >
+        {t('caseStudies.viewAll', locale)}
+        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+        </svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- ─── Short About ─── -->
+  <div class="section-divider" />
+
+  <section class="py-24 md:py-28">
+    <div class="mx-auto max-w-6xl px-[var(--container-px)]">
+      <div class="grid gap-12 md:grid-cols-[1fr_auto] md:items-start">
+        <div class="max-w-2xl">
+          <h2 class="section-heading text-2xl font-bold tracking-tight md:text-3xl">
+            {t('about.title', locale)}
+          </h2>
+          <p class="mt-8 text-base leading-[1.8] text-[var(--color-fg-muted)]">
+            {profile.bio}
+          </p>
+          <a
+            href={localePath('/about', locale)}
+            class="mt-6 inline-flex items-center gap-2 text-sm font-medium text-[var(--color-accent)] transition-colors hover:text-[var(--color-accent)]"
+          >
+            {t('misc.readMore', locale)}
+            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </a>
+        </div>
+
+        {/* Quick stats sidebar */}
+        <div class="flex flex-col gap-4 sm:flex-row sm:gap-6 md:flex-col md:gap-8 md:pt-12">
+          {[
+            { value: '6+', label: locale === 'es' ? 'años exp.' : 'years exp.' },
+            { value: '3', label: locale === 'es' ? 'lakehouses' : 'lakehouses' },
+            { value: 'US/EU', label: locale === 'es' ? 'zonas horarias' : 'time zones' },
+          ].map((stat) => (
+            <div class="text-center md:text-right">
+              <p class="text-2xl font-extrabold text-gradient">{stat.value}</p>
+              <p class="mt-0.5 text-xs text-[var(--color-fg-faint)]">{stat.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

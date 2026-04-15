@@ -1,0 +1,48 @@
+---
+title:
+  es: "Motor de Analítica en Streaming para SaaS de Data Quality"
+  en: "Streaming Analytics Engine for Data Quality SaaS"
+client: "Tag Insight (EU)"
+dates: "Feb 2026 – Mar 2026"
+location: "Remote"
+metric:
+  value: "NRT"
+  label:
+    es: "near-real-time"
+    en: "near-real-time"
+summary:
+  es: "Arquitectura ClickHouse + Redpanda end-to-end: 26 objetos, 7 MVs de ruteo, marts NRT."
+  en: "ClickHouse + Redpanda end-to-end: 26 schema objects, 7 routing MVs, NRT marts."
+stack: ["ClickHouse", "Redpanda", "Python", "SQL", "Materialized Views", "ReplacingMergeTree"]
+tags: ["ClickHouse", "Redpanda", "Python"]
+order: 3
+---
+
+import StreamingPipeline from '../../../components/visuals/StreamingPipeline.tsx';
+import MatViewChain from '../../../components/visuals/MatViewChain.tsx';
+
+## The Problem
+
+A French SaaS startup needed a near-real-time analytics engine for their data quality monitoring product. Their QA platform captures browser events from e-commerce sites and surfaces quality metrics on customer-facing dashboards. They needed an architecture that could handle high-throughput event streams, dedup reliably, and serve fresh aggregates — without reprocessing raw events on every query.
+
+<StreamingPipeline client:visible />
+
+## Approach
+
+Designed and built the full ClickHouse + Redpanda streaming architecture end-to-end — 26 schema objects across 4 databases, entirely on open-source components.
+
+**Routing fan-out.** A single Kafka Engine landing table receives all events from Redpanda. Seven materialized views parse the `_type` field and route each event to the correct core table — jobs, tests, assertions, results, and more. One insert, seven destinations, zero application-side logic.
+
+**Core layer.** 13 ReplacingMergeTree tables with natural primary keys and `updated_at` versioning for dedup-on-write. No explicit merge overhead — ClickHouse handles it transparently.
+
+**Mart layer.** Four regular VIEWs (not materialized views) join across core tables at query time. This deliberate choice avoids MV join race conditions — the joins always read already-deduplicated data.
+
+<MatViewChain client:visible />
+
+## Results
+
+- **26 schema objects deployed** across raw, core, dim, and mart layers
+- **Near-real-time pipeline** — event to queryable mart in sub-seconds
+- **Zero reprocessing cost** — materialized views handle incremental routing automatically
+- **Fully documented, production-ready** — the client's team can operate and extend independently
+- Built on open-source components (ClickHouse + Redpanda) — no vendor lock-in

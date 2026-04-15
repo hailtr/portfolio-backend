@@ -1,0 +1,53 @@
+---
+title:
+  es: "Migración Excel → Microsoft Fabric para HONOR"
+  en: "Excel → Microsoft Fabric Migration for HONOR"
+client: "HONOR"
+dates: "Aug 2025 – Oct 2025"
+location: "Venezuela (on-site)"
+metric:
+  value: "1,200+"
+  label:
+    es: "tiendas"
+    en: "stores"
+summary:
+  es: "Lakehouse Fabric + Power BI con Row-Level Security + app operacional en Flask, todo desde cero."
+  en: "Fabric lakehouse + Power BI with Row-Level Security + Flask operational app, all from scratch."
+stack: ["Microsoft Fabric", "Power BI", "DAX", "RLS", "Flask", "PostgreSQL", "SQLAlchemy", "TailwindCSS"]
+tags: ["Fabric", "Power BI", "RLS", "Flask"]
+order: 2
+---
+
+import ExcelToLakehouse from '../../../components/visuals/ExcelToLakehouse.tsx';
+import RLSTiers from '../../../components/visuals/RLSTiers.tsx';
+import StoreWorkflow from '../../../components/visuals/StoreWorkflow.tsx';
+
+## The Problem
+
+HONOR's reporting workflow for 1,200+ retail stores was built on a 200 MB Excel master file. Every week, staff manually merged data from three sources: the client's custom ERP, WhatsApp group messages, and a legacy ERP. The process took days, was error-prone, and had zero access control — anyone with the file could see everything.
+
+<ExcelToLakehouse client:visible />
+
+## Approach
+
+Led the Excel-to-Fabric migration end-to-end. Three interconnected deliverables:
+
+**1. Microsoft Fabric Lakehouse.** Delta tables and Data Pipelines covering 3 business units and 1,200+ stores. Replaced the manual consolidation with automated ingestion from all three upstream sources.
+
+**2. Power BI Semantic Model.** Built the analytical layer with Row-Level Security across promoter, supervisor, and manager tiers. Delivered the HR bonus-payment report consolidating sales across all 1,200 stores — previously a manual WhatsApp → ERP → Excel cycle that took days.
+
+<RLSTiers client:visible />
+
+**3. Flask Operational App.** Store provisioning was a 6-step process bouncing between WhatsApp, the ERP, and Excel. Built a Flask + PostgreSQL + SQLAlchemy internal web app that centralized the workflow:
+
+<StoreWorkflow client:visible />
+
+Role-based auth, approval workflows, and audit trails — formalizing supervisor-driven store provisioning and staff assignment. Its operational data fed the Fabric lakehouse as a governed upstream source, closing the loop between operational systems and analytics.
+
+## Results
+
+- **200 MB Excel file → Fabric lakehouse** with Delta tables and automated pipelines
+- **Row-Level Security** across 3 tiers (promoter, supervisor, manager) — previously zero access control
+- **HR bonus report** delivered same-day instead of weekly manual cycle
+- **Flask operational app** formalized store provisioning with audit trails
+- Analytics and operations connected in a closed loop for the first time

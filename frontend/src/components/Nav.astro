@@ -1,0 +1,140 @@
+---
+import { t, localePath, altLocale } from '../lib/i18n';
+import type { Locale } from '../lib/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const alt = altLocale(locale);
+
+const links = [
+  { key: 'nav.work' as const, href: '/case-studies' },
+  { key: 'nav.about' as const, href: '/about' },
+  { key: 'nav.contact' as const, href: '/contact' },
+];
+
+const currentPath = Astro.url.pathname.replace(/^\/en/, '') || '/';
+---
+
+<header
+  class="fixed top-0 left-0 right-0 z-50 bg-[var(--color-bg)]/70 backdrop-blur-2xl"
+  id="site-header"
+>
+  <!-- Gradient bottom border -->
+  <div class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[var(--color-accent-dim)]/20 to-transparent" />
+
+  <nav class="mx-auto flex max-w-6xl items-center justify-between px-[var(--container-px)] h-16">
+    <!-- Logo -->
+    <a
+      href={localePath('/', locale)}
+      class="group flex items-center gap-0.5 text-xl font-extrabold tracking-tight"
+    >
+      <span class="text-gradient">R</span><span class="text-[var(--color-fg)] transition-colors group-hover:text-[var(--color-fg-muted)]">O</span>
+      <span class="ml-2 text-[0.6rem] font-medium uppercase tracking-[0.2em] text-[var(--color-fg-faint)] hidden sm:inline">Rafael Ortiz</span>
+    </a>
+
+    <!-- Desktop links -->
+    <div class="hidden items-center gap-8 md:flex">
+      {links.map(({ key, href }) => {
+        const isActive = currentPath === href || (href !== '/' && currentPath.startsWith(href));
+        return (
+          <a
+            href={localePath(href, locale)}
+            class:list={[
+              'relative text-sm font-medium tracking-wide transition-colors',
+              isActive
+                ? 'text-[var(--color-accent)]'
+                : 'text-[var(--color-fg-muted)] hover:text-[var(--color-fg)]',
+            ]}
+          >
+            {t(key, locale)}
+            {isActive && (
+              <span class="absolute -bottom-[1.15rem] left-0 right-0 h-[2px] bg-[var(--color-accent)] rounded-full" />
+            )}
+          </a>
+        );
+      })}
+    </div>
+
+    <div class="flex items-center gap-3">
+      <!-- Language toggle -->
+      <a
+        href={localePath(currentPath, alt)}
+        class="rounded-full border border-[var(--color-border)] px-3 py-1 text-[0.65rem] font-bold uppercase tracking-[0.15em] text-[var(--color-fg-faint)] transition-all hover:border-[var(--color-accent-dim)] hover:text-[var(--color-accent)] hover:shadow-[0_0_12px_-4px_rgba(34,211,238,0.3)]"
+      >
+        {alt.toUpperCase()}
+      </a>
+
+      <!-- Mobile hamburger -->
+      <button
+        id="nav-toggle"
+        class="flex items-center justify-center rounded-lg p-2 text-[var(--color-fg-muted)] transition-colors hover:bg-[var(--color-bg-elevated)] hover:text-[var(--color-fg)] md:hidden"
+        aria-label="Toggle menu"
+        aria-expanded="false"
+      >
+        <svg id="icon-menu" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+        <svg id="icon-close" class="hidden h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile menu -->
+  <div
+    id="mobile-menu"
+    class="hidden bg-[var(--color-bg)]/95 backdrop-blur-2xl md:hidden"
+  >
+    <div class="section-divider" />
+    <ul class="mx-auto max-w-6xl px-[var(--container-px)] py-4 space-y-1">
+      {links.map(({ key, href }) => {
+        const isActive = currentPath === href || (href !== '/' && currentPath.startsWith(href));
+        return (
+          <li>
+            <a
+              href={localePath(href, locale)}
+              class:list={[
+                'flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors',
+                isActive
+                  ? 'text-[var(--color-accent)] bg-[var(--color-accent-soft)]'
+                  : 'text-[var(--color-fg-muted)] hover:text-[var(--color-fg)] hover:bg-[var(--color-bg-elevated)]',
+              ]}
+            >
+              {isActive && <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]" />}
+              {t(key, locale)}
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+  </div>
+</header>
+
+<script>
+  const toggle = document.getElementById('nav-toggle')!;
+  const menu = document.getElementById('mobile-menu')!;
+  const iconMenu = document.getElementById('icon-menu')!;
+  const iconClose = document.getElementById('icon-close')!;
+
+  function closeMenu() {
+    menu.classList.add('hidden');
+    iconMenu.classList.remove('hidden');
+    iconClose.classList.add('hidden');
+    toggle.setAttribute('aria-expanded', 'false');
+  }
+
+  toggle.addEventListener('click', () => {
+    const isHidden = menu.classList.toggle('hidden');
+    iconMenu.classList.toggle('hidden', !isHidden);
+    iconClose.classList.toggle('hidden', isHidden);
+    toggle.setAttribute('aria-expanded', String(!isHidden));
+  });
+
+  menu.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', closeMenu);
+  });
+</script>

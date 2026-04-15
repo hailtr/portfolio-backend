@@ -1,0 +1,92 @@
+---
+import '../styles/global.css';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import { getLocale, altLocale, localePath } from '../lib/i18n';
+import type { Locale } from '../lib/i18n';
+
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+}
+
+const locale = getLocale(Astro.currentLocale) as Locale;
+const alt = altLocale(locale);
+const { title, description = '', ogImage } = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const altURL = new URL(
+  localePath(
+    locale === 'es' ? Astro.url.pathname : Astro.url.pathname.replace(/^\/en/, '') || '/',
+    alt,
+  ),
+  Astro.site,
+);
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#0a0e1a" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+
+    <!-- Canonical + hreflang -->
+    <link rel="canonical" href={canonicalURL.href} />
+    <link rel="alternate" hreflang={locale} href={canonicalURL.href} />
+    <link rel="alternate" hreflang={alt} href={altURL.href} />
+    <link rel="alternate" hreflang="x-default" href={new URL('/', Astro.site).href} />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL.href} />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    {description && <meta name="twitter:description" content={description} />}
+    {ogImage && <meta name="twitter:image" content={ogImage} />}
+
+    <!-- JSON-LD -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Rafael Ortiz",
+      "jobTitle": "Senior Data Engineer",
+      "url": "https://rafaelortiz.dev",
+      "sameAs": [
+        "https://www.linkedin.com/in/rafaelortizaguilar/",
+        "https://github.com/hailtr"
+      ],
+      "knowsAbout": [
+        "ClickHouse", "Snowflake", "Airflow", "dbt", "Microsoft Fabric",
+        "BigQuery", "Redpanda", "Kafka", "Python", "Go", "PostgreSQL",
+        "Data Engineering", "Lakehouse Architecture"
+      ]
+    })} />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="min-h-dvh bg-[var(--color-bg)] text-[var(--color-fg)] antialiased">
+    <Nav locale={locale} />
+    <main>
+      <slot />
+    </main>
+    <Footer locale={locale} />
+  </body>
+</html>
