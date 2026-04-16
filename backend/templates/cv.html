@@ -129,7 +129,11 @@
 
   </div>
 
+  {% if private %}
+  <button id="print-btn" onclick="window.open('{{ url_for('cv.cv_pdf', lang=lang, preview=1, private=1) }}', '_blank')">
+  {% else %}
   <button id="print-btn" onclick="window.open('{{ url_for('cv.cv_pdf', lang=lang, preview=1) }}', '_blank')">
+  {% endif %}
     &#128438; PDF
   </button>
 </body>

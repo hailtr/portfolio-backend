@@ -10,6 +10,8 @@ import re
 
 from flask import Blueprint, render_template, request, send_file, jsonify, current_app
 from backend import db
+from backend.utils.rate_limit import api_rate_limit, strict_rate_limit
+from auth.decorators import requires_login, requires_role
 from backend.models.profile import Profile
 from backend.models.experience import Experience
 from backend.models.education import Education
@@ -19,6 +21,31 @@ from backend.services.pdf_service import PDFService
 from sqlalchemy import desc
 
 cv_bp = Blueprint("cv", __name__)
+
+
+def _notify_cv_download(lang: str):
+    """Fire a CV-download alert with request context."""
+    try:
+        from backend.services.alert_service import send_alert
+        send_alert(
+            "cv_download",
+            ip=request.remote_addr,
+            lang=lang,
+            referrer=request.referrer or "direct",
+            user_agent=request.user_agent.string or "?",
+        )
+    except Exception:
+        pass
+
+
+def _strip_contact_info(cv_data):
+    """Remove email, phone, and social profiles from cv_data for Upwork-safe sharing."""
+    import copy
+    data = copy.deepcopy(cv_data)
+    data["basics"]["email"] = ""
+    data["basics"]["phone"] = ""
+    data["basics"]["profiles"] = []
+    return data
 
 
 def _inject_css_into_html(html_content, css_path):
@@ -44,12 +71,14 @@ def _inject_css_into_html(html_content, css_path):
 
 
 @cv_bp.route('/cv/guide')
+@api_rate_limit()
 def cv_guide():
     """Render the static CV guide with placeholder content."""
     return render_template('cv_guide.html')
 
 
 @cv_bp.route('/cv/guide/pdf')
+@strict_rate_limit()
 def cv_guide_pdf():
     """Generate PDF for the CV guide."""
     try:
@@ -313,10 +342,12 @@ def build_cv_from_models(lang="es"):
 
 
 @cv_bp.route("/cv", methods=["GET"])
+@api_rate_limit()
 def cv_view():
     """Render CV HTML page"""
     try:
         lang = request.args.get("lang", "es")
+        private = request.args.get("private") == "1"
         cv_data = build_cv_from_models(lang)
 
         if not cv_data:
@@ -325,8 +356,11 @@ def cv_view():
                 error="CV data not found. Please ensure your profile is set up in the Admin Panel."
             ), 404
 
+        if private:
+            cv_data = _strip_contact_info(cv_data)
+
         from flask import make_response
-        resp = make_response(render_template("cv.html", cv_data=cv_data, lang=lang))
+        resp = make_response(render_template("cv.html", cv_data=cv_data, lang=lang, private=private))
         resp.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
         resp.headers["Pragma"] = "no-cache"
         resp.headers["Expires"] = "0"
@@ -337,6 +371,7 @@ def cv_view():
 
 
 @cv_bp.route("/cv/pdf", methods=["GET"])
+@strict_rate_limit()
 def cv_pdf():
     """Generate and download CV PDF with caching"""
     try:
@@ -345,19 +380,25 @@ def cv_pdf():
 
         lang = request.args.get("lang", "es")
         preview = request.args.get("preview", "0") == "1"
+        private = request.args.get("private") == "1"
         cv_data = build_cv_from_models(lang)
 
         if not cv_data:
             return jsonify({"error": "CV data not found"}), 404
 
+        if private:
+            cv_data = _strip_contact_info(cv_data)
+
         # Derive filename from profile name
         name_slug = cv_data["basics"]["name"].replace(" ", "_")
-        filename = f"CV_{name_slug}_{lang}.pdf"
+        suffix = "_Private" if private else ""
+        filename = f"CV_{name_slug}_{lang}{suffix}.pdf"
 
         # Check cache first
         cached_pdf, cache_hit = get_cached_pdf(lang, cv_data)
         if cache_hit and cached_pdf:
             current_app.logger.info(f"PDF cache HIT for lang={lang}")
+            _notify_cv_download(lang)
             return send_file(
                 BytesIO(cached_pdf),
                 mimetype="application/pdf",
@@ -373,6 +414,9 @@ def cv_pdf():
         set_cached_pdf(lang, cv_data, pdf_bytes)
         current_app.logger.info(f"PDF cached for lang={lang}")
 
+        # Alert: CV downloaded (fire for both cache hit and miss — moved below)
+        _notify_cv_download(lang)
+
         return send_file(
             pdf_bytes,
             mimetype="application/pdf",
@@ -385,6 +429,9 @@ def cv_pdf():
 
 
 @cv_bp.route("/cv/clear-cache", methods=["POST"])
+@requires_login
+@requires_role("admin")
+@strict_rate_limit()
 def clear_cv_cache():
     """Manually clear CV data and PDF caches"""
     try:
