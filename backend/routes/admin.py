@@ -8,7 +8,7 @@ from flask import (
     current_app,
     make_response,
 )
-from sqlalchemy import text, desc
+from sqlalchemy import text, desc, func, cast, Date
 from backend import db
 from backend.models.project import Project, ProjectImage, ProjectTranslation
 from backend.models.project_url import ProjectURL
@@ -1197,25 +1197,243 @@ def import_github_project():
     try:
         data = request.json
         github_url = data.get('github_url')
-        
+
         if not github_url:
             return jsonify({"error": "GitHub URL is required"}), 400
-        
+
         # 1. Fetch Repo Content
         github_service = GitHubService()
         repo_context = github_service.get_repo_content(github_url)
-        
+
         model_name = data.get('model_name')
-        
+
         # 2. Analyze with AI
         ai_service = AIProjectGenerator()
         generated_data = ai_service.analyze_github_repo(repo_context, repo_url=github_url, model_name=model_name)
-        
+
         return jsonify({
             "success": True,
             "data": generated_data
         }), 200
-        
+
     except Exception as e:
         current_app.logger.error(f"GitHub Import failed: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+
+# ==========================================
+# ANALYTICS ENDPOINTS
+# ==========================================
+
+@admin_bp.route("/admin/analytics")
+@requires_login
+@requires_role("admin")
+def analytics_summary():
+    """Return JSON analytics summary for the admin dashboard."""
+    from datetime import datetime, timedelta
+    from backend.models.visitor_log import VisitorLog
+
+    try:
+        now = datetime.utcnow()
+        today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
+        seven_days_ago = now - timedelta(days=7)
+        thirty_days_ago = now - timedelta(days=30)
+
+        # --- Counts -------------------------------------------------------
+        total_all = db.session.query(func.count(VisitorLog.id)).scalar() or 0
+        total_today = db.session.query(func.count(VisitorLog.id)).filter(
+            VisitorLog.created_at >= today_start
+        ).scalar() or 0
+        total_7d = db.session.query(func.count(VisitorLog.id)).filter(
+            VisitorLog.created_at >= seven_days_ago
+        ).scalar() or 0
+        total_30d = db.session.query(func.count(VisitorLog.id)).filter(
+            VisitorLog.created_at >= thirty_days_ago
+        ).scalar() or 0
+
+        unique_today = db.session.query(func.count(VisitorLog.id)).filter(
+            VisitorLog.created_at >= today_start, VisitorLog.is_unique == True
+        ).scalar() or 0
+        unique_7d = db.session.query(func.count(VisitorLog.id)).filter(
+            VisitorLog.created_at >= seven_days_ago, VisitorLog.is_unique == True
+        ).scalar() or 0
+        unique_30d = db.session.query(func.count(VisitorLog.id)).filter(
+            VisitorLog.created_at >= thirty_days_ago, VisitorLog.is_unique == True
+        ).scalar() or 0
+
+        # --- CV downloads --------------------------------------------------
+        cv_filter = VisitorLog.path.like("/cv/pdf%")
+        cv_today = db.session.query(func.count(VisitorLog.id)).filter(
+            cv_filter, VisitorLog.created_at >= today_start
+        ).scalar() or 0
+        cv_7d = db.session.query(func.count(VisitorLog.id)).filter(
+            cv_filter, VisitorLog.created_at >= seven_days_ago
+        ).scalar() or 0
+        cv_30d = db.session.query(func.count(VisitorLog.id)).filter(
+            cv_filter, VisitorLog.created_at >= thirty_days_ago
+        ).scalar() or 0
+
+        # --- Top pages (30d) -----------------------------------------------
+        top_pages = (
+            db.session.query(VisitorLog.path, func.count(VisitorLog.id).label("cnt"))
+            .filter(VisitorLog.created_at >= thirty_days_ago)
+            .group_by(VisitorLog.path)
+            .order_by(desc("cnt"))
+            .limit(10)
+            .all()
+        )
+
+        # --- Top referrers (30d) -------------------------------------------
+        top_referrers = (
+            db.session.query(VisitorLog.referrer, func.count(VisitorLog.id).label("cnt"))
+            .filter(
+                VisitorLog.created_at >= thirty_days_ago,
+                VisitorLog.referrer.isnot(None),
+                VisitorLog.referrer != "",
+            )
+            .group_by(VisitorLog.referrer)
+            .order_by(desc("cnt"))
+            .limit(10)
+            .all()
+        )
+
+        # --- Hourly traffic (last 24h) ------------------------------------
+        twenty_four_ago = now - timedelta(hours=24)
+        hourly_raw = (
+            db.session.query(
+                func.extract("hour", VisitorLog.created_at).label("hr"),
+                func.count(VisitorLog.id).label("cnt"),
+            )
+            .filter(VisitorLog.created_at >= twenty_four_ago)
+            .group_by("hr")
+            .order_by("hr")
+            .all()
+        )
+        hourly = {int(row.hr): row.cnt for row in hourly_raw}
+        hourly_traffic = [{"hour": h, "count": hourly.get(h, 0)} for h in range(24)]
+
+        # --- Daily traffic (last 30d) -------------------------------------
+        daily_raw = (
+            db.session.query(
+                cast(VisitorLog.created_at, Date).label("day"),
+                func.count(VisitorLog.id).label("cnt"),
+            )
+            .filter(VisitorLog.created_at >= thirty_days_ago)
+            .group_by("day")
+            .order_by("day")
+            .all()
+        )
+        daily_traffic = [
+            {"date": row.day.isoformat(), "count": row.cnt} for row in daily_raw
+        ]
+
+        # --- Recent visitors (last 20) ------------------------------------
+        recent = (
+            VisitorLog.query
+            .order_by(desc(VisitorLog.created_at))
+            .limit(20)
+            .all()
+        )
+        recent_visitors = [
+            {
+                "ip": v.ip_address,
+                "path": v.path,
+                "method": v.method,
+                "status_code": v.status_code,
+                "user_agent": v.user_agent,
+                "referrer": v.referrer,
+                "response_time_ms": v.response_time_ms,
+                "country": v.country,
+                "is_unique": v.is_unique,
+                "created_at": v.created_at.isoformat() if v.created_at else None,
+            }
+            for v in recent
+        ]
+
+        return jsonify({
+            "page_views": {
+                "today": total_today,
+                "7d": total_7d,
+                "30d": total_30d,
+                "all_time": total_all,
+            },
+            "unique_visitors": {
+                "today": unique_today,
+                "7d": unique_7d,
+                "30d": unique_30d,
+            },
+            "cv_downloads": {
+                "today": cv_today,
+                "7d": cv_7d,
+                "30d": cv_30d,
+            },
+            "top_pages": [{"path": p, "count": c} for p, c in top_pages],
+            "top_referrers": [{"referrer": r, "count": c} for r, c in top_referrers],
+            "hourly_traffic": hourly_traffic,
+            "daily_traffic": daily_traffic,
+            "recent_visitors": recent_visitors,
+        })
+
+    except Exception as e:
+        import traceback
+        current_app.logger.error(f"Analytics error: {e}\n{traceback.format_exc()}")
+        return jsonify({"error": str(e)}), 500
+
+
+@admin_bp.route("/admin/analytics/visitors")
+@requires_login
+@requires_role("admin")
+def analytics_visitors():
+    """Paginated visitor log. Optional ?date=YYYY-MM-DD&page=N filters."""
+    from datetime import datetime
+    from backend.models.visitor_log import VisitorLog
+
+    try:
+        page = request.args.get("page", 1, type=int)
+        per_page = 50
+        date_filter = request.args.get("date")
+
+        query = VisitorLog.query.order_by(desc(VisitorLog.created_at))
+
+        if date_filter:
+            try:
+                target = datetime.strptime(date_filter, "%Y-%m-%d")
+                day_start = target.replace(hour=0, minute=0, second=0)
+                day_end = target.replace(hour=23, minute=59, second=59)
+                query = query.filter(
+                    VisitorLog.created_at >= day_start,
+                    VisitorLog.created_at <= day_end,
+                )
+            except ValueError:
+                pass
+
+        paginated = query.paginate(page=page, per_page=per_page, error_out=False)
+
+        visitors = [
+            {
+                "id": v.id,
+                "ip": v.ip_address,
+                "path": v.path,
+                "method": v.method,
+                "status_code": v.status_code,
+                "user_agent": v.user_agent,
+                "referrer": v.referrer,
+                "response_time_ms": v.response_time_ms,
+                "country": v.country,
+                "city": v.city,
+                "is_unique": v.is_unique,
+                "created_at": v.created_at.isoformat() if v.created_at else None,
+            }
+            for v in paginated.items
+        ]
+
+        return jsonify({
+            "visitors": visitors,
+            "page": paginated.page,
+            "pages": paginated.pages,
+            "total": paginated.total,
+        })
+
+    except Exception as e:
+        current_app.logger.error(f"Visitor log error: {e}")
         return jsonify({"error": str(e)}), 500

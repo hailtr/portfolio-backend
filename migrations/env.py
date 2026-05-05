@@ -23,6 +23,7 @@ from backend.models.certification import Certification, CertificationTranslation
 from backend.models.profile import Profile, ProfileTranslation
 from backend.models.tag import Tag
 from backend.models.user import User
+from backend.models.visitor_log import VisitorLog
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

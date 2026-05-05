@@ -17,6 +17,10 @@ from auth.google_auth import auth_bp, oauth
 from backend.routes.index import index_bp
 from backend.services.cache_service import cache, check_cache_health
 from backend.utils import rate_limit
+from backend.middleware.bot_filter import register_bot_filter
+from backend.middleware.ip_ban import register_ip_ban, record_violation
+from backend.middleware.request_logger import register_request_logger
+from backend.services.alert_service import init_alerts
 
 # Logging configuration
 logging.basicConfig(
@@ -109,9 +113,9 @@ limiter = Limiter(
     app=app,
     key_func=get_remote_address,
     storage_uri=redis_url if redis_url else "memory://",
-    default_limits=["200 per day", "50 per hour"],  # Global limits
+    default_limits=["1000 per day", "200 per hour"],  # Global limits
     storage_options={"socket_connect_timeout": 30},
-    strategy="fixed-window",
+    strategy="fixed-window-elastic-expiry",
 )
 logger.info(
     f"Rate limiter initialized with {'Redis' if redis_url else 'memory'} storage"
@@ -120,11 +124,21 @@ logger.info(
 # Make limiter available to routes
 rate_limit.init_limiter(limiter)
 
+# Register security middleware (order matters: ip_ban runs first, then bot_filter)
+register_ip_ban(app)
+register_bot_filter(app)
+register_request_logger(app)
+logger.info("Security middleware registered (IP ban + bot filter + request logger)")
+
+# Initialize email alerts
+init_alerts(app)
+
 # Import all models so SQLAlchemy knows about them
 # This is critical for relationships to work properly
 from backend.models.project import Project
 from backend.models.project_url import ProjectURL
 from backend.models.analytics import ProjectAnalytics, ProjectEvent
+from backend.models.visitor_log import VisitorLog
 from backend.models.user import User
 
 logger.info("Registering blueprints")
@@ -145,6 +159,8 @@ def not_found(e):
 
 @app.errorhandler(429)
 def rate_limited(e):
+    from flask import request as req
+    record_violation(req.remote_addr)
     return jsonify({"error": True, "message": "Too many requests. Please try again later.", "status": 429}), 429
 
 @app.errorhandler(500)

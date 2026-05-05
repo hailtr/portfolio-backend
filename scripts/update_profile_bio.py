@@ -7,22 +7,30 @@ from backend.models.profile import Profile
 EN_ROLE = "Senior Data Engineer"
 EN_TAGLINE = "Streaming pipelines, lakehouse architectures, and Microsoft data platforms"
 EN_BIO = (
-    "Senior data engineer, independent. I take on the messes nobody else wants — "
-    "undocumented ERPs, out-of-control Snowflake bills, orchestration sprawls built "
-    "by people long gone. I work fast, meet clients wherever they're already running "
-    "(AWS, Azure, GCP), and ship platforms teams can run without me. "
-    "Stack I live in: ClickHouse, Airflow, dbt, Redpanda, Microsoft Fabric."
+    "Senior Data Engineer specializing in modernizing complex data architectures, "
+    "optimizing cloud spend, and untangling intricate legacy pipelines. Whether working "
+    "as an independent contractor or as part of a full-time team, I take deep ownership "
+    "of my projects from architecture to deployment. I thrive in challenging environments—"
+    "taming undocumented ERPs, restructuring Snowflake costs, and building scalable lakehouses. "
+    "I work fast, meet clients wherever they are (AWS, Azure, GCP), and deliver robust platforms "
+    "with a focus on maintainability. Stack I live in: ClickHouse, Airflow, dbt, Redpanda, "
+    "Microsoft Fabric. Open to high-impact Senior/Lead roles or consulting contracts where I can "
+    "build systems I am proud of alongside a collaborative team."
 )
 
 ES_ROLE = "Ingeniero de Datos Senior"
 ES_TAGLINE = "Pipelines de streaming, arquitecturas lakehouse y plataformas de datos Microsoft"
 ES_BIO = (
-    "Ingeniero de datos senior, independiente. Me hago cargo de los desastres que nadie "
-    "más quiere — ERPs sin documentar, facturas de Snowflake descontroladas, marañas de "
-    "orquestación construidas por gente que se fue hace años. Trabajo rápido, en la nube "
-    "donde el cliente ya esté (AWS, Azure, GCP), y entrego plataformas que los equipos "
-    "pueden mantener sin mí. Stack con el que vivo: ClickHouse, Airflow, dbt, Redpanda, "
-    "Microsoft Fabric."
+    "Ingeniero de Datos Senior especializado en modernizar arquitecturas complejas, "
+    "optimizar costos en la nube y desenredar pipelines legacy. Ya sea como consultor "
+    "independiente o como parte de un equipo full-time, asumo un profundo nivel de ownership "
+    "en mis proyectos desde el diseño hasta el despliegue. Me destaco resolviendo problemas de "
+    "alto impacto: domando ERPs sin documentar, reestructurando facturación de Snowflake y "
+    "construyendo lakehouses escalables. Trabajo con agilidad, adaptándome a la nube de la "
+    "empresa (AWS, Azure, GCP), y entrego plataformas robustas con un enfoque en la mantenibilidad. "
+    "Stack con el que vivo: ClickHouse, Airflow, dbt, Redpanda, Microsoft Fabric. Abierto a roles "
+    "Senior/Lead o contratos de consultoría donde pueda construir sistemas de los que me sienta "
+    "orgulloso junto a un gran equipo."
 )
 
 
