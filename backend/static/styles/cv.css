@@ -264,6 +264,7 @@ body {
 .job-highlights {
   list-style: none;
   padding: 0;
+  text-align: justify;
 }
 
 .job-highlights li {
