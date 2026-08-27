@@ -46,7 +46,7 @@ Construí el sistema de observabilidad Watchdog que monitorea frescura de datos,
 
 **Registro de fuentes.** Un registro centralizado en S3 define ventanas de frescura esperadas, umbrales de SLA y reglas de alerta para cada fuente. Agregar una nueva fuente significa agregar una entrada JSON — sin cambios de código.
 
-**De caos a estabilidad.** Compara el canal de alertas de datos antes y después — meses de apagar incendios diarios reemplazados con monitoreo silencioso y confiable. Cuando algo realmente se rompe, las personas correctas lo saben de inmediato.
+**De caos a estabilidad.** Cuando llegué, casi el 80% de los DAGs estaban fallando en 5 servicios de Airflow. Combinado con Watchdog, la reorganización de warehouses de Snowflake y las correcciones de pipelines, las alertas automatizadas bajaron un **60%** y las fallas de DAGs pasaron de ~80% a menos del 20%. Cuando algo realmente se rompe, las personas correctas lo saben de inmediato.
 
 ## ViewStats — Producto Nuevo Desde Cero
 
@@ -65,6 +65,8 @@ Más allá de la migración, entregué varias correcciones críticas de infraest
 
 - **288/678 tablas** migradas de Snowflake a ClickHouse (42% completo, en progreso)
 - **~$12K/mes** objetivo de ahorro en Snowflake al completar la migración; $4K/mes ya eliminados
+- **60% de reducción** en alertas automatizadas en toda la plataforma de datos
+- **~80% → <20%** tasa de fallas de DAGs en 5 servicios de Airflow
 - **38 fuentes de datos** monitoreadas por Watchdog — meses de apagar incendios diarios reemplazados con cobertura automatizada y estable
 - **ViewStats** entregado desde cero como producto independiente
 - **Shazam, PG→SF drift, TikTok bigint** — tres bugs silenciosos de corrupción de datos encontrados y corregidos

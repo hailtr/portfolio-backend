@@ -46,7 +46,7 @@ Built the Watchdog observability system that monitors data freshness, SLA compli
 
 **Source registry.** A centralized registry on S3 defines expected freshness windows, SLA thresholds, and alert rules for each source. Adding a new source means adding a JSON entry — no code changes.
 
-**From chaos to stability.** Compare the data alert channel before and after — months of daily firefighting replaced with quiet, reliable monitoring. When something actually breaks, the right people know immediately.
+**From chaos to stability.** When I arrived, nearly 80% of DAGs were failing across 5 Airflow services. Combined with Watchdog, Snowflake warehouse rearrangement, and pipeline fixes, automated alerts dropped by **60%** and DAG failures went from ~80% to under 20%. When something actually breaks, the right people know immediately.
 
 ## ViewStats — New Product From Scratch
 
@@ -65,6 +65,8 @@ Beyond the migration, shipped several critical infrastructure fixes:
 
 - **288/678 tables** migrated from Snowflake to ClickHouse (42% complete, ongoing)
 - **~$12K/month** target Snowflake savings when migration completes; $4K/month already eliminated
+- **60% reduction** in automated alerts across the data platform
+- **~80% → <20%** DAG failure rate across 5 Airflow services
 - **38 data sources** monitored by Watchdog — months of daily firefighting replaced with stable, automated coverage
 - **ViewStats** shipped from scratch as a standalone product
 - **Shazam, PG→SF drift, TikTok bigint** — three silent data corruption bugs found and fixed
