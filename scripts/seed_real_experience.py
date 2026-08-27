@@ -233,11 +233,11 @@ EXPERIENCES = [
                 "title": "Chartmetric",
                 "subtitle": "Ingeniero de Datos & Infraestructura",
                 "description": (
-                    "Infraestructura de datos, scraping a escala e ingeniería de pipelines en plataforma de analytics musical que rastrea 10M+ artistas en 40+ fuentes de datos, sirviendo clientes enterprise como UMG.\n"
+                    "Infraestructura de datos, scraping a escala e ingeniería de pipelines en plataforma de analytics musical que rastrea 15M+ artistas en 40+ fuentes de datos, sirviendo clientes enterprise como UMG.\n"
                     "- Migré toda la infraestructura de proxies de BrightData a SmartProxy, reduciendo costos de ~$5,000/día en UN solo pipeline a ~$100/día para TODOS los pipelines combinados — ahorro anual de ~$1.7M\n"
                     "- Diseñé y ejecuté soluciones de scraping contra las plataformas más protegidas del mundo: Ticketmaster, TikTok, Genius, Tunefind, Shazam y Discogs — sin muro que no haya escalado\n"
                     "- Recuperé caída de ingesta TikTok de 2 semanas construyendo scraper in-house que reemplazó vendor de $1,500/mes por solución propia (~$50/mes), restaurando ~30K filas/día\n"
-                    "- Eliminé ~$4,000/mes en desperdicio de Snowflake: queries analytics que corrían full-refresh durante horas, fallaban y quemaban créditos sin insertar datos — convertidas a incrementales con watermarks\n"
+                    "- Eliminé ~$4,000/mes en desperdicio de Snowflake: tablas de Spotify y YouTube corrían full-refresh durante horas, fallaban y quemaban créditos sin insertar datos — convertidas a incrementales con watermarks\n"
                     "- Lideré la migración Snowflake → ClickHouse: 288 de 678 tablas diarias (~42%) registradas, loop de transpilación repetible, validación de paridad en arquitectura multi-servicio (5 servicios CH, 2,000+ tablas)\n"
                     "- Construí el producto ViewStats desde cero: pipeline de ingesta de datos YouTube ViewStats en ClickHouse (cluster vert), nuevo vertical de analytics para creators\n"
                     "- Construí sistema de observabilidad Watchdog cubriendo 38 fuentes en ClickHouse, Postgres y S3: heartbeats por tabla, resolución multi-datastore, alertas falsas de 71/día a casi cero\n"
@@ -253,11 +253,11 @@ EXPERIENCES = [
                 "title": "Chartmetric",
                 "subtitle": "Data & Infrastructure Engineer",
                 "description": (
-                    "Data infrastructure, large-scale scraping, and pipeline engineering at a music analytics platform tracking 10M+ artists across 40+ data sources, serving enterprise clients including UMG.\n"
+                    "Data infrastructure, large-scale scraping, and pipeline engineering at a music analytics platform tracking 15M+ artists across 40+ data sources, serving enterprise clients including UMG.\n"
                     "- Migrated the entire proxy infrastructure from BrightData to SmartProxy, cutting costs from ~$5,000/day on a SINGLE pipeline to ~$100/day for ALL pipelines combined — ~$1.7M annualized savings\n"
                     "- Designed and executed scraping solutions against the most heavily protected platforms in the world: Ticketmaster, TikTok, Genius, Tunefind, Shazam, and Discogs — no wall I couldn't climb\n"
                     "- Recovered a 2-week TikTok ingestion outage by building an in-house scraper that replaced a $1,500/mo vendor with a $50/mo in-house solution, restoring ~30K rows/day throughput\n"
-                    "- Eliminated ~$4,000/mo in Snowflake waste: analytics queries running full-refresh for hours, failing, and burning credits with zero rows inserted — converted to incremental with watermark-based loads\n"
+                    "- Eliminated ~$4,000/mo in Snowflake waste: Spotify and YouTube tables running full-refresh for hours, failing, and burning credits with zero rows inserted — converted to incremental with watermark-based loads\n"
                     "- Spearheaded the Snowflake → ClickHouse migration: registered 288 of 678 daily analytics tables (~42%), established a repeatable transpilation loop, and validated parity across a multi-service architecture (5 CH services, 2,000+ tables)\n"
                     "- Built the ViewStats product from scratch: YouTube ViewStats data ingestion pipeline into ClickHouse (vert cluster), a new analytics vertical for creator intelligence\n"
                     "- Built the Watchdog observability system covering 38 data sources across ClickHouse, Postgres, and S3 with per-table freshness heartbeats, multi-datastore resolution, and automated alert tuning — false alerts from 71/day to near-zero\n"
@@ -384,7 +384,7 @@ PROFILE_UPDATE = {
             "tagline": "Infraestructura de datos a escala, migraciones ClickHouse/Snowflake y observabilidad",
             "bio": (
                 "Ingeniero de datos en Chartmetric, liderando infraestructura de datos para una plataforma de analytics "
-                "musical que rastrea 10M+ artistas. Experiencia construyendo pipelines de datos a escala con ClickHouse, "
+                "musical que rastrea 15M+ artistas. Experiencia construyendo pipelines de datos a escala con ClickHouse, "
                 "Snowflake, Airflow y PostgreSQL en AWS. Historial previo en el ecosistema Microsoft (Fabric, Power BI, "
                 "Azure, Synapse) y soluciones multi-cloud. "
                 "Enfocado en migraciones de warehouses, sistemas de observabilidad, operaciones de scraping a escala "
@@ -396,7 +396,7 @@ PROFILE_UPDATE = {
             "tagline": "Data infrastructure at scale, ClickHouse/Snowflake migrations, and observability",
             "bio": (
                 "Data engineer at Chartmetric, leading data infrastructure for a music analytics platform tracking "
-                "10M+ artists. Experienced in building data pipelines at scale with ClickHouse, Snowflake, Airflow, "
+                "15M+ artists. Experienced in building data pipelines at scale with ClickHouse, Snowflake, Airflow, "
                 "and PostgreSQL on AWS. Prior track record in the Microsoft ecosystem (Fabric, Power BI, Azure, Synapse) "
                 "and multi-cloud solutions. "
                 "Focused on warehouse migrations, observability systems, scraping operations at scale, "
