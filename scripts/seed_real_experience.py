@@ -1,7 +1,7 @@
 """
 Seed real experience data into the portfolio database.
 
-Replaces placeholder data with 6 real experience entries,
+Replaces placeholder data with 7 real experience entries,
 adds Microsoft + Data skill categories, DuocUC education,
 and updates the profile.
 
@@ -193,8 +193,8 @@ EXPERIENCES = [
         "company": "Upwork (Freelance)",
         "location": "Remote",
         "start_date": date(2025, 12, 1),
-        "end_date": None,
-        "current": True,
+        "end_date": date(2025, 12, 31),
+        "current": False,
         "translations": {
             "es": {
                 "title": "Upwork (Freelance)",
@@ -220,6 +220,53 @@ EXPERIENCES = [
             },
         },
         "tags": ["Go", "Python", "Snowflake", "dbt", "Airflow", "Terraform", "Docker", "AWS", "BigQuery"],
+    },
+    {
+        "slug": "chartmetric-data-engineer",
+        "company": "Chartmetric",
+        "location": "Remote, San Jose, CA",
+        "start_date": date(2026, 1, 1),
+        "end_date": None,
+        "current": True,
+        "translations": {
+            "es": {
+                "title": "Chartmetric",
+                "subtitle": "Ingeniero de Datos & Infraestructura",
+                "description": (
+                    "Liderazgo en infraestructura de datos e ingeniería en plataforma de analytics musical que rastrea 10M+ artistas en 40+ fuentes de datos, sirviendo clientes enterprise como UMG.\n"
+                    "- Lideré la migración Snowflake → ClickHouse: 288 de 678 tablas de analytics diarias (~42%) registradas con loop de transpilación repetible y validación de paridad en arquitectura CH multi-servicio (5 servicios, 2,000+ tablas)\n"
+                    "- Construí sistema de observabilidad en producción (Watchdog) cubriendo 38 fuentes de datos en ClickHouse, Postgres y S3: heartbeats de freshness por tabla, resolución multi-datastore y tuneo automático de alertas — reduciendo alertas falsas de 71/día a casi cero\n"
+                    "- Recuperé caída de ingesta TikTok de 2 semanas: solución in-house de scraping (curl_cffi + fingerprinting móvil + rotación de proxies residenciales), reduciendo costos de ~$1,500/mes a ~$50/mes con ~30K filas/día restauradas\n"
+                    "- Consolidé pipelines duales de Tunefind (Postgres legacy + ClickHouse nuevo) en arquitectura CH-nativa unificada con retry/backoff 429, rate limiting y separación de DAGs API/website\n"
+                    "- Diseñé y desplegué ingesta Ticketmaster vía S3Queue + 4 vistas materializadas, procesando 12K+ eventos y 922K+ registros de precio\n"
+                    "- Construí pricing a nivel de álbum para Discogs con matching basado en cursor, logging de intentos y selección de precio en dos pasadas para 145K álbumes\n"
+                    "- Diagnostiqué y resolví incidente de corrupción de timestamps Shazam (DateTime64 nanosegundos en Parquet) afectando data shares de UMG — backfill de 4.3M filas y regeneración de feed enterprise\n"
+                    "- Descubrí clase sistémica de drift PG→Snowflake en syncs posicionales: 1.8M filas Instagram silenciosamente desalineadas y 3 drifts activos en 520 tablas\n"
+                    "- Ejecuté migración zero-downtime integer→bigint en tiktok_video (2.1B filas al 97.7% de INT_MAX), coordinando pausa de DAGs en 2 instancias de Airflow\n"
+                    "- Gestioné contrato ClickHouse Cloud, infraestructura de proxies (SmartProxy, Proxi.es) y ciclo de vida de clientes data share (UMG, Carbon Arc)\n"
+                    "- Mentoré a nuevo ingeniero de datos con programa de onboarding basado en rúbrica y asignaciones progresivas"
+                ),
+            },
+            "en": {
+                "title": "Chartmetric",
+                "subtitle": "Data & Infrastructure Engineer",
+                "description": (
+                    "Leading data infrastructure and engineering at a music analytics platform tracking 10M+ artists across 40+ data sources, serving enterprise clients including UMG.\n"
+                    "- Spearheaded the Snowflake → ClickHouse migration: registered 288 of 678 daily analytics tables (~42%), established a repeatable transpilation loop, and validated parity across a multi-service CH architecture (5 services, 2,000+ tables)\n"
+                    "- Built a production observability system (Watchdog) covering 38 data sources across ClickHouse, Postgres, and S3 with per-table freshness heartbeats, multi-datastore resolution, and automated alert tuning — reducing false alerts from 71/day to near-zero\n"
+                    "- Recovered a 2-week TikTok ingestion outage by engineering an in-house scraping solution (curl_cffi + mobile fingerprinting + residential proxy rotation), cutting vendor costs from ~$1,500/mo to ~$50/mo while restoring ~30K rows/day throughput\n"
+                    "- Consolidated dual Tunefind pipelines (legacy Postgres + new ClickHouse) into a single CH-native architecture with 429 retry/backoff, rate limiting, and API/website DAG split\n"
+                    "- Designed and deployed Ticketmaster event data ingestion via S3Queue with 4 materialized views, processing 12K+ events and 922K+ price records at launch\n"
+                    "- Built Discogs album-level pricing with cursor-based matching, attempt logging, and two-pass price selection across 145K albums\n"
+                    "- Diagnosed and resolved a Shazam timestamp corruption incident (DateTime64 nanosecond mis-scale in Parquet) affecting UMG data shares — backfilled 4.3M rows and regenerated enterprise feed files\n"
+                    "- Discovered a systemic PG→Snowflake schema drift class in positional syncs: 1.8M silently misaligned Instagram rows and 3 active table drifts across 520 synced tables\n"
+                    "- Executed a zero-downtime integer→bigint migration on tiktok_video (2.1B rows at 97.7% of INT_MAX), coordinating DAG pausing across 2 Airflow instances\n"
+                    "- Managed ClickHouse Cloud contract and multi-service architecture, proxy infrastructure (SmartProxy, Proxi.es), and data share customer lifecycle (UMG, Carbon Arc)\n"
+                    "- Mentored a new data engineer through a rubric-based onboarding program with progressive project assignments"
+                ),
+            },
+        },
+        "tags": ["Python", "ClickHouse", "Snowflake", "Airflow", "PostgreSQL", "AWS", "S3"],
     },
 ]
 
@@ -281,11 +328,11 @@ DATA_SKILLS = {
         },
     },
     "skills": [
-        {"slug": "snowflake", "name": "Snowflake", "proficiency": 80, "order": 0},
-        {"slug": "clickhouse", "name": "ClickHouse", "proficiency": 70, "order": 1},
+        {"slug": "snowflake", "name": "Snowflake", "proficiency": 90, "order": 0},
+        {"slug": "clickhouse", "name": "ClickHouse", "proficiency": 90, "order": 1},
         {"slug": "delta-lake", "name": "Delta Lake", "proficiency": 85, "order": 2},
         {"slug": "dbt", "name": "dbt", "proficiency": 80, "order": 3},
-        {"slug": "airflow", "name": "Airflow", "proficiency": 75, "order": 4},
+        {"slug": "airflow", "name": "Airflow", "proficiency": 90, "order": 4},
         {"slug": "spark", "name": "Spark", "proficiency": 75, "order": 5},
         {"slug": "etl-elt", "name": "ETL / ELT", "proficiency": 90, "order": 6},
     ],
@@ -330,24 +377,26 @@ PROFILE_UPDATE = {
     "translations": {
         "es": {
             "role": "Senior Data Engineer & Arquitecto de Soluciones",
-            "tagline": "Ingeniería de datos multi-cloud, soluciones Microsoft y backend en Go",
+            "tagline": "Infraestructura de datos a escala, migraciones ClickHouse/Snowflake y observabilidad",
             "bio": (
-                "Ingeniero de datos con experiencia en el ecosistema Microsoft (Fabric, Power BI, Azure, Synapse), "
-                "AWS (S3, Lambda, Athena, VPC) y GCP (BigQuery). "
-                "Stack moderno de datos: Snowflake, dbt, Airflow, Spark. "
-                "Desarrollo backend en Go y Python, con enfoque en arquitectura de soluciones, "
-                "optimización de costos cloud (FinOps) y automatización de infraestructura con Terraform y Docker."
+                "Ingeniero de datos en Chartmetric, liderando infraestructura de datos para una plataforma de analytics "
+                "musical que rastrea 10M+ artistas. Experiencia construyendo pipelines de datos a escala con ClickHouse, "
+                "Snowflake, Airflow y PostgreSQL en AWS. Historial previo en el ecosistema Microsoft (Fabric, Power BI, "
+                "Azure, Synapse) y soluciones multi-cloud. "
+                "Enfocado en migraciones de warehouses, sistemas de observabilidad, operaciones de scraping a escala "
+                "y optimización de costos de infraestructura."
             ),
         },
         "en": {
             "role": "Senior Data Engineer & Solutions Architect",
-            "tagline": "Multi-cloud data engineering, Microsoft solutions, and Go backend",
+            "tagline": "Data infrastructure at scale, ClickHouse/Snowflake migrations, and observability",
             "bio": (
-                "Data engineer experienced in the Microsoft ecosystem (Fabric, Power BI, Azure, Synapse), "
-                "AWS (S3, Lambda, Athena, VPC), and GCP (BigQuery). "
-                "Modern data stack: Snowflake, dbt, Airflow, Spark. "
-                "Backend development in Go and Python, focused on solutions architecture, "
-                "cloud cost optimization (FinOps), and infrastructure automation with Terraform and Docker."
+                "Data engineer at Chartmetric, leading data infrastructure for a music analytics platform tracking "
+                "10M+ artists. Experienced in building data pipelines at scale with ClickHouse, Snowflake, Airflow, "
+                "and PostgreSQL on AWS. Prior track record in the Microsoft ecosystem (Fabric, Power BI, Azure, Synapse) "
+                "and multi-cloud solutions. "
+                "Focused on warehouse migrations, observability systems, scraping operations at scale, "
+                "and infrastructure cost optimization."
             ),
         },
     },
@@ -360,7 +409,7 @@ PROFILE_UPDATE = {
 
 
 def seed_experiences():
-    """Delete existing experiences and insert 6 real ones."""
+    """Delete existing experiences and insert 7 real ones."""
     print("\n💼 Seeding experiences...")
 
     # Delete all existing experiences (cascade deletes translations + tags)
