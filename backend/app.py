@@ -115,7 +115,7 @@ limiter = Limiter(
     storage_uri=redis_url if redis_url else "memory://",
     default_limits=["1000 per day", "200 per hour"],  # Global limits
     storage_options={"socket_connect_timeout": 30},
-    strategy="fixed-window-elastic-expiry",
+    strategy="fixed-window",
 )
 logger.info(
     f"Rate limiter initialized with {'Redis' if redis_url else 'memory'} storage"
