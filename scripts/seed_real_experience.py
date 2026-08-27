@@ -233,40 +233,44 @@ EXPERIENCES = [
                 "title": "Chartmetric",
                 "subtitle": "Ingeniero de Datos & Infraestructura",
                 "description": (
-                    "Liderazgo en infraestructura de datos e ingeniería en plataforma de analytics musical que rastrea 10M+ artistas en 40+ fuentes de datos, sirviendo clientes enterprise como UMG.\n"
-                    "- Lideré la migración Snowflake → ClickHouse: 288 de 678 tablas de analytics diarias (~42%) registradas con loop de transpilación repetible y validación de paridad en arquitectura CH multi-servicio (5 servicios, 2,000+ tablas)\n"
-                    "- Construí sistema de observabilidad en producción (Watchdog) cubriendo 38 fuentes de datos en ClickHouse, Postgres y S3: heartbeats de freshness por tabla, resolución multi-datastore y tuneo automático de alertas — reduciendo alertas falsas de 71/día a casi cero\n"
-                    "- Recuperé caída de ingesta TikTok de 2 semanas: solución in-house de scraping (curl_cffi + fingerprinting móvil + rotación de proxies residenciales), reduciendo costos de ~$1,500/mes a ~$50/mes con ~30K filas/día restauradas\n"
-                    "- Consolidé pipelines duales de Tunefind (Postgres legacy + ClickHouse nuevo) en arquitectura CH-nativa unificada con retry/backoff 429, rate limiting y separación de DAGs API/website\n"
-                    "- Diseñé y desplegué ingesta Ticketmaster vía S3Queue + 4 vistas materializadas, procesando 12K+ eventos y 922K+ registros de precio\n"
-                    "- Construí pricing a nivel de álbum para Discogs con matching basado en cursor, logging de intentos y selección de precio en dos pasadas para 145K álbumes\n"
-                    "- Diagnostiqué y resolví incidente de corrupción de timestamps Shazam (DateTime64 nanosegundos en Parquet) afectando data shares de UMG — backfill de 4.3M filas y regeneración de feed enterprise\n"
-                    "- Descubrí clase sistémica de drift PG→Snowflake en syncs posicionales: 1.8M filas Instagram silenciosamente desalineadas y 3 drifts activos en 520 tablas\n"
-                    "- Ejecuté migración zero-downtime integer→bigint en tiktok_video (2.1B filas al 97.7% de INT_MAX), coordinando pausa de DAGs en 2 instancias de Airflow\n"
-                    "- Gestioné contrato ClickHouse Cloud, infraestructura de proxies (SmartProxy, Proxi.es) y ciclo de vida de clientes data share (UMG, Carbon Arc)\n"
-                    "- Mentoré a nuevo ingeniero de datos con programa de onboarding basado en rúbrica y asignaciones progresivas"
+                    "Infraestructura de datos, scraping a escala e ingeniería de pipelines en plataforma de analytics musical que rastrea 10M+ artistas en 40+ fuentes de datos, sirviendo clientes enterprise como UMG.\n"
+                    "- Migré toda la infraestructura de proxies de BrightData a SmartProxy, reduciendo costos de ~$5,000/día en UN solo pipeline a ~$100/día para TODOS los pipelines combinados — ahorro anual de ~$1.7M\n"
+                    "- Diseñé y ejecuté soluciones de scraping contra las plataformas más protegidas del mundo: TikTok (curl_cffi + fingerprinting móvil + rotación residencial, 72% success rate vs WAF/SlardarWAF), Genius (circuit breakers + per-token budgets vs rate limits), Tunefind (API + website dual-source con throttle adaptativo), Shazam y Discogs — sin muro que no haya escalado\n"
+                    "- Recuperé caída de ingesta TikTok de 2 semanas construyendo scraper in-house que reemplazó vendor ScrapeCreator ($1,500/mes) por solución propia (~$50/mes), restaurando ~30K filas/día\n"
+                    "- Eliminé ~$4,000/mes en desperdicio de Snowflake: queries analytics que corrían full-refresh durante horas, fallaban y quemaban créditos sin insertar datos — convertidas a incrementales con watermarks\n"
+                    "- Lideré la migración Snowflake → ClickHouse: 288 de 678 tablas diarias (~42%) registradas, loop de transpilación repetible, validación de paridad en arquitectura multi-servicio (5 servicios CH, 2,000+ tablas)\n"
+                    "- Construí el producto ViewStats desde cero: pipeline de ingesta de datos YouTube ViewStats en ClickHouse (cluster vert), nuevo vertical de analytics para creators\n"
+                    "- Construí sistema de observabilidad Watchdog cubriendo 38 fuentes en ClickHouse, Postgres y S3: heartbeats por tabla, resolución multi-datastore, alertas falsas de 71/día a casi cero\n"
+                    "- Diseñé ingesta Ticketmaster vía S3Queue + 4 vistas materializadas (12K+ eventos, 922K+ precios); pricing Discogs con cursor matching y selección de precio en dos pasadas para 145K álbumes\n"
+                    "- Diagnostiqué corrupción de timestamps Shazam (DateTime64 nanosegundos en Parquet) afectando data shares UMG — backfill de 4.3M filas y regeneración de feeds enterprise\n"
+                    "- Descubrí clase sistémica de drift PG→Snowflake: 1.8M filas Instagram silenciosamente desalineadas + 3 drifts activos en 520 tablas sincronizadas\n"
+                    "- Ejecuté migración zero-downtime integer→bigint en tiktok_video (2.1B filas al 97.7% de INT_MAX), coordinando DAGs en 2 instancias Airflow\n"
+                    "- Gestioné contrato ClickHouse Cloud y arquitectura multi-servicio, infraestructura de proxies (SmartProxy, Proxi.es, BrightData) y ciclo de vida de clientes data share (UMG, Carbon Arc)\n"
+                    "- Consolidé pipelines Tunefind (Postgres legacy + ClickHouse) en arquitectura CH-nativa unificada; mentoré nuevo ingeniero de datos con programa basado en rúbrica"
                 ),
             },
             "en": {
                 "title": "Chartmetric",
                 "subtitle": "Data & Infrastructure Engineer",
                 "description": (
-                    "Leading data infrastructure and engineering at a music analytics platform tracking 10M+ artists across 40+ data sources, serving enterprise clients including UMG.\n"
-                    "- Spearheaded the Snowflake → ClickHouse migration: registered 288 of 678 daily analytics tables (~42%), established a repeatable transpilation loop, and validated parity across a multi-service CH architecture (5 services, 2,000+ tables)\n"
-                    "- Built a production observability system (Watchdog) covering 38 data sources across ClickHouse, Postgres, and S3 with per-table freshness heartbeats, multi-datastore resolution, and automated alert tuning — reducing false alerts from 71/day to near-zero\n"
-                    "- Recovered a 2-week TikTok ingestion outage by engineering an in-house scraping solution (curl_cffi + mobile fingerprinting + residential proxy rotation), cutting vendor costs from ~$1,500/mo to ~$50/mo while restoring ~30K rows/day throughput\n"
-                    "- Consolidated dual Tunefind pipelines (legacy Postgres + new ClickHouse) into a single CH-native architecture with 429 retry/backoff, rate limiting, and API/website DAG split\n"
-                    "- Designed and deployed Ticketmaster event data ingestion via S3Queue with 4 materialized views, processing 12K+ events and 922K+ price records at launch\n"
-                    "- Built Discogs album-level pricing with cursor-based matching, attempt logging, and two-pass price selection across 145K albums\n"
-                    "- Diagnosed and resolved a Shazam timestamp corruption incident (DateTime64 nanosecond mis-scale in Parquet) affecting UMG data shares — backfilled 4.3M rows and regenerated enterprise feed files\n"
-                    "- Discovered a systemic PG→Snowflake schema drift class in positional syncs: 1.8M silently misaligned Instagram rows and 3 active table drifts across 520 synced tables\n"
+                    "Data infrastructure, large-scale scraping, and pipeline engineering at a music analytics platform tracking 10M+ artists across 40+ data sources, serving enterprise clients including UMG.\n"
+                    "- Migrated the entire proxy infrastructure from BrightData to SmartProxy, cutting costs from ~$5,000/day on a SINGLE pipeline to ~$100/day for ALL pipelines combined — ~$1.7M annualized savings\n"
+                    "- Designed and executed scraping solutions against the most heavily protected platforms in the world: TikTok (curl_cffi + mobile fingerprinting + residential rotation, 72% success vs WAF/SlardarWAF), Genius (circuit breakers + per-token budgets vs rate limits), Tunefind (API + website dual-source with adaptive throttling), Shazam, and Discogs — no wall I couldn't climb\n"
+                    "- Recovered a 2-week TikTok ingestion outage by building an in-house scraper that replaced a $1,500/mo vendor (ScrapeCreator) with a $50/mo in-house solution, restoring ~30K rows/day throughput\n"
+                    "- Eliminated ~$4,000/mo in Snowflake waste: analytics queries running full-refresh for hours, failing, and burning credits with zero rows inserted — converted to incremental with watermark-based loads\n"
+                    "- Spearheaded the Snowflake → ClickHouse migration: registered 288 of 678 daily analytics tables (~42%), established a repeatable transpilation loop, and validated parity across a multi-service architecture (5 CH services, 2,000+ tables)\n"
+                    "- Built the ViewStats product from scratch: YouTube ViewStats data ingestion pipeline into ClickHouse (vert cluster), a new analytics vertical for creator intelligence\n"
+                    "- Built the Watchdog observability system covering 38 data sources across ClickHouse, Postgres, and S3 with per-table freshness heartbeats, multi-datastore resolution, and automated alert tuning — false alerts from 71/day to near-zero\n"
+                    "- Designed Ticketmaster event ingestion via S3Queue + 4 materialized views (12K+ events, 922K+ prices); Discogs album-level pricing with cursor matching and two-pass price selection across 145K albums\n"
+                    "- Diagnosed a Shazam timestamp corruption incident (DateTime64 nanosecond mis-scale in Parquet) affecting UMG data shares — backfilled 4.3M rows and regenerated enterprise feed files\n"
+                    "- Discovered a systemic PG→Snowflake schema drift class: 1.8M silently misaligned Instagram rows and 3 active table drifts across 520 synced tables\n"
                     "- Executed a zero-downtime integer→bigint migration on tiktok_video (2.1B rows at 97.7% of INT_MAX), coordinating DAG pausing across 2 Airflow instances\n"
-                    "- Managed ClickHouse Cloud contract and multi-service architecture, proxy infrastructure (SmartProxy, Proxi.es), and data share customer lifecycle (UMG, Carbon Arc)\n"
-                    "- Mentored a new data engineer through a rubric-based onboarding program with progressive project assignments"
+                    "- Managed ClickHouse Cloud contract and multi-service architecture, proxy infrastructure (SmartProxy, Proxi.es, BrightData), and data share customer lifecycle (UMG, Carbon Arc)\n"
+                    "- Consolidated Tunefind pipelines (legacy Postgres + ClickHouse) into a unified CH-native architecture; mentored a new data engineer through a rubric-based onboarding program"
                 ),
             },
         },
-        "tags": ["Python", "ClickHouse", "Snowflake", "Airflow", "PostgreSQL", "AWS", "S3"],
+        "tags": ["Python", "ClickHouse", "Snowflake", "Airflow", "PostgreSQL", "AWS", "S3", "Web Scraping"],
     },
 ]
 
