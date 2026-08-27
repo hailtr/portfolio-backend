@@ -1,0 +1,69 @@
+---
+title:
+  es: "Evolución de plataforma de datos: Snowflake → ClickHouse + Observabilidad"
+  en: "Data Platform Evolution: Snowflake → ClickHouse + Observability"
+client: "Chartmetric"
+dates: "Jan 2026 – Present"
+location: "Remote, San Jose, CA"
+metric:
+  value: "288"
+  label:
+    es: "tablas migradas"
+    en: "tables migrated"
+summary:
+  es: "Migración de 288/678 tablas de Snowflake a ClickHouse, observabilidad con Watchdog para 38 fuentes, y creación de ViewStats desde cero."
+  en: "288/678 tables migrated from Snowflake to ClickHouse, Watchdog observability across 38 sources, and ViewStats built from scratch."
+stack: ["ClickHouse", "Snowflake", "Airflow", "Python", "PostgreSQL", "AWS", "S3"]
+tags: ["ClickHouse", "Snowflake", "Airflow", "Data Engineering"]
+order: 6
+---
+
+import MigrationProgress from '../../../components/visuals/MigrationProgress.tsx';
+
+## The Problem
+
+Chartmetric's data stack had grown organically across Snowflake, PostgreSQL, and ClickHouse — with no unified observability and significant waste. Snowflake queries for Spotify and YouTube tables were running full-refresh, computing for hours, failing, and burning **$4K/month** for nothing. Meanwhile, there was no systematic way to know when a data source went stale or a pipeline silently broke.
+
+The platform needed three things at once: migrate analytics off Snowflake, eliminate waste, and build observability from scratch.
+
+<MigrationProgress client:visible />
+
+## Snowflake → ClickHouse Migration
+
+Led the ongoing migration of 678 analytics tables from Snowflake to ClickHouse. This isn't a lift-and-shift — every table is converted to incremental processing, eliminating the full-refresh pattern that was burning Snowflake credits.
+
+**Incremental, not full-refresh.** Each migrated table switches from full-refresh to incremental updates using ClickHouse materialized views and ReplacingMergeTree tables. This alone eliminated $4K/month in wasted Snowflake compute.
+
+**Parallel validation.** Every table runs in parallel on both Snowflake and ClickHouse during migration. Snowflake serves as the validation oracle until the ClickHouse version proves consistent.
+
+**288 tables migrated so far** — covering Spotify, YouTube, TikTok, Shazam, Instagram, and dozens of other sources. The remaining 390 tables are queued for migration.
+
+## Watchdog — Observability From Scratch
+
+Built the Watchdog observability system that monitors data freshness, SLA compliance, and pipeline health across **38 data sources**. Before Watchdog, stale data could go unnoticed for days.
+
+**Source registry.** A centralized registry on S3 defines expected freshness windows, SLA thresholds, and alert rules for each source. Adding a new source means adding a JSON entry — no code changes.
+
+**Alert tuning.** The initial rollout surfaced 71 false alerts per day from miscalibrated thresholds. Tuned every source's window to bring false alerts to near-zero while maintaining real coverage.
+
+## ViewStats — New Product From Scratch
+
+Built the ViewStats product end-to-end — a standalone analytics product that required its own data pipeline, storage layer, and API surface. Delivered from zero to production as a solo effort.
+
+## Infrastructure Wins
+
+Beyond the migration, shipped several critical infrastructure fixes:
+
+- **Shazam timestamp corruption** — Diagnosed a DateTime64(9) → Parquet mis-scaling bug that had silently garbled timestamps in Snowflake. Fixed the wire format, backfilled affected tables, and regenerated data feeds.
+- **PG → SF schema drift** — Discovered that positional COPY INTO silently misaligns columns whenever PostgreSQL adds a column. Built detection tooling and documented the systemic fix.
+- **TikTok bigint migration** — Migrated 3 columns from int to bigint via zero-downtime table-swap when video IDs outgrew 32-bit integers.
+- **ClickHouse Cloud contract** — Managed the commercial relationship including contract negotiations, proxy vendor selection, and data share lifecycle.
+
+## Results
+
+- **288/678 tables** migrated from Snowflake to ClickHouse (42% complete, ongoing)
+- **$4K/month** in Snowflake waste eliminated by switching to incremental processing
+- **38 data sources** monitored by Watchdog with near-zero false alerts
+- **ViewStats** shipped from scratch as a standalone product
+- **Shazam, PG→SF drift, TikTok bigint** — three silent data corruption bugs found and fixed
+- **Mentored** a new data engineer through their first month with structured rubric and projects
