@@ -15,7 +15,7 @@ summary:
   en: "288/678 tables migrated from Snowflake to ClickHouse, Watchdog observability across 38 sources, and ViewStats built from scratch."
 stack: ["ClickHouse", "Snowflake", "Airflow", "Python", "PostgreSQL", "AWS", "S3"]
 tags: ["ClickHouse", "Snowflake", "Airflow", "Data Engineering"]
-order: 6
+order: 3
 ---
 
 import MigrationProgress from '../../../components/visuals/MigrationProgress.tsx';
@@ -36,15 +36,17 @@ Led the ongoing migration of 678 analytics tables from Snowflake to ClickHouse. 
 
 **Parallel validation.** Every table runs in parallel on both Snowflake and ClickHouse during migration. Snowflake serves as the validation oracle until the ClickHouse version proves consistent.
 
-**288 tables migrated so far** — covering Spotify, YouTube, TikTok, Shazam, Instagram, and dozens of other sources. The remaining 390 tables are queued for migration.
+**288 tables migrated so far** — covering Spotify, YouTube, TikTok, Shazam, Instagram, and dozens of other sources. The remaining 390 tables are queued for migration. The full migration targets **~$12K/month** in Snowflake savings — the current cost of the Analytics_Daily workload alone.
 
 ## Watchdog — Observability From Scratch
 
-Built the Watchdog observability system that monitors data freshness, SLA compliance, and pipeline health across **38 data sources**. Before Watchdog, stale data could go unnoticed for days.
+Before Watchdog, monitoring 38 data sources meant manually inspecting pipelines daily — checking for silent failures, stale data, broken feeds. The data alert channel was noise. I spent months firefighting issues that should have been caught automatically.
+
+Built the Watchdog observability system that monitors data freshness, SLA compliance, and pipeline health across **38 data sources**. Now the system tells me what's failing instead of me hunting for it.
 
 **Source registry.** A centralized registry on S3 defines expected freshness windows, SLA thresholds, and alert rules for each source. Adding a new source means adding a JSON entry — no code changes.
 
-**Alert tuning.** The initial rollout surfaced 71 false alerts per day from miscalibrated thresholds. Tuned every source's window to bring false alerts to near-zero while maintaining real coverage.
+**From chaos to stability.** When I arrived, nearly 80% of DAGs were failing across 5 Airflow services. Combined with Watchdog, Snowflake warehouse rearrangement, and pipeline fixes, automated alerts dropped by **60%** and DAG failures went from ~80% to under 20%. When something actually breaks, the right people know immediately.
 
 ## ViewStats — New Product From Scratch
 
@@ -57,13 +59,15 @@ Beyond the migration, shipped several critical infrastructure fixes:
 - **Shazam timestamp corruption** — Diagnosed a DateTime64(9) → Parquet mis-scaling bug that had silently garbled timestamps in Snowflake. Fixed the wire format, backfilled affected tables, and regenerated data feeds.
 - **PG → SF schema drift** — Discovered that positional COPY INTO silently misaligns columns whenever PostgreSQL adds a column. Built detection tooling and documented the systemic fix.
 - **TikTok bigint migration** — Migrated 3 columns from int to bigint via zero-downtime table-swap when video IDs outgrew 32-bit integers.
-- **ClickHouse Cloud contract** — Managed the commercial relationship including contract negotiations, proxy vendor selection, and data share lifecycle.
+- **ClickHouse Cloud contract** — Leading ongoing contract negotiations, proxy vendor selection, and data share lifecycle management.
 
 ## Results
 
 - **288/678 tables** migrated from Snowflake to ClickHouse (42% complete, ongoing)
-- **$4K/month** in Snowflake waste eliminated by switching to incremental processing
-- **38 data sources** monitored by Watchdog with near-zero false alerts
+- **~$12K/month** target Snowflake savings when migration completes; $4K/month already eliminated
+- **60% reduction** in automated alerts across the data platform
+- **~80% → <20%** DAG failure rate across 5 Airflow services
+- **38 data sources** monitored by Watchdog — months of daily firefighting replaced with stable, automated coverage
 - **ViewStats** shipped from scratch as a standalone product
 - **Shazam, PG→SF drift, TikTok bigint** — three silent data corruption bugs found and fixed
 - **Mentored** a new data engineer through their first month with structured rubric and projects

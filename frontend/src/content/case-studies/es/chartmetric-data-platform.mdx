@@ -15,7 +15,7 @@ summary:
   en: "288/678 tables migrated from Snowflake to ClickHouse, Watchdog observability across 38 sources, and ViewStats built from scratch."
 stack: ["ClickHouse", "Snowflake", "Airflow", "Python", "PostgreSQL", "AWS", "S3"]
 tags: ["ClickHouse", "Snowflake", "Airflow", "Data Engineering"]
-order: 6
+order: 3
 ---
 
 import MigrationProgress from '../../../components/visuals/MigrationProgress.tsx';
@@ -36,15 +36,17 @@ Lideré la migración en curso de 678 tablas analíticas de Snowflake a ClickHou
 
 **Validación en paralelo.** Cada tabla corre en paralelo tanto en Snowflake como en ClickHouse durante la migración. Snowflake sirve como oráculo de validación hasta que la versión de ClickHouse demuestre consistencia.
 
-**288 tablas migradas hasta ahora** — cubriendo Spotify, YouTube, TikTok, Shazam, Instagram y docenas de otras fuentes. Las 390 tablas restantes están en cola para migración.
+**288 tablas migradas hasta ahora** — cubriendo Spotify, YouTube, TikTok, Shazam, Instagram y docenas de otras fuentes. Las 390 tablas restantes están en cola para migración. La migración completa apunta a **~$12K/mes** en ahorro de Snowflake — el costo actual del workload de Analytics_Daily solamente.
 
 ## Watchdog — Observabilidad Desde Cero
 
-Construí el sistema de observabilidad Watchdog que monitorea frescura de datos, cumplimiento de SLA y salud de pipelines en **38 fuentes de datos**. Antes de Watchdog, los datos obsoletos podían pasar desapercibidos por días.
+Antes de Watchdog, monitorear 38 fuentes de datos significaba inspeccionar pipelines manualmente todos los días — buscando fallas silenciosas, datos obsoletos, feeds rotos. El canal de alertas de datos era puro ruido. Pasé meses apagando incendios que deberían haberse detectado automáticamente.
+
+Construí el sistema de observabilidad Watchdog que monitorea frescura de datos, cumplimiento de SLA y salud de pipelines en **38 fuentes de datos**. Ahora el sistema me dice qué está fallando en vez de tener que buscarlo yo.
 
 **Registro de fuentes.** Un registro centralizado en S3 define ventanas de frescura esperadas, umbrales de SLA y reglas de alerta para cada fuente. Agregar una nueva fuente significa agregar una entrada JSON — sin cambios de código.
 
-**Ajuste de alertas.** El despliegue inicial reveló 71 alertas falsas por día por umbrales mal calibrados. Ajusté la ventana de cada fuente para llevar las alertas falsas a casi cero mientras se mantenía la cobertura real.
+**De caos a estabilidad.** Cuando llegué, casi el 80% de los DAGs estaban fallando en 5 servicios de Airflow. Combinado con Watchdog, la reorganización de warehouses de Snowflake y las correcciones de pipelines, las alertas automatizadas bajaron un **60%** y las fallas de DAGs pasaron de ~80% a menos del 20%. Cuando algo realmente se rompe, las personas correctas lo saben de inmediato.
 
 ## ViewStats — Producto Nuevo Desde Cero
 
@@ -57,13 +59,15 @@ Más allá de la migración, entregué varias correcciones críticas de infraest
 - **Corrupción de timestamps en Shazam** — Diagnostiqué un bug de mis-escala DateTime64(9) → Parquet que había distorsionado silenciosamente timestamps en Snowflake. Corregí el formato del wire, backfillé las tablas afectadas y regeneré los feeds de datos.
 - **Drift de schema PG → SF** — Descubrí que el COPY INTO posicional desalinea silenciosamente columnas cada vez que PostgreSQL agrega una columna. Construí herramientas de detección y documenté la corrección sistémica.
 - **Migración bigint de TikTok** — Migré 3 columnas de int a bigint mediante table-swap sin downtime cuando los IDs de video superaron los enteros de 32 bits.
-- **Contrato ClickHouse Cloud** — Gestioné la relación comercial incluyendo negociaciones de contrato, selección de proveedores de proxy y ciclo de vida de data shares.
+- **Contrato ClickHouse Cloud** — Liderando negociaciones de contrato en curso, selección de proveedores de proxy y gestión del ciclo de vida de data shares.
 
 ## Resultados
 
 - **288/678 tablas** migradas de Snowflake a ClickHouse (42% completo, en progreso)
-- **$4K/mes** de desperdicio de Snowflake eliminado al cambiar a procesamiento incremental
-- **38 fuentes de datos** monitoreadas por Watchdog con alertas falsas casi nulas
+- **~$12K/mes** objetivo de ahorro en Snowflake al completar la migración; $4K/mes ya eliminados
+- **60% de reducción** en alertas automatizadas en toda la plataforma de datos
+- **~80% → <20%** tasa de fallas de DAGs en 5 servicios de Airflow
+- **38 fuentes de datos** monitoreadas por Watchdog — meses de apagar incendios diarios reemplazados con cobertura automatizada y estable
 - **ViewStats** entregado desde cero como producto independiente
 - **Shazam, PG→SF drift, TikTok bigint** — tres bugs silenciosos de corrupción de datos encontrados y corregidos
 - **Mentoría** a una nueva ingeniera de datos durante su primer mes con rúbrica estructurada y proyectos

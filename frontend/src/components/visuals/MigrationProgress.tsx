@@ -7,8 +7,9 @@ const t = {
   remaining: { es: 'restantes', en: 'remaining' },
   total: { es: 'tablas totales', en: 'total tables' },
   progress: { es: 'progreso', en: 'progress' },
-  wasteEliminated: { es: 'desperdicio eliminado', en: 'waste eliminated' },
-  sources: { es: 'fuentes monitoreadas', en: 'sources monitored' },
+  alertReduction: { es: 'menos alertas', en: 'fewer alerts' },
+  dagFailures: { es: 'fallas de DAGs', en: 'DAG failures' },
+  targetSavings: { es: 'ahorro objetivo', en: 'target savings' },
 };
 
 export default function MigrationProgress() {
@@ -101,7 +102,7 @@ export default function MigrationProgress() {
 
       {/* Stats */}
       <div
-        className="mt-6 grid grid-cols-3 gap-4 text-center transition-all duration-700"
+        className="mt-6 grid grid-cols-4 gap-3 text-center transition-all duration-700"
         style={{ opacity: visible ? 1 : 0.3, transitionDelay: '1.2s' }}
       >
         <div>
@@ -109,12 +110,16 @@ export default function MigrationProgress() {
           <p className="text-[0.65rem] text-[var(--color-fg-faint)] uppercase tracking-wider">{t.migrated[locale]}</p>
         </div>
         <div>
-          <p className="text-lg font-extrabold text-[var(--color-accent)]">$4K/mo</p>
-          <p className="text-[0.65rem] text-[var(--color-fg-faint)] uppercase tracking-wider">{t.wasteEliminated[locale]}</p>
+          <p className="text-lg font-extrabold text-[var(--color-accent)]">~$12K</p>
+          <p className="text-[0.65rem] text-[var(--color-fg-faint)] uppercase tracking-wider">{t.targetSavings[locale]}</p>
         </div>
         <div>
-          <p className="text-lg font-extrabold text-[var(--color-accent)]">38</p>
-          <p className="text-[0.65rem] text-[var(--color-fg-faint)] uppercase tracking-wider">{t.sources[locale]}</p>
+          <p className="text-lg font-extrabold text-[#10b981]">60%</p>
+          <p className="text-[0.65rem] text-[var(--color-fg-faint)] uppercase tracking-wider">{t.alertReduction[locale]}</p>
+        </div>
+        <div>
+          <p className="text-lg font-extrabold text-[#10b981]">&lt;20%</p>
+          <p className="text-[0.65rem] text-[var(--color-fg-faint)] uppercase tracking-wider">{t.dagFailures[locale]}</p>
         </div>
       </div>
     </div>
