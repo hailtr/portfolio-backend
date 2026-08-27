@@ -1,0 +1,58 @@
+---
+title:
+  es: "Web Scraping a escala: 15M+ artistas en las plataformas más difíciles"
+  en: "Web Scraping at Scale: 15M+ Artists Across the Hardest Platforms"
+client: "Chartmetric"
+dates: "Jan 2026 – Present"
+location: "Remote, San Jose, CA"
+metric:
+  value: "15M+"
+  label:
+    es: "artistas rastreados"
+    en: "artists tracked"
+summary:
+  es: "Scraping de datos de artistas a escala en las plataformas más protegidas del mundo — Ticketmaster, TikTok, Genius y más."
+  en: "Scraping artist data at scale across the world's most protected platforms — Ticketmaster, TikTok, Genius, and more."
+stack: ["Python", "Airflow", "PostgreSQL", "ClickHouse", "AWS", "Web Scraping"]
+tags: ["Web Scraping", "Python", "Data Engineering"]
+order: 5
+---
+
+import ScrapingReach from '../../../components/visuals/ScrapingReach.tsx';
+
+## El Problema
+
+El producto de Chartmetric depende de datos frescos y completos de cada plataforma musical importante. Estas plataformas no ofrecen APIs para los datos que necesitamos — o sus APIs tienen rate-limits que las hacen inútiles. El único camino es el web scraping a gran escala, pero cada plataforma lo combate activamente con defensas anti-bot cada vez más sofisticadas.
+
+La empresa necesitaba a alguien capaz de romper cualquier barrera, mantener pipelines funcionando a escala, y recuperarse rápido cuando las plataformas cambiaran sus defensas.
+
+<ScrapingReach client:visible />
+
+## Ticketmaster — La Plataforma Más Difícil
+
+Ticketmaster es ampliamente considerado el sitio web más difícil de scrapear en internet. Su stack anti-bot está entre los más agresivos de la industria — fingerprinting sofisticado, análisis de comportamiento y bloqueo agresivo.
+
+Construí un pipeline que extrae datos de eventos y tickets de forma confiable a escala. Cuando sus defensas evolucionan, el scraper también lo hace. El pipeline ha mantenido flujo de datos continuo desde su lanzamiento.
+
+## TikTok — Recuperación de Apagón Total
+
+El pipeline de ingesta de usuarios de TikTok se apagó completamente — cero datos fluyendo durante semanas. La plataforma había desplegado nuevas medidas anti-scraping que rompieron completamente el enfoque existente.
+
+Diagnostiqué la falla, diseñé un nuevo enfoque y restauré el flujo completo de datos. La solución redujo los costos de proxy solo para TikTok de **$1,500/mes a $50/mes**, logrando tasas de éxito más altas que el pipeline original.
+
+## Genius, Shazam, Discogs, Tunefind
+
+Cada plataforma presenta sus propios desafíos únicos — rate limiting, WAFs, fingerprinting, o los tres. Construí o reconstruí los pipelines de scraping para todas ellas:
+
+- **Genius** — Superé rate limiting agresivo. Implementé presupuesto inteligente por token de API para maximizar el throughput dentro de los límites.
+- **Shazam** — Construí el pipeline que alimenta datos tanto a PostgreSQL como a ClickHouse. Diagnostiqué y corregí un bug de corrupción de timestamps que había distorsionado datos silenciosamente en Snowflake.
+- **Discogs** — Construí un pipeline de datos de precios para el marketplace, desbloqueando una nueva fuente de ingresos.
+- **Tunefind** — Consolidé dos pipelines legacy (PostgreSQL y ClickHouse) en un solo pipeline unificado.
+
+## Resultados
+
+- **15M+ artistas** rastreados continuamente en 6+ plataformas
+- **Ticketmaster** — la plataforma más difícil de scrapear — funcionando de forma confiable a escala
+- **Apagón de TikTok** recuperado con 97% de reducción de costos ($1,500 → $50/mes)
+- **100% de resiliencia** — cada plataforma defendida, cada muro escalado
+- Reconocido como el ingeniero de scraping de referencia para cualquier nueva fuente de datos que la empresa necesite

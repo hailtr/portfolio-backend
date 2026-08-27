@@ -1,0 +1,47 @@
+---
+title:
+  es: "Reducción de costos de proxy del 98% para plataforma de datos musicales"
+  en: "98% Proxy Cost Reduction for Music Data Platform"
+client: "Chartmetric"
+dates: "Jan 2026 – Present"
+location: "Remote, San Jose, CA"
+metric:
+  value: "~$1.7M/yr"
+  label:
+    es: "ahorro anual"
+    en: "annual savings"
+summary:
+  es: "Migración de proxy de BrightData a SmartProxy: de $5K/día por un solo pipeline a $100/día para todos los pipelines."
+  en: "Proxy vendor migration from BrightData to SmartProxy: $5K/day on a single pipeline down to $100/day for all pipelines."
+stack: ["Python", "SmartProxy", "Airflow", "AWS", "Web Scraping"]
+tags: ["Web Scraping", "Cost Optimization", "Python"]
+order: 4
+---
+
+import ProxyCostDrop from '../../../components/visuals/ProxyCostDrop.tsx';
+
+## The Problem
+
+Chartmetric tracks 15M+ artists across every major music platform — Spotify, TikTok, YouTube, Shazam, Genius, Discogs, Ticketmaster, and more. This requires continuous, large-scale web scraping operations running 24/7.
+
+The existing proxy infrastructure was hemorrhaging money. A single pipeline was burning through **$5,000/day** in proxy costs with the incumbent vendor. Extrapolated across all scraping operations, the annual proxy spend was unsustainable and climbing.
+
+<ProxyCostDrop client:visible />
+
+## The Migration
+
+Led the full vendor migration from BrightData to SmartProxy. This wasn't a simple config swap — every scraping pipeline had to be re-validated against its target platform to ensure the new proxy network maintained the same success rates and throughput.
+
+**Vendor evaluation.** Benchmarked multiple proxy providers against the specific anti-scraping defenses of each target platform. The winning vendor had to handle residential, datacenter, and mobile proxy types across dozens of geolocations.
+
+**Pipeline-by-pipeline rollout.** Migrated each scraping pipeline individually, monitoring success rates, block rates, and data completeness at every step. Some platforms required custom proxy rotation strategies to maintain throughput.
+
+**Cost governance.** Implemented per-pipeline proxy budgeting so no single scraper could run away with costs. Each pipeline now operates within defined daily spend limits.
+
+## Results
+
+- **$5,000/day → $100/day** — 98% cost reduction across all scraping pipelines
+- **~$1.7M/year** in annual proxy savings
+- Zero data loss during migration — every pipeline maintained its SLAs
+- Per-pipeline cost controls prevent future runaway spend
+- Same or better success rates across all target platforms
